@@ -419,18 +419,18 @@ function initQuizExtras() {
 
 /* ================= 3D GALLERY ================= */
 const GALLERY = [
-  { id: 'suv', name: 'SUV', blurb: 'One bilayer, small diameter. Drag it — the heads and tails are a real shell, not a flat circle.', shells: [{ r: 0.92, n: 150 }] },
-  { id: 'luv', name: 'LUV', blurb: 'Same single bilayer as an SUV, but larger, with a roomier aqueous core.', shells: [{ r: 1.48, n: 210 }] },
-  { id: 'guv', name: 'GUV', blurb: 'Giant and still unilamellar. Zoom in: one shell, cell-scale, not a stack.', shells: [{ r: 2.15, n: 280 }] },
-  { id: 'mlv', name: 'MLV', blurb: 'An onion of concentric bilayers. Rotate it and you can see the inner shells through the gaps.', shells: [{ r: 1.92, n: 170 }, { r: 1.46, n: 120 }, { r: 1.04, n: 84 }, { r: 0.66, n: 52 }] },
-  { id: 'olv', name: 'OLV', blurb: 'Oligolamellar: two bilayers, not a full onion and not a single shell.', shells: [{ r: 1.62, n: 160 }, { r: 1.16, n: 100 }] },
-  { id: 'mvv', name: 'MVV', blurb: 'One large vesicle holding smaller vesicles. Multivesicular, not multilamellar.', shells: [{ r: 1.82, n: 170 }], inner: 5 },
-  { id: 'peg', name: 'PEGylated', blurb: 'Polymer chains stand off the outer heads. The corona is the stealth feature, not a second bilayer.', shells: [{ r: 1.32, n: 160 }], peg: 1 },
-  { id: 'cat', name: 'Cationic', blurb: 'Positive head-groups, drawn blue. Charge is on the lipids, not a fog around a plain sphere.', shells: [{ r: 1.32, n: 160 }], head: 0x7EB6FF },
-  { id: 'an', name: 'Anionic', blurb: 'Negative head-groups, drawn copper. The shell is still a bilayer you can orbit.', shells: [{ r: 1.32, n: 160 }], head: 0xD4785A },
-  { id: 'tgt', name: 'Targeted', blurb: 'Gold ligands on short stalks. Targeting is surface chemistry, not a different number of bilayers.', shells: [{ r: 1.32, n: 160 }], ligand: 1 },
-  { id: 'ph', name: 'pH-sensitive', blurb: 'A real opening in the bilayer, so the core shows through. A picture of acid-triggered leak, not a measured pKa.', shells: [{ r: 1.32, n: 170 }], pore: 1 },
-  { id: 'th', name: 'Thermosensitive', blurb: 'Warmer heads and looser packing. Mild heat can disorder the shell near the transition.', shells: [{ r: 1.32, n: 120 }], head: 0xE07A4A, loose: 1 },
+  { id: 'suv', name: 'SUV', blurb: 'Small unilamellar vesicle: one bilayer and a limited aqueous core.', shells: [{ r: 0.92, n: 150 }] },
+  { id: 'luv', name: 'LUV', blurb: 'Large unilamellar vesicle: one bilayer, with more room in the aqueous core.', shells: [{ r: 1.48, n: 210 }] },
+  { id: 'guv', name: 'GUV', blurb: 'Giant unilamellar vesicle: still one bilayer, on a much larger scale.', shells: [{ r: 2.15, n: 280 }] },
+  { id: 'mlv', name: 'MLV', blurb: 'Multilamellar vesicle: concentric bilayers. Cargo can sit between the lamellae as well as in the core.', shells: [{ r: 1.92, n: 170 }, { r: 1.46, n: 120 }, { r: 1.04, n: 84 }, { r: 0.66, n: 52 }] },
+  { id: 'olv', name: 'OLV', blurb: 'Oligolamellar vesicle: a few bilayers, fewer than a classical MLV.', shells: [{ r: 1.62, n: 160 }, { r: 1.16, n: 100 }] },
+  { id: 'mvv', name: 'MVV', blurb: 'Multivesicular vesicle: smaller vesicles enclosed in one larger vesicle.', shells: [{ r: 1.82, n: 170 }], inner: 5 },
+  { id: 'peg', name: 'PEGylated', blurb: 'PEG chains extend from the outer heads and slow protein binding.', shells: [{ r: 1.32, n: 160 }], peg: 1 },
+  { id: 'cat', name: 'Cationic', blurb: 'Cationic head-groups give the surface a positive charge.', shells: [{ r: 1.32, n: 160 }], head: 0x7EB6FF },
+  { id: 'an', name: 'Anionic', blurb: 'Anionic head-groups give the surface a negative charge.', shells: [{ r: 1.32, n: 160 }], head: 0xD4785A },
+  { id: 'tgt', name: 'Targeted', blurb: 'Ligands on the surface are intended to bind a receptor.', shells: [{ r: 1.32, n: 160 }], ligand: 1 },
+  { id: 'ph', name: 'pH-sensitive', blurb: 'The opening shows how an acid trigger can let the core leak. This is a model, not a measured pKa.', shells: [{ r: 1.32, n: 170 }], pore: 1 },
+  { id: 'th', name: 'Thermosensitive', blurb: 'Looser packing near the transition temperature. Mild heat can disorder the shell.', shells: [{ r: 1.32, n: 120 }], head: 0xE07A4A, loose: 1 },
 ];
 
 let galleryState = { built: false, renderer: null, scene: null, camera: null, controls: null, mesh: null, frame: 0, running: false };

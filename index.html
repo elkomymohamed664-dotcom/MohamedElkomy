@@ -62,14 +62,6 @@
       <div class="nav-progress-bar"><div id="nav-progress-fill"></div></div>
     </div>
   </div>
-<div class="added-bar">
-      <span>جديد</span>
-      <button type="button" data-goto="gallery">3D Gallery</button>
-      <button type="button" data-goto="lab">Extrusion</button>
-      <button type="button" data-goto="loading">Capacity</button>
-      <button type="button" data-goto="quiz">Quiz extras</button>
-      <button type="button" data-goto="research">Research</button>
-    </div>
 </header>
 <div id="bookmark-strip" class="bookmark-strip"></div>
 
@@ -90,19 +82,6 @@
     <div class="hero-actions">
       <button class="btn btn-primary" data-goto="explorer">Explore 3D →</button>
       <button class="btn btn-ghost" data-goto="intro">Start Learning</button>
-      <button class="btn btn-ghost" data-goto="gallery">3D Gallery</button>
-    </div>
-    <div class="added-home">
-      <h2>الإضافات الجديدة</h2>
-      <p>نفس الصفحة. اضغط الكارت عشان تفتح الإضافة.</p>
-      <div class="added-grid">
-        <button type="button" data-goto="gallery"><strong>3D Gallery</strong><span>12 موديل مختلف: SUV و MLV و PEG وغيرهم</span></button>
-        <button type="button" data-goto="lab"><strong>Extrusion</strong><span>طريقة جديدة في المعمل + سؤال على كل طريقة</span></button>
-        <button type="button" data-goto="loading"><strong>Loading capacity</strong><span>سعة التحميل، منفصلة عن Encapsulation efficiency</span></button>
-        <button type="button" data-goto="quiz"><strong>Quiz extras</strong><span>توصيل، ترتيب، تسمية، ومراجعة الغلط</span></button>
-        <button type="button" data-goto="research"><strong>Research & notes</strong><span>أبحاث منشورة وملاحظات تتنزل</span></button>
-        <button type="button" id="home-theme"><strong>Light mode</strong><span>غيّر اللون من هنا أو من زر Light فوق</span></button>
-      </div>
     </div>
     <div class="hero-stats">
       <div class="stat"><strong>8</strong><span>Learning Modules</span></div>
@@ -288,24 +267,23 @@
   <p class="note">⚠️ Note: size ranges and classifications may vary between references and preparation methods.</p>
 
   <div class="next-bar">
-    <span>Next: twelve distinct 3D models, then the lab</span>
-    <button class="btn btn-ghost" data-goto="gallery">Open 3D Gallery</button>
+    <span>Next: how liposomes are prepared</span>
     <button class="btn btn-primary" data-goto="lab">Enter the Lab →</button>
   </div>
 </section>
 
-<!-- ============ 3D GALLERY (added) ============ -->
+<!-- ============ 3D GALLERY ============ -->
 <section class="section" id="section-gallery">
   <div class="page-head">
-    <span class="page-chip">Added · Gallery</span>
+    <span class="page-chip">Gallery</span>
     <h1>3D Molecular Gallery</h1>
-    <p>Each type is a different model — size, number of shells, inner vesicles, PEG chains, charge, ligands, pores, or a warm rim. This does not replace the structure explorer.</p>
+    <p>SUV, LUV, GUV, MLV, OLV, MVV, and the main surface designs. Drag to rotate and scroll to zoom.</p>
     <button type="button" class="bookmark-btn" data-bookmark="gallery">☆ Save</button>
   </div>
   <div class="gallery-layout">
     <div class="glass-card gallery-stage">
       <canvas id="gallery-canvas"></canvas>
-      <div class="explorer-hint">Drag to rotate · Scroll to zoom · each type is its own vesicle</div>
+      <div class="explorer-hint">Drag to rotate · Scroll to zoom</div>
       <div class="gallery-caption">
         <h2 id="gallery-name">SUV</h2>
         <p id="gallery-blurb"></p>
@@ -313,7 +291,7 @@
     </div>
     <div class="gallery-picks" id="gallery-picks"></div>
   </div>
-  <p class="note">Drag to orbit and scroll to zoom. Each type is a phospholipid shell — heads, tails, and core — not a flat icon. Sizes are teaching scales, not measured coordinates.</p>
+  <p class="note">Sizes and surface details are teaching models. Reported ranges vary by reference and by how the batch was made.</p>
 </section>
 
 <!-- ============ PREPARATION LAB ============ -->
@@ -321,7 +299,7 @@
   <div class="page-head">
     <span class="page-chip">Module 04</span>
     <h1>Virtual Preparation Lab</h1>
-    <p>Five classic methods, plus membrane extrusion as its own sizing method. Each method has a short knowledge check.</p>
+    <p>Principle, materials, steps, advantages, and limitations for each preparation method.</p>
     <button type="button" class="bookmark-btn" data-bookmark="lab">☆ Save</button>
   </div>
 
@@ -443,14 +421,14 @@
   <div class="glass-card quiz-card" id="quiz-card"></div>
 
   <div class="quiz-extra" id="quiz-extra">
-    <h2 class="section-title">More ways to practice</h2>
+    <h2 class="section-title">Practice</h2>
     <div class="quiz-extra-grid">
       <article class="glass-card">
         <h3>Match the pairs</h3>
         <div id="match-board" class="match-board"></div>
       </article>
       <article class="glass-card">
-        <h3>Order this teaching pathway</h3>
+        <h3>Order the pathway</h3>
         <p class="ee-note">Move each step up until the sequence matches the simulation. Other biological routes exist.</p>
         <ol id="order-list" class="order-list"></ol>
         <button type="button" class="ctrl-btn" id="order-check">Check order</button>
@@ -472,12 +450,12 @@
   </div>
 </section>
 
-<!-- ============ RESEARCH + NOTES (added) ============ -->
+<!-- ============ RESEARCH ============ -->
 <section class="section" id="section-research">
   <div class="page-head">
-    <span class="page-chip">Added · Library</span>
-    <h1>Latest research</h1>
-    <p>Four published reviews. Titles and links only — read the paper before citing a number from it.</p>
+    <span class="page-chip">Library</span>
+    <h1>Research</h1>
+    <p>Published reviews on liposomal drug delivery. Read the paper before citing a number from it.</p>
     <button type="button" class="bookmark-btn" data-bookmark="research">☆ Save</button>
   </div>
   <div class="research-list" id="research-list"></div>

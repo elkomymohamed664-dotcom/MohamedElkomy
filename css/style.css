@@ -94,7 +94,7 @@ body {
 .nav-progress-bar div { height: 100%; width: 0%; background: linear-gradient(90deg, var(--teal), var(--cyan)); border-radius: 99px; transition: width 0.5s; }
 
 /* ---------- Layout ---------- */
-main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 148px 20px 40px; }
+main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 100px 20px 40px; }
 .section { display: none; animation: fadeUp 0.45s ease both; }
 .section.active { display: block; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
@@ -434,29 +434,8 @@ main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; paddin
 .search-results button:hover, .bookmark-strip button:hover { background: var(--glass-strong); }
 .search-results span, .search-empty { display: block; color: var(--muted); font-size: 0.75rem; }
 .theme-btn { white-space: nowrap; }
-.added-bar {
-  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-  max-width: 1280px; margin: 0 auto; padding: 8px 20px 12px;
-}
-.added-bar span { color: var(--teal); font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; }
-.added-bar button {
-  background: rgba(228, 201, 154, 0.14); color: var(--light); border: 1px solid var(--border);
-  border-radius: 999px; padding: 6px 12px; cursor: pointer; font: inherit; font-size: 0.82rem; font-weight: 700;
-}
-.added-bar button:hover { border-color: var(--teal); }
-.added-home { max-width: 920px; margin: 28px auto 0; text-align: start; }
-.added-home h2 { font-family: var(--font-display); font-size: 1.35rem; }
-.added-home > p { color: var(--muted); margin: 4px 0 12px; }
-.added-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.added-grid button {
-  text-align: start; background: var(--glass-strong); color: var(--light);
-  border: 1px solid var(--teal); border-radius: 14px; padding: 14px; cursor: pointer; font: inherit;
-}
-.added-grid button:hover { transform: translateY(-2px); }
-.added-grid strong { display: block; color: var(--teal); margin-bottom: 4px; }
-.added-grid span { color: var(--muted); font-size: 0.82rem; }
 .bookmark-strip {
-  position: fixed; top: 112px; left: 0; right: 0; z-index: 90;
+  position: fixed; top: 64px; left: 0; right: 0; z-index: 90;
   display: flex; gap: 8px; align-items: center; padding: 0 20px; min-height: 0;
   background: rgba(7, 28, 22, 0.72);
 }
@@ -519,7 +498,7 @@ html[data-theme="light"] .search-results { background: #fff; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
-  .explorer-layout, .type-layout, .loading-layout, .sim-layout, .lab-cols, .gallery-layout, .quiz-extra-grid, .cap-grid, .added-grid { grid-template-columns: 1fr; }
+  .explorer-layout, .type-layout, .loading-layout, .sim-layout, .lab-cols, .gallery-layout, .quiz-extra-grid, .cap-grid { grid-template-columns: 1fr; }
   #explorer-canvas-wrap { height: 420px; }
 }
 @media (max-width: 640px) {
