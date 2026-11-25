@@ -469,7 +469,7 @@ main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; paddin
 .bookmark-btn.on { background: rgba(228, 201, 154, 0.16); }
 .gallery-layout { display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 18px; }
 .gallery-stage { min-height: 460px; display: flex; flex-direction: column; }
-#gallery-canvas { width: 100%; height: 380px; display: block; }
+#gallery-canvas { width: 100%; height: 520px; display: block; cursor: grab; touch-action: none; background: #04140f; border-radius: 14px; }
 .gallery-caption h2 { font-family: var(--font-display); color: var(--cyan); }
 .gallery-caption p, .sim-caveat, .research-meta { color: var(--muted); }
 .gallery-picks { display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; }

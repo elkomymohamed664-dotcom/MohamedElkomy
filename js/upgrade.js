@@ -1,6 +1,8 @@
 /* LIPOVERSE additive modules: gallery, lab extras, loading extras, quiz extras,
    bookmarks, search, continue, notes, research, theme. Does not replace existing modules. */
 import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 
 const THEME_KEY = 'lipoverse-theme';
 const BOOK_KEY = 'lipoverse-bookmarks';
@@ -417,130 +419,174 @@ function initQuizExtras() {
 
 /* ================= 3D GALLERY ================= */
 const GALLERY = [
-  { id: 'suv', name: 'SUV', blurb: 'One thin bilayer, small diameter. High curvature packs the heads tightly.', size: 0.62, layers: 1, peg: 0, charge: 0, ligand: 0, pores: 0, thermo: 0 },
-  { id: 'luv', name: 'LUV', blurb: 'One bilayer, larger than an SUV, with a roomy aqueous core.', size: 1.05, layers: 1, peg: 0, charge: 0, ligand: 0, pores: 0, thermo: 0 },
-  { id: 'guv', name: 'GUV', blurb: 'Giant and still unilamellar — cell-scale, not a drug-vial SUV.', size: 1.55, layers: 1, peg: 0, charge: 0, ligand: 0, pores: 0, thermo: 0 },
-  { id: 'mlv', name: 'MLV', blurb: 'Onion of concentric bilayers. Cargo can sit between lamellae as well as in the core.', size: 1.15, layers: 4, peg: 0, charge: 0, ligand: 0, pores: 0, thermo: 0 },
-  { id: 'olv', name: 'OLV', blurb: 'Oligolamellar: a few bilayers, not a full onion and not a single shell.', size: 1.1, layers: 2, peg: 0, charge: 0, ligand: 0, pores: 0, thermo: 0 },
-  { id: 'mvv', name: 'MVV', blurb: 'A large vesicle holding smaller vesicles — multivesicular, not multilamellar.', size: 1.25, layers: 1, peg: 0, charge: 0, ligand: 0, pores: 0, thermo: 0, inner: 5 },
-  { id: 'peg', name: 'PEGylated', blurb: 'Polymer chains on the outer heads. The corona is the stealth feature, not a second bilayer.', size: 0.9, layers: 1, peg: 1, charge: 0, ligand: 0, pores: 0, thermo: 0 },
-  { id: 'cat', name: 'Cationic', blurb: 'Positive head-groups, drawn as a blue outer charge haze. Used carefully — charge also raises toxicity.', size: 0.9, layers: 1, peg: 0, charge: 1, ligand: 0, pores: 0, thermo: 0 },
-  { id: 'an', name: 'Anionic', blurb: 'Negative head-groups, drawn as an amber outer haze. Charge changes protein binding and uptake.', size: 0.9, layers: 1, peg: 0, charge: -1, ligand: 0, pores: 0, thermo: 0 },
-  { id: 'tgt', name: 'Targeted', blurb: 'Ligands (small gold markers) on the surface for a receptor. Targeting is not the same as PEG.', size: 0.9, layers: 1, peg: 0.4, charge: 0, ligand: 1, pores: 0, thermo: 0 },
-  { id: 'ph', name: 'pH-sensitive', blurb: 'Open pores in the shell — a picture of acid-triggered leak, not a measurement of a pKa.', size: 0.9, layers: 1, peg: 0, charge: 0, ligand: 0, pores: 1, thermo: 0 },
-  { id: 'th', name: 'Thermosensitive', blurb: 'Warm rim and a softened shell. Mild heat can loosen packing near the transition.', size: 0.9, layers: 1, peg: 0, charge: 0, ligand: 0, pores: 0, thermo: 1 },
+  { id: 'suv', name: 'SUV', blurb: 'One bilayer, small diameter. Drag it — the heads and tails are a real shell, not a flat circle.', shells: [{ r: 0.92, n: 150 }] },
+  { id: 'luv', name: 'LUV', blurb: 'Same single bilayer as an SUV, but larger, with a roomier aqueous core.', shells: [{ r: 1.48, n: 210 }] },
+  { id: 'guv', name: 'GUV', blurb: 'Giant and still unilamellar. Zoom in: one shell, cell-scale, not a stack.', shells: [{ r: 2.15, n: 280 }] },
+  { id: 'mlv', name: 'MLV', blurb: 'An onion of concentric bilayers. Rotate it and you can see the inner shells through the gaps.', shells: [{ r: 1.92, n: 170 }, { r: 1.46, n: 120 }, { r: 1.04, n: 84 }, { r: 0.66, n: 52 }] },
+  { id: 'olv', name: 'OLV', blurb: 'Oligolamellar: two bilayers, not a full onion and not a single shell.', shells: [{ r: 1.62, n: 160 }, { r: 1.16, n: 100 }] },
+  { id: 'mvv', name: 'MVV', blurb: 'One large vesicle holding smaller vesicles. Multivesicular, not multilamellar.', shells: [{ r: 1.82, n: 170 }], inner: 5 },
+  { id: 'peg', name: 'PEGylated', blurb: 'Polymer chains stand off the outer heads. The corona is the stealth feature, not a second bilayer.', shells: [{ r: 1.32, n: 160 }], peg: 1 },
+  { id: 'cat', name: 'Cationic', blurb: 'Positive head-groups, drawn blue. Charge is on the lipids, not a fog around a plain sphere.', shells: [{ r: 1.32, n: 160 }], head: 0x7EB6FF },
+  { id: 'an', name: 'Anionic', blurb: 'Negative head-groups, drawn copper. The shell is still a bilayer you can orbit.', shells: [{ r: 1.32, n: 160 }], head: 0xD4785A },
+  { id: 'tgt', name: 'Targeted', blurb: 'Gold ligands on short stalks. Targeting is surface chemistry, not a different number of bilayers.', shells: [{ r: 1.32, n: 160 }], ligand: 1 },
+  { id: 'ph', name: 'pH-sensitive', blurb: 'A real opening in the bilayer, so the core shows through. A picture of acid-triggered leak, not a measured pKa.', shells: [{ r: 1.32, n: 170 }], pore: 1 },
+  { id: 'th', name: 'Thermosensitive', blurb: 'Warmer heads and looser packing. Mild heat can disorder the shell near the transition.', shells: [{ r: 1.32, n: 120 }], head: 0xE07A4A, loose: 1 },
 ];
 
-let galleryState = { built: false, renderer: null, scene: null, camera: null, clock: null, mesh: null, frame: 0, index: 0 };
+let galleryState = { built: false, renderer: null, scene: null, camera: null, controls: null, mesh: null, frame: 0, running: false };
+
+function fibonacciSphere(n) {
+  const pts = [];
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  const denom = Math.max(1, n - 1);
+  for (let i = 0; i < n; i++) {
+    const y = 1 - (i / denom) * 2;
+    const rad = Math.sqrt(Math.max(0, 1 - y * y));
+    const theta = golden * i;
+    pts.push(new THREE.Vector3(Math.cos(theta) * rad, y, Math.sin(theta) * rad));
+  }
+  return pts;
+}
+
+function orientedCylinder(from, to, radius) {
+  const dir = new THREE.Vector3().subVectors(to, from);
+  const len = Math.max(0.001, dir.length());
+  const geo = new THREE.CylinderGeometry(radius, radius, len, 5);
+  const mid = new THREE.Vector3().addVectors(from, to).multiplyScalar(0.5);
+  const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize());
+  geo.applyMatrix4(new THREE.Matrix4().compose(mid, quat, new THREE.Vector3(1, 1, 1)));
+  return geo;
+}
+
+function sphereAt(pos, radius, seg) {
+  const geo = new THREE.SphereGeometry(radius, seg || 8, seg || 8);
+  geo.translate(pos.x, pos.y, pos.z);
+  return geo;
+}
+
+function lipidMat(color, opts) {
+  return new THREE.MeshStandardMaterial(Object.assign({
+    color, roughness: 0.32, metalness: 0.08,
+    emissive: color, emissiveIntensity: 0.16,
+  }, opts || {}));
+}
+
+function addPeg(group, radius) {
+  const geos = [];
+  fibonacciSphere(32).forEach(d => {
+    const len = 0.26 + Math.random() * 0.2;
+    const start = d.clone().multiplyScalar(radius + 0.03);
+    const end = d.clone().multiplyScalar(radius + 0.03 + len);
+    geos.push(orientedCylinder(start, end, 0.016));
+    geos.push(sphereAt(end, 0.03, 6));
+  });
+  group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(geos), lipidMat(0x8FD4C0)));
+}
+
+function addLigands(group, radius) {
+  const geos = [];
+  fibonacciSphere(14).forEach(d => {
+    const start = d.clone().multiplyScalar(radius + 0.02);
+    const end = d.clone().multiplyScalar(radius + 0.2);
+    geos.push(orientedCylinder(start, end, 0.012));
+    geos.push(sphereAt(end, 0.055, 8));
+  });
+  group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(geos), lipidMat(0xC9A15A, { metalness: 0.4, emissiveIntensity: 0.28 })));
+}
+
+function addBilayer(group, radius, count, spec, flags) {
+  const thick = spec.loose ? 0.36 : 0.26;
+  const rOut = radius;
+  const rIn = Math.max(0.2, radius - thick);
+  const headR = Math.min(0.09, Math.max(0.042, radius * 0.05));
+  const tailR = headR * 0.32;
+  const headGeos = [];
+  const tailGeos = [];
+  const cholGeos = [];
+  const up = new THREE.Vector3(0, 1, 0);
+  fibonacciSphere(count).forEach(raw => {
+    const d = raw.clone();
+    if (spec.loose) d.addScaledVector(new THREE.Vector3().randomDirection(), 0.07).normalize();
+    if (flags.pore && d.x > 0.42 && Math.abs(d.y) < 0.4 && d.z > -0.2) return;
+    const perp = new THREE.Vector3().crossVectors(d, up);
+    if (perp.lengthSq() < 0.01) perp.set(1, 0, 0);
+    perp.normalize();
+    headGeos.push(sphereAt(d.clone().multiplyScalar(rOut), headR, 7));
+    headGeos.push(sphereAt(d.clone().multiplyScalar(rIn), headR * 0.9, 7));
+    [-1, 1].forEach(sign => {
+      const o = perp.clone().multiplyScalar(sign * headR * 0.42);
+      const mid = (rOut + rIn) / 2;
+      tailGeos.push(orientedCylinder(d.clone().multiplyScalar(rOut - headR * 0.15).add(o), d.clone().multiplyScalar(mid).add(o), tailR));
+      tailGeos.push(orientedCylinder(d.clone().multiplyScalar(rIn + headR * 0.15).add(o), d.clone().multiplyScalar(mid).add(o), tailR));
+    });
+    if ((headGeos.length / 2) % 5 === 0) cholGeos.push(sphereAt(d.clone().multiplyScalar((rOut + rIn) / 2), headR * 0.5, 6));
+  });
+  if (!headGeos.length) return rOut;
+  group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(headGeos), lipidMat(spec.head || 0xE4C99A)));
+  group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(tailGeos), lipidMat(0xF6E7C1, { roughness: 0.46 })));
+  if (cholGeos.length) group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(cholGeos), lipidMat(0xC9A15A, { roughness: 0.22 })));
+  if (flags.core) {
+    group.add(new THREE.Mesh(
+      new THREE.SphereGeometry(Math.max(0.08, rIn - headR), 28, 20),
+      new THREE.MeshStandardMaterial({
+        color: 0x1F8A68, transparent: true, opacity: 0.28, roughness: 0.18,
+        emissive: 0x1F8A68, emissiveIntensity: 0.22, depthWrite: false, side: THREE.DoubleSide,
+      })
+    ));
+    const waters = [];
+    const limit = Math.max(0.05, rIn - headR * 1.6);
+    for (let i = 0; i < 28; i++) waters.push(sphereAt(new THREE.Vector3().randomDirection().multiplyScalar(Math.random() * limit), headR * 0.4, 5));
+    group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(waters), lipidMat(0x7DCEB0, { roughness: 0.12 })));
+  }
+  if (flags.peg) addPeg(group, rOut);
+  if (flags.ligand) addLigands(group, rOut);
+  return rOut;
+}
 
 function makeVesicle(spec) {
   const group = new THREE.Group();
-  const s = spec.size;
-  const shellColor = spec.thermo ? 0xE07A4A : spec.charge > 0 ? 0x7EB6FF : spec.charge < 0 ? 0xE4C99A : 0xF6E7C1;
-  const innerColor = 0x1F8A68;
-  for (let i = 0; i < spec.layers; i++) {
-    const r = (0.72 - i * 0.14) * s;
-    if (r < 0.18) break;
-    const geo = new THREE.SphereGeometry(r, 40, 28);
-    const mat = new THREE.MeshPhysicalMaterial({
-      color: i === 0 ? shellColor : 0xC4A46A,
-      roughness: 0.28,
-      metalness: 0.04,
-      transmission: spec.pores ? 0.45 : 0.72,
-      thickness: 0.25,
-      transparent: true,
-      opacity: spec.pores ? 0.55 : 0.82,
-      side: THREE.DoubleSide,
+  spec.shells.forEach((shell, i) => {
+    addBilayer(group, shell.r, shell.n, spec, {
+      pore: i === 0 && spec.pore,
+      peg: i === 0 && spec.peg,
+      ligand: i === 0 && spec.ligand,
+      core: i === spec.shells.length - 1 && !spec.inner,
     });
-    const mesh = new THREE.Mesh(geo, mat);
-    group.add(mesh);
-    if (spec.pores && i === 0) {
-      for (let p = 0; p < 7; p++) {
-        const hole = new THREE.Mesh(
-          new THREE.SphereGeometry(0.07 * s, 12, 10),
-          new THREE.MeshBasicMaterial({ color: 0x04140F })
-        );
-        const dir = new THREE.Vector3().randomDirection();
-        hole.position.copy(dir.multiplyScalar(r * 0.98));
-        group.add(hole);
-      }
-    }
-  }
-  const core = new THREE.Mesh(
-    new THREE.SphereGeometry(0.28 * s, 24, 18),
-    new THREE.MeshStandardMaterial({ color: innerColor, roughness: 0.4, emissive: 0x0c3d2e, emissiveIntensity: 0.4 })
-  );
-  group.add(core);
+  });
   if (spec.inner) {
-    const pts = new THREE.Vector3(1, 1, 1);
     for (let i = 0; i < spec.inner; i++) {
-      const baby = new THREE.Mesh(
-        new THREE.SphereGeometry(0.16 * s, 18, 14),
-        new THREE.MeshPhysicalMaterial({ color: 0xF6E7C1, transmission: 0.6, roughness: 0.3, transparent: true, opacity: 0.9 })
-      );
+      const baby = new THREE.Group();
+      addBilayer(baby, 0.36, 48, { head: 0xE4C99A }, { core: true });
       const a = (i / spec.inner) * Math.PI * 2;
-      baby.position.set(Math.cos(a) * 0.42 * s, Math.sin(a * 2) * 0.18 * s, Math.sin(a) * 0.42 * s);
+      baby.position.set(Math.cos(a) * 0.78, i % 2 ? 0.26 : -0.22, Math.sin(a) * 0.78);
       group.add(baby);
-      pts.add(baby.position);
     }
-  }
-  if (spec.peg) {
-    const hairs = new THREE.Group();
-    for (let i = 0; i < 36; i++) {
-      const dir = new THREE.Vector3().randomDirection();
-      const len = (0.22 + Math.random() * 0.18) * spec.peg;
-      const hair = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.012, 0.012, len, 5),
-        new THREE.MeshStandardMaterial({ color: 0x8FD4C0, emissive: 0x1F8A68, emissiveIntensity: 0.25 })
-      );
-      hair.position.copy(dir.clone().multiplyScalar(0.72 * s + len / 2));
-      hair.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
-      hairs.add(hair);
-    }
-    group.add(hairs);
-  }
-  if (spec.ligand) {
-    for (let i = 0; i < 10; i++) {
-      const dir = new THREE.Vector3().randomDirection();
-      const lig = new THREE.Mesh(
-        new THREE.SphereGeometry(0.045, 10, 8),
-        new THREE.MeshStandardMaterial({ color: 0xC9A15A, emissive: 0xC9A15A, emissiveIntensity: 0.35 })
-      );
-      lig.position.copy(dir.multiplyScalar(0.78 * s));
-      group.add(lig);
-    }
-  }
-  if (spec.charge) {
-    const haze = new THREE.Mesh(
-      new THREE.SphereGeometry(0.92 * s, 28, 20),
-      new THREE.MeshBasicMaterial({
-        color: spec.charge > 0 ? 0x7EB6FF : 0xC9845A,
-        transparent: true,
-        opacity: 0.14,
-        side: THREE.BackSide,
-      })
-    );
-    group.add(haze);
-  }
-  if (spec.thermo) {
-    const rim = new THREE.Mesh(
-      new THREE.SphereGeometry(0.8 * s, 28, 20),
-      new THREE.MeshBasicMaterial({ color: 0xE07A4A, transparent: true, opacity: 0.12, side: THREE.BackSide })
-    );
-    group.add(rim);
   }
   return group;
 }
 
 function showGalleryModel(i) {
   const spec = GALLERY[i];
-  galleryState.index = i;
-  const stage = galleryState.scene.getObjectByName('vesicle');
-  if (stage) galleryState.scene.remove(stage);
+  if (!galleryState.scene) return;
+  const prev = galleryState.scene.getObjectByName('vesicle');
+  if (prev) {
+    galleryState.scene.remove(prev);
+    prev.traverse(obj => {
+      if (obj.geometry) obj.geometry.dispose();
+      if (obj.material) obj.material.dispose();
+    });
+  }
   const mesh = makeVesicle(spec);
   mesh.name = 'vesicle';
   galleryState.scene.add(mesh);
   galleryState.mesh = mesh;
+  const radius = Math.max(...spec.shells.map(s => s.r)) + (spec.peg ? 0.4 : 0.05);
+  const dist = Math.max(3.6, radius * 2.85);
+  galleryState.camera.position.set(dist * 0.16, dist * 0.34, dist);
+  galleryState.controls.target.set(0, 0, 0);
+  galleryState.controls.minDistance = Math.max(1.1, radius * 0.85);
+  galleryState.controls.maxDistance = dist * 2.2;
+  galleryState.controls.update();
   const name = document.getElementById('gallery-name');
   const blurb = document.getElementById('gallery-blurb');
   if (name) name.textContent = spec.name;
@@ -551,59 +597,74 @@ function showGalleryModel(i) {
 function initGallery() {
   const canvas = document.getElementById('gallery-canvas');
   const picks = document.getElementById('gallery-picks');
-  if (!canvas || !picks || galleryState.built) return;
+  if (!canvas || !picks) return;
   picks.innerHTML = GALLERY.map(g => `<button type="button" class="ctrl-btn" data-id="${g.id}">${g.name}</button>`).join('');
   picks.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    if (!galleryState.built) startGallery();
     showGalleryModel(GALLERY.findIndex(g => g.id === b.dataset.id));
   }));
 
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.setClearColor(0x000000, 0);
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 40);
-  camera.position.set(0, 0.4, 3.4);
-  scene.add(new THREE.AmbientLight(0xF8F1E3, 0.55));
-  const key = new THREE.DirectionalLight(0xF6E7C1, 1.4);
-  key.position.set(3, 4, 5);
-  scene.add(key);
-  const fill = new THREE.PointLight(0x1F8A68, 8, 12);
-  fill.position.set(-3, -1, 2);
-  scene.add(fill);
-  galleryState = { built: true, renderer, scene, camera, mesh: null, index: 0, running: false };
-
-  const resize = () => {
-    const w = canvas.clientWidth || canvas.parentElement?.clientWidth || 640;
-    const h = canvas.clientHeight || 420;
-    if (canvas.width !== Math.floor(w * renderer.getPixelRatio())) {
-      renderer.setSize(w, h, false);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
+  const startGallery = () => {
+    if (galleryState.built) {
+      if (!galleryState.running) { galleryState.running = true; galleryState.loop?.(); }
+      return;
     }
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setClearColor(0x04140f, 1);
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x04140f);
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.08, 40);
+    camera.position.set(0.6, 1.3, 4.2);
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 1.15;
+    scene.add(new THREE.AmbientLight(0xffffff, 0.62));
+    const key = new THREE.DirectionalLight(0xffffff, 1.75);
+    key.position.set(4, 6, 7);
+    scene.add(key);
+    const rim = new THREE.PointLight(0xC4A46A, 22, 28);
+    rim.position.set(-5, -2, -4);
+    scene.add(rim);
+    const fill = new THREE.PointLight(0x1F8A68, 8, 18);
+    fill.position.set(3, -2, 4);
+    scene.add(fill);
+    galleryState = { built: true, renderer, scene, camera, controls, mesh: null, frame: 0, running: true };
+    const resize = () => {
+      const w = canvas.clientWidth || canvas.parentElement?.clientWidth || 640;
+      const h = canvas.clientHeight || 480;
+      if (w < 2 || h < 2) return;
+      const pr = renderer.getPixelRatio();
+      if (canvas.width !== Math.floor(w * pr) || canvas.height !== Math.floor(h * pr)) {
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      }
+    };
+    const loop = () => {
+      if (!galleryState.running) return;
+      galleryState.frame = requestAnimationFrame(loop);
+      resize();
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    galleryState.loop = loop;
+    showGalleryModel(0);
+    loop();
   };
-  const loop = () => {
-    if (!galleryState.running) return;
-    galleryState.frame = requestAnimationFrame(loop);
-    resize();
-    if (galleryState.mesh) galleryState.mesh.rotation.y += 0.006;
-    renderer.render(scene, camera);
-  };
-  showGalleryModel(0);
+
   const section = document.getElementById('section-gallery');
   const watch = new MutationObserver(() => {
     const on = section?.classList.contains('active');
-    if (on && !galleryState.running) {
-      galleryState.running = true;
-      loop();
-    } else if (!on && galleryState.running) {
+    if (on) startGallery();
+    else if (galleryState.running) {
       galleryState.running = false;
       cancelAnimationFrame(galleryState.frame);
     }
   });
-  if (section?.classList.contains('active')) {
-    galleryState.running = true;
-    loop();
-  }
+  if (section?.classList.contains('active')) startGallery();
   if (section) watch.observe(section, { attributes: true, attributeFilter: ['class'] });
 }
 
