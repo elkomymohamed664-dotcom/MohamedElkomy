@@ -644,10 +644,14 @@ function initGallery() {
     pendingModel = b.dataset.id;
     if (!galleryState.built) startGallery();
     else showGalleryModel(GALLERY.findIndex(g => g.id === b.dataset.id));
+    window.LipoverseSound?.chime();
   }));
   document.querySelectorAll('[data-shape-row]').forEach(row => {
     row.innerHTML = GALLERY.map(g => `<button type="button" class="ctrl-btn" data-model="${g.id}">${g.name}</button>`).join('');
-    row.querySelectorAll('button').forEach(b => b.addEventListener('click', () => openGalleryModel(b.dataset.model)));
+    row.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      openGalleryModel(b.dataset.model);
+      window.LipoverseSound?.chime();
+    }));
   });
   document.querySelector('[data-open-method="extrusion"]')?.addEventListener('click', () => {
     window.LipoverseNav?.show('lab');
@@ -671,6 +675,7 @@ function initGallery() {
     controls.dampingFactor = 0.06;
     controls.autoRotate = true;
     controls.autoRotateSpeed = 1.15;
+    window.LipoverseSound?.bindOrbit(controls);
     scene.add(new THREE.AmbientLight(0xffffff, 0.62));
     const key = new THREE.DirectionalLight(0xffffff, 1.75);
     key.position.set(4, 6, 7);
@@ -788,6 +793,7 @@ function initHeroLiposome() {
       controls.autoRotateSpeed = 0.7;
       controls.minDistance = 3.1;
       controls.maxDistance = 8.5;
+      window.LipoverseSound?.bindOrbit(controls);
       scene.add(new THREE.HemisphereLight(0xEDE4FF, 0x2A2140, 0.72));
       scene.add(new THREE.AmbientLight(0xffffff, 0.28));
       const key = new THREE.DirectionalLight(0xffffff, 1.55);

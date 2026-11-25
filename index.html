@@ -7,7 +7,7 @@
 <meta name="description" content="LIPOVERSE is an interactive 3D learning platform about liposomes and liposomal drug delivery for pharmacy students.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script type="importmap">
 {
@@ -48,6 +48,7 @@
           <div id="search-results" class="search-results" hidden></div>
         </div>
         <button type="button" class="ctrl-btn" data-nav="gallery">3D Models</button>
+        <button type="button" class="ctrl-btn theme-btn" id="sound-toggle" aria-pressed="true" title="Liposome sound effects">Sound</button>
         <button type="button" class="ctrl-btn theme-btn" id="theme-toggle" aria-pressed="false">Light</button>
         <div class="nav-progress" title="Your progress">
           <span id="nav-progress-pct">0%</span>
@@ -602,6 +603,7 @@
   </div>
 </footer>
 
+<script src="js/sound.js"></script>
 <script src="js/main.js"></script>
 <script src="js/sim.js"></script>
 <script type="module">

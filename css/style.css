@@ -59,7 +59,9 @@ body {
     radial-gradient(640px 520px at 50% 110%, rgba(76, 29, 149, 0.2), transparent 62%);
 }
 
-.ar { font-family: var(--font-ar); direction: rtl; text-align: right; color: var(--cyan); font-size: 0.95em; }
+.ar { font-family: var(--font-ar); font-weight: 800; direction: rtl; text-align: right; color: var(--cyan); font-size: 0.95em; }
+.ar-inline { font-family: var(--font-ar); font-weight: 800; unicode-bidi: isolate; }
+#sound-toggle[aria-pressed="false"] { opacity: 0.62; }
 
 /* ---------- Navbar ---------- */
 .navbar {

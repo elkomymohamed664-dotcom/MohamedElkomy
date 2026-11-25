@@ -3,6 +3,44 @@
    Navigation · Progress tracking · Background particles
    Dashboard · Flashcards · Glossary
    ============================================================ */
+const ARABIC_RUN = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+/g;
+let boldingArabic = false;
+
+function boldArabic(root) {
+  if (boldingArabic || !root || root.nodeType !== 1) return;
+  if (root.closest('script, style, textarea, .ar, .ar-inline')) return;
+  const nodes = [];
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement;
+      if (!parent || !node.nodeValue || parent.closest('script, style, textarea, .ar, .ar-inline')) return NodeFilter.FILTER_REJECT;
+      ARABIC_RUN.lastIndex = 0;
+      return ARABIC_RUN.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    }
+  });
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  if (!nodes.length) return;
+  boldingArabic = true;
+  nodes.forEach(node => {
+    const text = node.nodeValue;
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    ARABIC_RUN.lastIndex = 0;
+    text.replace(ARABIC_RUN, (match, offset) => {
+      if (offset > last) frag.append(text.slice(last, offset));
+      const span = document.createElement('span');
+      span.className = 'ar-inline';
+      span.textContent = match;
+      frag.append(span);
+      last = offset + match.length;
+      return match;
+    });
+    if (last < text.length) frag.append(text.slice(last));
+    node.parentNode.replaceChild(frag, node);
+  });
+  boldingArabic = false;
+}
+
 (function () {
   'use strict';
 
@@ -272,4 +310,15 @@
     const id = location.hash.replace('#', '');
     if (id) showSection(id);
   });
+
+  boldArabic(document.body);
+  const arabicObserver = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      mutation.addedNodes.forEach(node => {
+        if (node.nodeType === 1) boldArabic(node);
+        else if (node.nodeType === 3 && node.parentElement) boldArabic(node.parentElement);
+      });
+    });
+  });
+  arabicObserver.observe(document.body, { childList: true, subtree: true });
 })();

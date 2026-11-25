@@ -245,6 +245,7 @@ function selectPart(key) {
     infoEl.innerHTML = '<h3>Select a part</h3><p>Click any part of the 3D model — or use the list — to see what it does.</p>';
     return;
   }
+  window.LipoverseSound?.pop();
   const p = PARTS[key];
   infoEl.innerHTML = `
     <h3><span class="part-dot" style="display:inline-block;background:${p.color}"></span> ${p.label}</h3>
@@ -296,6 +297,7 @@ btnCutaway.addEventListener('click', () => {
   cutaway = !cutaway;
   btnCutaway.classList.toggle('active', cutaway);
   applyClipping();
+  window.LipoverseSound?.pop();
 });
 
 const btnDrugs = document.getElementById('btn-drugs');
@@ -303,18 +305,21 @@ btnDrugs.addEventListener('click', () => {
   const on = !drugCoreMesh.visible;
   drugCoreMesh.visible = drugBilayerMesh.visible = on;
   btnDrugs.classList.toggle('active', on);
+  window.LipoverseSound?.bubble();
 });
 
 const btnRotate = document.getElementById('btn-rotate');
 btnRotate.addEventListener('click', () => {
   controls.autoRotate = !controls.autoRotate;
   btnRotate.classList.toggle('active', controls.autoRotate);
+  window.LipoverseSound?.pop();
 });
 
 document.getElementById('btn-reset-view').addEventListener('click', () => {
   camera.position.copy(CAM_HOME);
   controls.target.set(0, 0, 0);
   controls.update();
+  window.LipoverseSound?.release();
 });
 
 const layerMap = {
@@ -329,6 +334,7 @@ Object.entries(layerMap).forEach(([id, mesh]) => {
   el.addEventListener('change', () => {
     if (mesh) mesh.visible = el.checked;
     else { coreMesh.visible = waterMesh.visible = el.checked; }
+    window.LipoverseSound?.pop();
   });
 });
 
@@ -342,6 +348,7 @@ function resize() {
 }
 new ResizeObserver(resize).observe(wrap);
 resize();
+window.LipoverseSound?.bindOrbit(controls);
 
 const clock = new THREE.Clock();
 function animate() {
