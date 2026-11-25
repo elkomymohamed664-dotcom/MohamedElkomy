@@ -45,6 +45,7 @@
       <a href="#loading" data-nav="loading">Drug Loading</a>
       <a href="#simulation" data-nav="simulation">Simulation</a>
       <a href="#applications" data-nav="applications">Applications</a>
+      <a href="#build" data-nav="build">Build Your Own</a>
       <a href="#quiz" data-nav="quiz">Quiz</a>
       <a href="#flashcards" data-nav="flashcards">Flashcards</a>
     </nav>
@@ -178,6 +179,15 @@
     </table>
   </div>
 
+
+  <div class="refs glass-card">
+    <h4>📚 References</h4>
+    <ol>
+      <li>Bangham AD, Standish MM, Watkins JC. Diffusion of univalent ions across the lamellae of swollen phospholipids. <em>J Mol Biol</em>. 1965;13(1):238–252.</li>
+      <li>Torchilin VP. Recent advances with liposomes as pharmaceutical carriers. <em>Nat Rev Drug Discov</em>. 2005;4(2):145–160.</li>
+      <li>Akbarzadeh A, Rezaei-Sadabady R, Davaran S, et al. Liposome: classification, preparation, and applications. <em>Nanoscale Res Lett</em>. 2013;8:102.</li>
+    </ol>
+  </div>
   <div class="next-bar">
     <span>Next: explore the liposome in 3D</span>
     <button class="btn btn-primary" data-goto="explorer">Open 3D Explorer →</button>
@@ -198,9 +208,16 @@
       <div class="explorer-hint">🖱️ Drag to rotate · Scroll to zoom · Click a part to learn</div>
       <div class="explorer-controls">
         <button class="ctrl-btn" id="btn-cutaway">✂️ Cutaway View</button>
-        <button class="ctrl-btn" id="btn-drugs">💊 Show Drug Locations</button>
         <button class="ctrl-btn active" id="btn-rotate">🔄 Auto-Rotate</button>
+        <button class="ctrl-btn" id="btn-zoom-in">🔍＋ Zoom In</button>
+        <button class="ctrl-btn" id="btn-zoom-out">🔍－ Zoom Out</button>
         <button class="ctrl-btn" id="btn-reset-view">⟲ Reset View</button>
+      </div>
+      <div class="explorer-controls drug-mode" role="group" aria-label="Drug location">
+        <span class="drug-mode-label">💊 Drug location:</span>
+        <button class="ctrl-btn active" data-drug="none">Hidden</button>
+        <button class="ctrl-btn" data-drug="hydro">Hydrophilic → aqueous core</button>
+        <button class="ctrl-btn" data-drug="lipo">Lipophilic → bilayer</button>
       </div>
       <div class="layer-toggles">
         <label><input type="checkbox" id="layer-heads" checked> Heads</label>
@@ -222,6 +239,14 @@
     </aside>
   </div>
 
+
+  <div class="refs glass-card">
+    <h4>📚 References</h4>
+    <ol>
+      <li>Allen TM, Cullis PR. Liposomal drug delivery systems: from concept to clinical applications. <em>Adv Drug Deliv Rev</em>. 2013;65(1):36–48.</li>
+      <li>Pattni BS, Chupin VV, Torchilin VP. New developments in liposomal drug delivery. <em>Chem Rev</em>. 2015;115(19):10938–10966.</li>
+    </ol>
+  </div>
   <div class="next-bar">
     <span>Next: the different types of liposomes</span>
     <button class="btn btn-primary" data-goto="types">Explore Types →</button>
@@ -255,6 +280,14 @@
   </div>
   <p class="note">⚠️ Note: size ranges and classifications may vary between references and preparation methods.</p>
 
+
+  <div class="refs glass-card">
+    <h4>📚 References</h4>
+    <ol>
+      <li>Akbarzadeh A, et al. Liposome: classification, preparation, and applications. <em>Nanoscale Res Lett</em>. 2013;8:102.</li>
+      <li>Pattni BS, Chupin VV, Torchilin VP. New developments in liposomal drug delivery. <em>Chem Rev</em>. 2015;115(19):10938–10966.</li>
+    </ol>
+  </div>
   <div class="next-bar">
     <span>Next: how liposomes are prepared</span>
     <button class="btn btn-primary" data-goto="lab">Enter the Lab →</button>
@@ -272,6 +305,15 @@
   <div class="lab-tabs" id="lab-tabs"></div>
   <div class="glass-card lab-panel" id="lab-panel"></div>
 
+
+  <div class="refs glass-card">
+    <h4>📚 References</h4>
+    <ol>
+      <li>Batzri S, Korn ED. Single bilayer liposomes prepared without sonication. <em>Biochim Biophys Acta</em>. 1973;298(4):1015–1019. <small>(ethanol injection)</small></li>
+      <li>Szoka F Jr, Papahadjopoulos D. Procedure for preparation of liposomes with large internal aqueous space and high capture by reverse phase evaporation. <em>Proc Natl Acad Sci USA</em>. 1978;75(9):4194–4198.</li>
+      <li>Jahn A, Vreeland WN, DeVoe DL, Locascio LE, Gaitan M. Microfluidic directed formation of liposomes of controlled size. <em>Langmuir</em>. 2007;23(11):6289–6293.</li>
+    </ol>
+  </div>
   <div class="next-bar">
     <span>Next: where does the drug go inside?</span>
     <button class="btn btn-primary" data-goto="loading">Drug Loading →</button>
@@ -290,6 +332,7 @@
     <button class="ctrl-btn active" id="load-hydrophilic">💧 Hydrophilic Drug</button>
     <button class="ctrl-btn" id="load-lipophilic">🫧 Lipophilic Drug</button>
     <span class="loading-note" id="loading-note">Water-soluble drugs dissolve in the aqueous core.</span>
+    <button class="ctrl-btn" data-goto="explorer">🔭 See it in 3D →</button>
   </div>
 
   <div class="loading-layout">
@@ -329,6 +372,14 @@
     </div>
   </div>
 
+
+  <div class="refs glass-card">
+    <h4>📚 References</h4>
+    <ol>
+      <li>Haran G, Cohen R, Bar LK, Barenholz Y. Transmembrane ammonium sulfate gradients in liposomes produce efficient and stable encapsulation of amphipathic weak bases. <em>Biochim Biophys Acta</em>. 1993;1151(2):201–215.</li>
+      <li>Akbarzadeh A, et al. Liposome: classification, preparation, and applications. <em>Nanoscale Res Lett</em>. 2013;8:102.</li>
+    </ol>
+  </div>
   <div class="next-bar">
     <span>Next: follow the drug's journey in the body</span>
     <button class="btn btn-primary" data-goto="simulation">Run Simulation →</button>
@@ -356,6 +407,14 @@
     <aside class="glass-card sim-info" id="sim-info"></aside>
   </div>
 
+
+  <div class="refs glass-card">
+    <h4>📚 References</h4>
+    <ol>
+      <li>Maeda H, Wu J, Sawa T, Matsumura Y, Hori K. Tumor vascular permeability and the EPR effect in macromolecular therapeutics: a review. <em>J Control Release</em>. 2000;65(1–2):271–284.</li>
+      <li>Allen TM, Cullis PR. Liposomal drug delivery systems: from concept to clinical applications. <em>Adv Drug Deliv Rev</em>. 2013;65(1):36–48.</li>
+    </ol>
+  </div>
   <div class="next-bar">
     <span>Next: real liposomal medicines</span>
     <button class="btn btn-primary" data-goto="applications">See Applications →</button>
@@ -371,6 +430,14 @@
   </div>
   <div class="apps-grid" id="apps-grid"></div>
 
+
+  <div class="refs glass-card">
+    <h4>📚 References</h4>
+    <ol>
+      <li>Barenholz Y. Doxil® — the first FDA-approved nano-drug: lessons learned. <em>J Control Release</em>. 2012;160(2):117–134.</li>
+      <li>Bozzuto G, Molinari A. Liposomes as nanomedical devices. <em>Int J Nanomedicine</em>. 2015;10:975–999.</li>
+    </ol>
+  </div>
   <div class="next-bar">
     <span>Next: test yourself</span>
     <button class="btn btn-primary" data-goto="quiz">Quiz Center →</button>
@@ -385,6 +452,77 @@
     <p>Test your knowledge — every answer comes with a scientific explanation.</p>
   </div>
   <div class="glass-card quiz-card" id="quiz-card"></div>
+
+  <div class="refs glass-card">
+    <h4>📚 References</h4>
+    <ol>
+      <li>Allen TM, Cullis PR. Liposomal drug delivery systems: from concept to clinical applications. <em>Adv Drug Deliv Rev</em>. 2013;65(1):36–48.</li>
+      <li>Bangham AD, Standish MM, Watkins JC. <em>J Mol Biol</em>. 1965;13(1):238–252.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ BUILD YOUR OWN LIPOSOME ============ -->
+<section class="section" id="section-build">
+  <div class="page-head">
+    <span class="page-chip">Module 09</span>
+    <h1>Build Your Own Liposome</h1>
+    <p>Create, customize and understand — change the components and see how the liposome’s properties respond.</p>
+  </div>
+
+  <div class="build-layout">
+    <div class="glass-card build-viz">
+      <canvas id="build-canvas" width="520" height="520"></canvas>
+      <div class="legend">
+        <span><i class="dot dot-core"></i> Aqueous core</span>
+        <span><i class="dot dot-bilayer"></i> Phospholipid</span>
+        <span><i class="dot" style="background:#ffc857"></i> Cholesterol</span>
+        <span><i class="dot dot-drug"></i> Drug</span>
+      </div>
+    </div>
+
+    <div class="glass-card build-controls">
+      <h3>🛠️ Design controls</h3>
+      <label class="build-field">Vesicle type
+        <select id="b-type">
+          <option value="SUV">SUV — small unilamellar</option>
+          <option value="LUV" selected>LUV — large unilamellar</option>
+          <option value="GUV">GUV — giant unilamellar</option>
+          <option value="MLV">MLV — multilamellar</option>
+        </select>
+      </label>
+      <label class="build-field">Number of bilayers <small>(MLV only)</small>
+        <span class="range-row"><input type="range" id="b-layers" min="1" max="6" step="1" value="3"><output id="b-layers-out">3</output></span>
+      </label>
+      <label class="build-field">Cholesterol content
+        <span class="range-row"><input type="range" id="b-chol" min="0" max="50" step="5" value="30"><output id="b-chol-out">30 mol%</output></span>
+      </label>
+      <label class="build-field">Drug type
+        <select id="b-drug">
+          <option value="hydro">Hydrophilic — e.g. doxorubicin (aqueous core)</option>
+          <option value="lipo">Lipophilic — e.g. paclitaxel (bilayer)</option>
+        </select>
+      </label>
+      <label class="build-check"><input type="checkbox" id="b-peg"> PEG “stealth” coating</label>
+      <button class="ctrl-btn" id="b-reset">⟲ Reset to default</button>
+    </div>
+
+    <div class="glass-card build-results" id="build-results"></div>
+    <div class="glass-card build-explain" id="build-explain"></div>
+  </div>
+
+
+  <div class="refs glass-card">
+    <h4>📚 References</h4>
+    <ol>
+      <li>Pattni BS, Chupin VV, Torchilin VP. New developments in liposomal drug delivery. <em>Chem Rev</em>. 2015;115(19):10938–10966.</li>
+      <li>Allen TM, Cullis PR. Liposomal drug delivery systems: from concept to clinical applications. <em>Adv Drug Deliv Rev</em>. 2013;65(1):36–48.</li>
+    </ol>
+  </div>
+  <div class="next-bar">
+    <span>Ready? Test your knowledge</span>
+    <button class="btn btn-primary" data-goto="quiz">Quiz Center →</button>
+  </div>
 </section>
 
 <!-- ============ FLASHCARDS ============ -->
@@ -437,5 +575,6 @@
 
 <script src="js/main.js"></script>
 <script src="js/sim.js"></script>
+<script src="js/build.js"></script>
 </body>
 </html>

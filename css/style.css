@@ -433,3 +433,52 @@ main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; paddin
   .type-facts { grid-template-columns: 1fr; }
   #explorer-canvas-wrap { height: 340px; }
 }
+
+/* ---------- v2: Prep animation, drug modes, references, build module ---------- */
+.prep-viz { text-align: center; margin-bottom: 22px; }
+#prep-canvas { width: 100%; max-width: 640px; height: auto; background: rgba(10,23,43,0.45); border-radius: 14px; border: 1px solid var(--border); }
+.prep-controls { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+.lab-steps li.current { color: var(--light); background: rgba(32,189,176,0.08); border-radius: 8px; }
+.lab-steps li.current::before { box-shadow: 0 0 0 4px rgba(32,189,176,0.25); }
+
+.drug-mode { margin-top: 8px; }
+.drug-mode-label { color: var(--muted); font-size: 0.85rem; font-weight: 600; align-self: center; }
+
+.refs { margin-top: 28px; }
+.refs h4 { font-family: var(--font-display); margin-bottom: 10px; }
+.refs ol { margin-left: 20px; color: var(--muted); font-size: 0.85rem; }
+.refs li { margin-bottom: 6px; }
+.refs em { color: var(--light); font-style: italic; }
+.refs small { color: var(--faint); }
+
+.build-layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; align-items: start; }
+.build-viz { text-align: center; }
+#build-canvas { max-width: 100%; height: auto; }
+.build-controls h3, .build-results h3, .build-explain h3 { font-family: var(--font-display); margin-bottom: 14px; }
+.build-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; color: var(--muted); font-size: 0.9rem; font-weight: 600; }
+.build-field small { color: var(--faint); font-weight: 400; }
+.build-field select { background: var(--glass-strong); color: var(--light); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-family: var(--font-body); font-size: 0.9rem; }
+.range-row { display: flex; align-items: center; gap: 12px; }
+.range-row input[type=range] { flex: 1; accent-color: var(--teal); }
+.range-row output { min-width: 84px; text-align: right; color: var(--cyan); font-weight: 700; }
+.build-field input:disabled + output { opacity: 0.45; }
+.build-check { display: flex; align-items: center; gap: 8px; color: var(--muted); font-weight: 600; margin-bottom: 18px; cursor: pointer; }
+.build-check input { accent-color: var(--teal); width: 16px; height: 16px; }
+.build-results, .build-explain { grid-column: span 1; }
+.meter { margin-bottom: 14px; }
+.meter-head { display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--light); margin-bottom: 6px; }
+.meter-head strong { color: var(--cyan); }
+.meter-track { height: 10px; border-radius: 99px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.meter-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--teal), var(--cyan)); transition: width 0.4s ease; }
+.meter-fill.fluid { background: linear-gradient(90deg, #4da3ff, #8BE7E0); }
+.meter-fill.retain { background: linear-gradient(90deg, #7bd389, #20BDB0); }
+.meter-fill.circ { background: linear-gradient(90deg, #ffc857, #ffb347); }
+.meter-fill.load { background: linear-gradient(90deg, #ff8a5c, #ffc857); }
+.meter small { color: var(--faint); font-size: 0.78rem; }
+.build-verdict { margin-top: 10px; color: var(--muted); font-size: 0.92rem; }
+.build-verdict strong { color: var(--light); }
+.build-explain ul { margin-left: 18px; color: var(--muted); font-size: 0.92rem; }
+.build-explain li { margin-bottom: 8px; }
+.build-explain strong { color: var(--light); }
+.build-disclaimer { margin-top: 12px; color: var(--faint); font-size: 0.8rem; }
+@media (max-width: 1024px) { .build-layout { grid-template-columns: 1fr; } }

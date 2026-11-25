@@ -16,6 +16,7 @@
     { id: 'simulation',   num: '06', icon: '🩸', title: 'Delivery Simulation',desc: 'Follow the drug journey through the body.' },
     { id: 'applications', num: '07', icon: '🏥', title: 'Applications',       desc: 'Doxil, AmBisome, Onivyde and Exparel in the clinic.' },
     { id: 'quiz',         num: '08', icon: '🏆', title: 'Quiz Center',        desc: 'Test yourself with explained questions.' },
+    { id: 'build',        num: '09', icon: '🛠️', title: 'Build Your Own',     desc: 'Design a liposome: type, cholesterol, drug and PEG coating.' },
   ];
 
   const FLASHCARDS = [

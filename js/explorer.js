@@ -298,12 +298,24 @@ btnCutaway.addEventListener('click', () => {
   applyClipping();
 });
 
-const btnDrugs = document.getElementById('btn-drugs');
-btnDrugs.addEventListener('click', () => {
-  const on = !drugCoreMesh.visible;
-  drugCoreMesh.visible = drugBilayerMesh.visible = on;
-  btnDrugs.classList.toggle('active', on);
-});
+/* Drug location: none · hydrophilic (aqueous core) · lipophilic (bilayer) */
+const drugBtns = document.querySelectorAll('[data-drug]');
+function setDrugMode(mode) {
+  drugCoreMesh.visible = mode === 'hydro';
+  drugBilayerMesh.visible = mode === 'lipo';
+  drugBtns.forEach(b => b.classList.toggle('active', b.dataset.drug === mode));
+}
+drugBtns.forEach(b => b.addEventListener('click', () => setDrugMode(b.dataset.drug)));
+
+/* Zoom buttons (mouse wheel also works) */
+function zoomBy(factor) {
+  const offset = camera.position.clone().sub(controls.target);
+  const dist = THREE.MathUtils.clamp(offset.length() * factor, controls.minDistance, controls.maxDistance);
+  camera.position.copy(controls.target).add(offset.normalize().multiplyScalar(dist));
+  controls.update();
+}
+document.getElementById('btn-zoom-in').addEventListener('click', () => zoomBy(0.8));
+document.getElementById('btn-zoom-out').addEventListener('click', () => zoomBy(1.25));
 
 const btnRotate = document.getElementById('btn-rotate');
 btnRotate.addEventListener('click', () => {

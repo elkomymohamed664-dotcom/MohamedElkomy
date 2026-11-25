@@ -155,6 +155,189 @@
     }
   ];
 
+  /* ---------- Animated preparation scenes (one per method) ----------
+     Each scene receives p ∈ [0,1] (whole process) and draws the
+     process on a 640×300 canvas. Schematic, not to scale. */
+  const PREP_W = 640, PREP_H = 300;
+  const clamp01 = x => Math.max(0, Math.min(1, x));
+  const seg = (p, a, b) => clamp01((p - a) / (b - a));
+  const TEAL = '#20BDB0', CYAN = '#8BE7E0', AMBER = '#ffc857', WATER = 'rgba(77,163,255,0.22)';
+
+  function vesicle(ctx, x, y, r, layers, alpha) {
+    if (r < 1) return;
+    ctx.globalAlpha = alpha == null ? 1 : alpha;
+    ctx.fillStyle = 'rgba(77,163,255,0.14)';
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+    for (let i = 0; i < layers; i++) {
+      const rr = r - (i * r) / (layers + 0.6);
+      if (rr < 2) break;
+      ctx.beginPath(); ctx.arc(x, y, rr, 0, Math.PI * 2);
+      ctx.strokeStyle = i % 2 ? CYAN : TEAL;
+      ctx.lineWidth = Math.max(1.2, Math.min(3, r / 14));
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function beaker(ctx, x, y, w, h) {
+    ctx.strokeStyle = 'rgba(242,247,252,0.45)'; ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x, y); ctx.lineTo(x, y + h); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w, y);
+    ctx.stroke();
+  }
+
+  function flaskPath(ctx, cx, top, bot) {
+    ctx.beginPath();
+    ctx.moveTo(cx - 22, top); ctx.lineTo(cx - 22, top + 50);
+    ctx.lineTo(cx - 80, bot - 30); ctx.quadraticCurveTo(cx - 84, bot, cx - 60, bot);
+    ctx.lineTo(cx + 60, bot); ctx.quadraticCurveTo(cx + 84, bot, cx + 80, bot - 30);
+    ctx.lineTo(cx + 22, top + 50); ctx.lineTo(cx + 22, top);
+  }
+
+  const PREP_SCENES = {
+    /* Thin film: lipid film on flask wall → hydration → MLVs */
+    thinfilm(ctx, p) {
+      const cx = 150, top = 40, bot = 270;
+      const level = bot - 150 * seg(p, 0.3, 0.5);
+      ctx.save(); flaskPath(ctx, cx, top, bot); ctx.clip();
+      ctx.fillStyle = WATER; ctx.fillRect(cx - 100, level, 200, bot - level + 10);
+      ctx.restore();
+      flaskPath(ctx, cx, top, bot); ctx.strokeStyle = 'rgba(242,247,252,0.5)'; ctx.lineWidth = 2; ctx.stroke();
+      // lipid film (yellowish) fades as it is hydrated
+      const film = 1 - seg(p, 0.5, 0.75);
+      if (film > 0) {
+        ctx.strokeStyle = `rgba(255,200,87,${0.85 * film})`; ctx.lineWidth = 7;
+        ctx.beginPath(); ctx.moveTo(cx - 74, bot - 40); ctx.lineTo(cx + 74, bot - 40); ctx.stroke();
+      }
+      // film flakes falling into the water
+      const fl = seg(p, 0.5, 0.8);
+      for (let i = 0; i < 9; i++) {
+        const y = bot - 40 - fl * (110 - i * 4) * (i % 2 ? 0.7 : 1);
+        ctx.fillStyle = AMBER; ctx.globalAlpha = 1 - fl * 0.5;
+        ctx.beginPath(); ctx.arc(cx - 60 + i * 15, y, 3, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      // MLVs grow on the right
+      const g = seg(p, 0.75, 1);
+      if (g > 0) vesicle(ctx, 500, 150, 26 + 90 * g, 5, g);
+    },
+
+    /* Reverse phase evaporation: water droplets in oil → gel → large LUV */
+    rpe(ctx, p) {
+      const x = 90, y = 50, w = 230, h = 220;
+      beaker(ctx, x, y, w, h);
+      // oil phase shrinks as solvent evaporates
+      const oilH = 170 * (1 - seg(p, 0.45, 0.8));
+      ctx.fillStyle = 'rgba(255,200,87,0.22)';
+      ctx.fillRect(x + 2, y + h - oilH - 2, w - 4, oilH);
+      // aqueous droplets dispersed in oil
+      const n = 16;
+      for (let i = 0; i < n; i++) {
+        const dx = x + 20 + ((i * 53) % (w - 40));
+        const dy = y + h - 20 - ((i * 37) % 150) * (1 - seg(p, 0.1, 0.4) * 0.5);
+        ctx.fillStyle = WATER;
+        ctx.beginPath(); ctx.arc(dx, dy, 6 + (i % 3) * 2, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.fillStyle = 'rgba(242,247,252,0.8)'; ctx.font = '600 13px Inter, sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('Oil + aqueous droplets', x + w / 2, y + 22);
+      const g = seg(p, 0.7, 1);
+      if (g > 0) vesicle(ctx, 500, 150, 30 + 60 * g, 1, g);
+    },
+
+    /* Ethanol injection: lipid–ethanol jet into buffer → small SUVs */
+    ethanol(ctx, p) {
+      const x = 120, y = 40;
+      beaker(ctx, x - 80, 90, 240, 200);
+      ctx.fillStyle = WATER; ctx.fillRect(x - 78, 150, 236, 138);
+      // syringe needle
+      ctx.strokeStyle = 'rgba(242,247,252,0.6)'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, 110); ctx.stroke();
+      // jet
+      const jet = seg(p, 0.05, 0.55);
+      if (jet > 0) {
+        ctx.strokeStyle = 'rgba(255,200,87,0.6)'; ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(x, 110); ctx.lineTo(x, 110 + 110 * jet); ctx.stroke();
+      }
+      // SUVs appear in the water and spread out
+      const k = Math.floor(seg(p, 0.5, 0.95) * 20);
+      for (let i = 0; i < k; i++) {
+        const vx = 470 + ((i * 47) % 130) - 65, vy = 60 + ((i * 71) % 180);
+        vesicle(ctx, vx, vy, 8, 1, 1);
+      }
+      const mix = seg(p, 0.2, 0.6);
+      for (let i = 0; i < 12 * mix; i++) {
+        ctx.fillStyle = AMBER; ctx.globalAlpha = 0.7;
+        ctx.beginPath(); ctx.arc(x - 60 + ((i * 29) % 120), 160 + ((i * 41) % 110), 2.5, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    },
+
+    /* Detergent removal: mixed micelles → dialysis removes detergent → vesicles */
+    detergent(ctx, p) {
+      const x = 90, y = 50, w = 230, h = 220;
+      beaker(ctx, x, y, w, h);
+      ctx.fillStyle = 'rgba(77,163,255,0.08)'; ctx.fillRect(x + 2, y + 2, w - 4, h - 4);
+      const remove = seg(p, 0.25, 0.8);
+      // micelles (lipid + detergent) fade as detergent leaves
+      for (let i = 0; i < 26; i++) {
+        const mx = x + 20 + ((i * 61) % (w - 40)), my = y + 40 + ((i * 43) % (h - 70));
+        ctx.globalAlpha = 1 - remove * 0.9 * ((i % 4) / 3);
+        ctx.fillStyle = TEAL;
+        ctx.beginPath(); ctx.arc(mx, my, 5, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = 'rgba(139,231,224,0.6)'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(mx + 6, my + 9); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = 'rgba(242,247,252,0.8)'; ctx.font = '600 13px Inter, sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('Mixed micelles + detergent', x + w / 2, y + 22);
+      // arrows showing detergent leaving through the dialysis membrane
+      if (remove > 0.05) {
+        ctx.fillStyle = 'rgba(255,138,92,' + (0.8 * remove) + ')';
+        ctx.fillText('detergent ⇢ out', x + w / 2, y + h + 18);
+      }
+      const g = seg(p, 0.6, 1);
+      if (g > 0) vesicle(ctx, 500, 150, 34 + 40 * g, 1, g);
+    },
+
+    /* Microfluidics: two streams merge in a channel → uniform vesicles */
+    microfluidics(ctx, p) {
+      const y0 = 150, jx = 220;
+      ctx.strokeStyle = 'rgba(242,247,252,0.35)'; ctx.lineWidth = 16; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(40, 80); ctx.lineTo(jx, y0); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(40, 220); ctx.lineTo(jx, y0); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(jx, y0); ctx.lineTo(600, y0); ctx.stroke();
+      ctx.lineCap = 'butt';
+      ctx.fillStyle = 'rgba(255,200,87,0.85)';
+      ctx.font = '600 12px Inter, sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText('lipid–ethanol', 30, 66); ctx.fillText('buffer', 30, 244);
+      // streams flowing toward the junction
+      const flow = (p * 6) % 1;
+      for (let i = 0; i < 8; i++) {
+        const t1 = (i / 8 + flow) % 1;
+        const a = 40 + (jx - 40) * t1;
+        ctx.fillStyle = AMBER;
+        ctx.beginPath(); ctx.arc(a, 80 + (y0 - 80) * t1, 3, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(a, 220 + (y0 - 220) * t1, 3, 0, Math.PI * 2); ctx.fill();
+      }
+      // uniform vesicles appear downstream
+      const g = seg(p, 0.35, 1);
+      const count = Math.floor(g * 7);
+      for (let i = 0; i < count; i++) {
+        const vx = 270 + i * 50;
+        vesicle(ctx, vx, y0, 16, 1, 1);
+      }
+    }
+  };
+
+  function drawPrepScene(ctx, id, p, stepIdx, stepTitle) {
+    ctx.clearRect(0, 0, PREP_W, PREP_H);
+    const scene = PREP_SCENES[id];
+    if (scene) scene(ctx, p);
+    ctx.fillStyle = 'rgba(242,247,252,0.85)'; ctx.font = '600 13px Inter, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(`Step ${stepIdx + 1}: ${stepTitle}`, PREP_W / 2, PREP_H - 10);
+    ctx.textAlign = 'left';
+  }
+
   (function initLab() {
     const tabs = document.getElementById('lab-tabs');
     const panel = document.getElementById('lab-panel');
@@ -163,13 +346,21 @@
     tabs.innerHTML = METHODS.map((m, i) =>
       `<button class="ctrl-btn ${i === 0 ? 'active' : ''}" data-method="${m.id}">${m.name}</button>`).join('');
 
-    function show(id) {
+    let show = function (id) {
       const m = METHODS.find(x => x.id === id);
       tabs.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.method === id));
       panel.innerHTML = `
         <h3>${m.name}</h3>
         <p class="lab-principle"><strong>Principle:</strong> ${m.principle}</p>
         <div class="lab-materials">${m.materials.map(x => `<span class="chip">${x}</span>`).join('')}</div>
+        <div class="prep-viz">
+          <canvas id="prep-canvas" width="640" height="300" aria-label="Animated preparation scene"></canvas>
+          <div class="prep-controls">
+            <button class="ctrl-btn" id="prep-play">⏸ Pause</button>
+            <button class="ctrl-btn" id="prep-restart">⟲ Restart</button>
+            <span class="loading-note">Schematic animation — not to scale.</span>
+          </div>
+        </div>
         <div class="lab-cols">
           <div>
             <h4 style="font-family:var(--font-display);margin-bottom:10px">Preparation Stages</h4>
@@ -184,7 +375,38 @@
         </div>`;
     }
     tabs.querySelectorAll('button').forEach(b => b.addEventListener('click', () => show(b.dataset.method)));
+
+    /* Animation loop: plays the scene of the selected method and highlights the current step */
+    let current = 'thinfilm', prepP = 0, playing = true, last = 0;
+    const SECONDS = 12;
+    function bindControls() {
+      const playBtn = document.getElementById('prep-play');
+      const restartBtn = document.getElementById('prep-restart');
+      if (playBtn) playBtn.addEventListener('click', () => {
+        playing = !playing; playBtn.textContent = playing ? '⏸ Pause' : '▶ Play';
+      });
+      if (restartBtn) restartBtn.addEventListener('click', () => { prepP = 0; playing = true; if (playBtn) playBtn.textContent = '⏸ Pause'; });
+    }
+    function frame(ts) {
+      requestAnimationFrame(frame);
+      const sec = document.getElementById('section-lab');
+      if (!sec || !sec.classList.contains('active')) { last = ts; return; }
+      const canvas = document.getElementById('prep-canvas');
+      if (!canvas) return;
+      const dt = last ? Math.min(0.1, (ts - last) / 1000) : 0;
+      last = ts;
+      if (playing) prepP += dt / SECONDS;
+      if (prepP >= 1) prepP = 0;
+      const m = METHODS.find(x => x.id === current);
+      const n = m.steps.length;
+      const idx = Math.min(n - 1, Math.floor(prepP * n));
+      drawPrepScene(canvas.getContext('2d'), current, prepP, idx, m.steps[idx][0]);
+      panel.querySelectorAll('.lab-steps li').forEach((li, i) => li.classList.toggle('current', i === idx));
+    }
+    const origShow = show;
+    show = function (id) { current = id; prepP = 0; origShow(id); bindControls(); };
     show('thinfilm');
+    requestAnimationFrame(frame);
   })();
 
   /* ================= DRUG LOADING ================= */
