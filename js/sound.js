@@ -60,8 +60,8 @@
     if (!vesicleBus) {
       vesicleBus = ctx.createBiquadFilter();
       vesicleBus.type = 'lowpass';
-      vesicleBus.frequency.value = 680;
-      vesicleBus.Q.value = 0.5;
+      vesicleBus.frequency.value = 2400;
+      vesicleBus.Q.value = 0.4;
       vesicleBus.connect(master);
     }
     return vesicleBus;
@@ -78,15 +78,16 @@
     return bodyBus;
   }
 
-  function softTone(dest, freq, duration, peak) {
+  function softTone(dest, from, to, duration, peak) {
     if (!ready()) return;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     const now = ctx.currentTime;
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq, now);
+    osc.frequency.setValueAtTime(Math.max(80, from), now);
+    if (to && to !== from) osc.frequency.exponentialRampToValueAtTime(Math.max(80, to), now + duration);
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(Math.max(0.001, peak), now + 0.07);
+    gain.gain.exponentialRampToValueAtTime(Math.max(0.001, peak), now + Math.min(0.055, duration * 0.4));
     gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
     osc.connect(gain);
     gain.connect(dest);
@@ -351,25 +352,41 @@
     grab() {
       if (!ready()) return;
       const now = performance.now();
-      if (now - lastTouch < 90) return;
+      if (now - lastTouch < 110) return;
       lastTouch = now;
-      const dest = uiOut();
-      const bubble = 740 + Math.random() * 50;
-      softTone(dest, bubble, 0.2, 0.032);
-      softTone(dest, bubble * 1.25, 0.14, 0.012);
+      const dest = vesicleOut();
+      const root = 520 + Math.random() * 18;
+      softTone(dest, root, root * 1.16, 0.28, 0.05);
+      softTone(dest, root * 1.006, root * 1.17, 0.26, 0.022);
+      softTone(dest, root * 1.5, root * 1.58, 0.18, 0.012);
     },
     release() {
       const now = performance.now();
-      if (now - lastRelease < 140) return;
+      if (now - lastRelease < 160) return;
       lastRelease = now;
-      softTone(uiOut(), 980, 0.12, 0.01);
+      softTone(vesicleOut(), 620, 470, 0.16, 0.016);
     },
     whoosh() {
       if (!ready()) return;
       const now = performance.now();
-      if (now - lastWhoosh < 160) return;
+      if (now - lastWhoosh < 150) return;
       lastWhoosh = now;
-      noiseBurst(uiOut(), 0.05, 0.012, 1800 + Math.random() * 400, 'highpass');
+      const src = ctx.createBufferSource();
+      src.buffer = noiseBuffer();
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 1300;
+      filter.Q.value = 0.8;
+      const gain = ctx.createGain();
+      const t = ctx.currentTime;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.045);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.13);
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(vesicleOut());
+      src.start(t);
+      src.stop(t + 0.15);
     },
     pop() { playNamed('pop'); },
     chime() { playNamed('chime'); },
