@@ -5,6 +5,7 @@
   let ctx = null;
   let master = null;
   let bodyBus = null;
+  let vesicleBus = null;
   let noise = null;
   let flow = null;
   let bodyOn = false;
@@ -13,6 +14,7 @@
   let lastWhoosh = 0;
   let lastRelease = 0;
   let lastTick = 0;
+  let lastTouch = 0;
   const cueFlags = {};
   const boundOrbits = new WeakSet();
 
@@ -53,6 +55,17 @@
   }
 
   function uiOut() { return master; }
+
+  function vesicleOut() {
+    if (!vesicleBus) {
+      vesicleBus = ctx.createBiquadFilter();
+      vesicleBus.type = 'lowpass';
+      vesicleBus.frequency.value = 680;
+      vesicleBus.Q.value = 0.5;
+      vesicleBus.connect(master);
+    }
+    return vesicleBus;
+  }
 
   function bodyOut() {
     if (!bodyBus) {
@@ -319,7 +332,17 @@
       this.unlock();
       this.pop();
     },
-    grab() { sweep(240, 520, 0.09, 0.06); },
+    grab() {
+      if (!ready()) return;
+      const now = performance.now();
+      if (now - lastTouch < 90) return;
+      lastTouch = now;
+      const dest = vesicleOut();
+      const bend = 0.9 + Math.random() * 0.18;
+      tone(dest, 96 * bend, 46, 0.15, 0.1, 'sine');
+      tone(dest, 168 * bend, 72, 0.11, 0.028, 'sine');
+      noiseBurst(dest, 0.05, 0.02, 340 + Math.random() * 60, 'lowpass');
+    },
     release() {
       const now = performance.now();
       if (now - lastRelease < 140) return;
@@ -362,16 +385,22 @@
       if (!controls || boundOrbits.has(controls)) return;
       boundOrbits.add(controls);
       let active = false;
+      let dragged = false;
       controls.addEventListener('start', () => {
         active = true;
+        dragged = false;
         this.unlock();
         this.grab();
       });
-      controls.addEventListener('change', () => { if (active) this.whoosh(); });
+      controls.addEventListener('change', () => {
+        if (!active) return;
+        dragged = true;
+        this.whoosh();
+      });
       controls.addEventListener('end', () => {
         if (!active) return;
         active = false;
-        this.release();
+        if (dragged) this.release();
       });
     }
   };

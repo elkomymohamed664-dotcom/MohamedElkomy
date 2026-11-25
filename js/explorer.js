@@ -281,7 +281,6 @@ renderer.domElement.addEventListener('pointerup', e => {
   const hits = raycaster.intersectObjects([headsMesh, tailsMesh, cholMesh, coreMesh, waterMesh], false);
   const part = hits.length ? hits[0].object.userData.part : null;
   selectPart(part);
-  if (part) window.LipoverseSound?.pop();
 });
 
 /* ---------- Controls: cutaway / drugs / layers / rotate / reset ---------- */
