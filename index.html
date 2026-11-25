@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIPOVERSE — Explore the Science of Liposomes</title>
+<meta name="description" content="LIPOVERSE is an interactive 3D learning platform about liposomes and liposomal drug delivery for pharmacy students.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+<div class="bg-glow" aria-hidden="true"></div>
+
+<!-- ============ NAVBAR ============ -->
+<header class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="#home" data-nav="home">
+      <span class="logo-mark">
+        <svg viewBox="0 0 40 40" width="30" height="30" aria-hidden="true">
+          <circle cx="20" cy="20" r="15" fill="none" stroke="#20BDB0" stroke-width="2.5"/>
+          <circle cx="20" cy="20" r="9" fill="none" stroke="#8BE7E0" stroke-width="2" stroke-dasharray="3 3"/>
+          <circle cx="20" cy="20" r="3.5" fill="#20BDB0"/>
+        </svg>
+      </span>
+      <span class="logo-text">LIPO<span>VERSE</span></span>
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="#home" data-nav="home" class="active">Home</a>
+      <a href="#intro" data-nav="intro">Introduction</a>
+      <a href="#explorer" data-nav="explorer">3D Explorer</a>
+      <a href="#types" data-nav="types">Types</a>
+      <a href="#lab" data-nav="lab">Preparation Lab</a>
+      <a href="#loading" data-nav="loading">Drug Loading</a>
+      <a href="#simulation" data-nav="simulation">Simulation</a>
+      <a href="#applications" data-nav="applications">Applications</a>
+      <a href="#quiz" data-nav="quiz">Quiz</a>
+      <a href="#flashcards" data-nav="flashcards">Flashcards</a>
+    </nav>
+    <div class="nav-progress" title="Your progress">
+      <span id="nav-progress-pct">0%</span>
+      <div class="nav-progress-bar"><div id="nav-progress-fill"></div></div>
+    </div>
+  </div>
+</header>
+
+<main id="app">
+
+<!-- ============ HOME ============ -->
+<section class="section active" id="section-home">
+  <div class="hero">
+    <div class="hero-badge">🧬 Pharmacy Learning Platform</div>
+    <h1 class="hero-title">LIPO<span>VERSE</span></h1>
+    <p class="hero-tagline">Beyond the Cell. Beyond the Science.</p>
+    <p class="hero-sub">Explore. Understand. Simulate. Master Liposomal Drug Delivery.</p>
+    <p class="hero-desc">
+      An interactive 3D learning platform about <strong>liposomes</strong> — the microscopic
+      phospholipid vesicles that changed how medicines reach their targets.
+      <span class="ar">منصة تعليمية تفاعلية لطلاب الصيدلة لاستكشاف عالم الليبوسومات ثلاثي الأبعاد.</span>
+    </p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" data-goto="explorer">Explore 3D →</button>
+      <button class="btn btn-ghost" data-goto="intro">Start Learning</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><strong>8</strong><span>Learning Modules</span></div>
+      <div class="stat"><strong>5</strong><span>Preparation Methods</span></div>
+      <div class="stat"><strong>12</strong><span>Quiz Questions</span></div>
+      <div class="stat"><strong>4</strong><span>Real Products</span></div>
+    </div>
+  </div>
+
+  <div class="dashboard glass-card">
+    <div class="dash-head">
+      <div>
+        <h2>Learning Dashboard</h2>
+        <p>Your liposome learning journey</p>
+      </div>
+      <div class="dash-progress">
+        <strong id="dash-pct">0%</strong>
+        <div class="progress-track"><div class="progress-fill" id="dash-fill"></div></div>
+        <span id="dash-count">0 / 8 modules visited</span>
+      </div>
+    </div>
+    <div class="dash-body">
+      <div class="dash-item">
+        <span class="dash-icon">🏆</span>
+        <div><strong>Best Quiz Score</strong><span id="dash-quiz">Not taken yet</span></div>
+      </div>
+      <div class="dash-item">
+        <span class="dash-icon">🎯</span>
+        <div><strong>Recommended Next</strong><span id="dash-next">Introduction to Liposomes</span></div>
+      </div>
+      <button class="btn btn-primary" id="continue-btn">Continue Learning →</button>
+    </div>
+  </div>
+
+  <h2 class="section-title">Explore Our Modules</h2>
+  <div class="modules-grid" id="modules-grid"></div>
+</section>
+
+<!-- ============ INTRODUCTION ============ -->
+<section class="section" id="section-intro">
+  <div class="page-head">
+    <span class="page-chip">Module 01</span>
+    <h1>Introduction to Liposomes</h1>
+    <p>What are liposomes, where did they come from, and why do they matter in modern pharmacy?</p>
+  </div>
+
+  <div class="cards-grid">
+    <article class="glass-card info-card">
+      <div class="info-icon">🔬</div>
+      <h3>Definition</h3>
+      <p>Liposomes are microscopic <strong>spherical vesicles</strong> composed of one or more
+      <strong>phospholipid bilayers</strong> enclosing an aqueous core. They are the most widely
+      studied drug delivery systems in nanomedicine.</p>
+      <p class="ar">الليبوسومات هي حويصلات كروية مجهرية تتكون من طبقة أو أكثر من الفوسفوليبيدات وتحيط بقلب مائي.</p>
+    </article>
+
+    <article class="glass-card info-card">
+      <div class="info-icon">🧫</div>
+      <h3>Basic Concept</h3>
+      <p>Phospholipids are <strong>amphiphilic</strong> molecules — a water-loving head and
+      water-repelling tails. In water, they spontaneously self-assemble into bilayers,
+      just like the membranes of our own cells.</p>
+      <p class="ar">الفوسفوليبيدات جزيئات مزدوجة المحبة: رأس محب للماء وذيل كاره للماء، فتتجمع تلقائيًا في الماء على شكل طبقات.</p>
+    </article>
+
+    <article class="glass-card info-card">
+      <div class="info-icon">🎯</div>
+      <h3>Why Liposomes?</h3>
+      <p>Liposomes improve drug solubility, protect the drug from degradation, prolong
+      circulation time, <strong>reduce toxicity</strong>, and can deliver the drug preferentially
+      to target tissues with controlled release.</p>
+      <p class="ar">تحسّن الليبوسومات ذوبانية الدواء، تحميه من التكسير، تطيل بقاءه في الدم، وتقلل السمية.</p>
+    </article>
+
+    <article class="glass-card info-card">
+      <div class="info-icon">💊</div>
+      <h3>Two Types of Drugs</h3>
+      <p>A liposome can carry <strong>both</strong> water-soluble drugs (in the aqueous core)
+      and fat-soluble drugs (inside the lipid bilayer) — a unique advantage over most carriers.</p>
+      <p class="ar">يمكن لليبوسوم حمل أدوية محبة للماء وأدوية محبة للدهون في نفس الوقت.</p>
+    </article>
+  </div>
+
+  <h2 class="section-title">History &amp; Development</h2>
+  <div class="timeline">
+    <div class="tl-item"><span class="tl-year">1965</span><div><strong>Discovery</strong><p>Alec Bangham first describes phospholipid vesicles — liposomes are born.</p></div></div>
+    <div class="tl-item"><span class="tl-year">1970s</span><div><strong>First Drug Delivery</strong><p>Liposomes are explored as carriers for drugs, enzymes and vaccines.</p></div></div>
+    <div class="tl-item"><span class="tl-year">1980s</span><div><strong>Stealth Liposomes</strong><p>PEGylation ("stealth" coating) prolongs circulation by avoiding the immune system.</p></div></div>
+    <div class="tl-item"><span class="tl-year">1995</span><div><strong>Doxil® Approved</strong><p>The first FDA-approved liposomal drug — liposomal doxorubicin.</p></div></div>
+    <div class="tl-item"><span class="tl-year">Today</span><div><strong>Smart Liposomes</strong><p>Targeted, triggered-release and theranostic liposomes in clinical trials.</p></div></div>
+  </div>
+
+  <h2 class="section-title">Liposomes vs Conventional Drug Delivery</h2>
+  <div class="table-wrap glass-card">
+    <table class="compare-table">
+      <thead><tr><th>Feature</th><th>Conventional (Free Drug)</th><th>Liposomal Delivery</th></tr></thead>
+      <tbody>
+        <tr><td>Distribution</td><td>Throughout the whole body</td><td>Preferentially to target tissues</td></tr>
+        <tr><td>Half-life</td><td>Short — rapid clearance</td><td>Prolonged circulation</td></tr>
+        <tr><td>Toxicity</td><td>High — affects healthy organs</td><td>Reduced — drug is shielded</td></tr>
+        <tr><td>Solubility</td><td>Poor for hydrophobic drugs</td><td>Carries both hydrophilic &amp; lipophilic drugs</td></tr>
+        <tr><td>Release</td><td>Immediate burst</td><td>Sustained / controlled release</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="next-bar">
+    <span>Next: explore the liposome in 3D</span>
+    <button class="btn btn-primary" data-goto="explorer">Open 3D Explorer →</button>
+  </div>
+</section>
+
+<!-- ============ 3D EXPLORER ============ -->
+<section class="section" id="section-explorer">
+  <div class="page-head">
+    <span class="page-chip">Module 02</span>
+    <h1>3D Liposome Explorer</h1>
+    <p>Rotate, zoom and click on each part of the liposome to discover its function.</p>
+  </div>
+
+  <div class="explorer-layout">
+    <div class="explorer-view glass-card">
+      <div id="explorer-canvas-wrap"></div>
+      <div class="explorer-hint">🖱️ Drag to rotate · Scroll to zoom · Click a part to learn</div>
+      <div class="explorer-controls">
+        <button class="ctrl-btn" id="btn-cutaway">✂️ Cutaway View</button>
+        <button class="ctrl-btn" id="btn-drugs">💊 Show Drug Locations</button>
+        <button class="ctrl-btn active" id="btn-rotate">🔄 Auto-Rotate</button>
+        <button class="ctrl-btn" id="btn-reset-view">⟲ Reset View</button>
+      </div>
+      <div class="layer-toggles">
+        <label><input type="checkbox" id="layer-heads" checked> Heads</label>
+        <label><input type="checkbox" id="layer-tails" checked> Tails</label>
+        <label><input type="checkbox" id="layer-chol" checked> Cholesterol</label>
+        <label><input type="checkbox" id="layer-core" checked> Aqueous Core</label>
+      </div>
+    </div>
+
+    <aside class="explorer-side">
+      <div class="glass-card part-list">
+        <h3>Structure Parts</h3>
+        <div id="part-buttons"></div>
+      </div>
+      <div class="glass-card part-info" id="part-info">
+        <h3>Select a part</h3>
+        <p>Click any part of the 3D model — or use the list — to see what it does.</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="next-bar">
+    <span>Next: the different types of liposomes</span>
+    <button class="btn btn-primary" data-goto="types">Explore Types →</button>
+  </div>
+</section>
+
+<!-- ============ TYPES ============ -->
+<section class="section" id="section-types">
+  <div class="page-head">
+    <span class="page-chip">Module 03</span>
+    <h1>Types of Liposomes</h1>
+    <p>Select a type to see how its structure changes — number of bilayers and internal compartments.</p>
+  </div>
+
+  <div class="type-selector" id="type-selector"></div>
+
+  <div class="type-layout">
+    <div class="glass-card type-viz">
+      <div id="type-svg-wrap"></div>
+      <div class="type-viz-caption" id="type-caption"></div>
+    </div>
+    <div class="glass-card type-details" id="type-details"></div>
+  </div>
+
+  <h2 class="section-title">Comparison Table</h2>
+  <div class="table-wrap glass-card">
+    <table class="compare-table" id="types-table">
+      <thead><tr><th>Type</th><th>Full Name</th><th>Size Range</th><th>Bilayers</th><th>Key Feature</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p class="note">⚠️ Note: size ranges and classifications may vary between references and preparation methods.</p>
+
+  <div class="next-bar">
+    <span>Next: how liposomes are prepared</span>
+    <button class="btn btn-primary" data-goto="lab">Enter the Lab →</button>
+  </div>
+</section>
+
+<!-- ============ PREPARATION LAB ============ -->
+<section class="section" id="section-lab">
+  <div class="page-head">
+    <span class="page-chip">Module 04</span>
+    <h1>Virtual Preparation Lab</h1>
+    <p>Five classic methods for preparing liposomes — principle, steps, advantages and limitations.</p>
+  </div>
+
+  <div class="lab-tabs" id="lab-tabs"></div>
+  <div class="glass-card lab-panel" id="lab-panel"></div>
+
+  <div class="next-bar">
+    <span>Next: where does the drug go inside?</span>
+    <button class="btn btn-primary" data-goto="loading">Drug Loading →</button>
+  </div>
+</section>
+
+<!-- ============ DRUG LOADING ============ -->
+<section class="section" id="section-loading">
+  <div class="page-head">
+    <span class="page-chip">Module 05</span>
+    <h1>Drug Loading Simulator</h1>
+    <p>Choose a drug type and watch where it is loaded inside the liposome.</p>
+  </div>
+
+  <div class="loading-controls">
+    <button class="ctrl-btn active" id="load-hydrophilic">💧 Hydrophilic Drug</button>
+    <button class="ctrl-btn" id="load-lipophilic">🫧 Lipophilic Drug</button>
+    <span class="loading-note" id="loading-note">Water-soluble drugs dissolve in the aqueous core.</span>
+  </div>
+
+  <div class="loading-layout">
+    <div class="glass-card loading-viz">
+      <canvas id="loading-canvas" width="520" height="520"></canvas>
+      <div class="legend">
+        <span><i class="dot dot-core"></i> Aqueous Core</span>
+        <span><i class="dot dot-bilayer"></i> Lipid Bilayer</span>
+        <span><i class="dot dot-drug"></i> Drug Molecules</span>
+      </div>
+    </div>
+
+    <div class="loading-side">
+      <div class="glass-card info-card">
+        <h3>💧 Hydrophilic Drugs</h3>
+        <p>Loaded in the <strong>aqueous core</strong>. Examples: doxorubicin HCl, cisplatin, methotrexate.</p>
+      </div>
+      <div class="glass-card info-card">
+        <h3>🫧 Lipophilic Drugs</h3>
+        <p>Loaded inside the <strong>lipid bilayer</strong>, among the fatty tails. Examples: paclitaxel, amphotericin B, curcumin.</p>
+      </div>
+      <div class="glass-card info-card">
+        <h3>📦 Passive Loading</h3>
+        <p>Drug is present <strong>during</strong> vesicle formation. Simple, but encapsulation efficiency is often low for hydrophilic drugs.</p>
+      </div>
+      <div class="glass-card info-card">
+        <h3>🚀 Active (Remote) Loading</h3>
+        <p>Drug is loaded <strong>after</strong> formation, driven by a pH or ion gradient (e.g. ammonium sulfate gradient for doxorubicin). Encapsulation efficiency can reach ~98%.</p>
+      </div>
+      <div class="glass-card ee-card">
+        <h3>🧮 Encapsulation Efficiency</h3>
+        <p class="formula">EE% = (Encapsulated drug ÷ Total drug) × 100</p>
+        <label>Total drug: <input type="number" id="ee-total" value="100" min="1"> mg</label>
+        <label>Encapsulated: <input type="number" id="ee-enc" value="85" min="0"> mg</label>
+        <div class="ee-result">EE = <strong id="ee-value">85%</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="next-bar">
+    <span>Next: follow the drug's journey in the body</span>
+    <button class="btn btn-primary" data-goto="simulation">Run Simulation →</button>
+  </div>
+</section>
+
+<!-- ============ SIMULATION ============ -->
+<section class="section" id="section-simulation">
+  <div class="page-head">
+    <span class="page-chip">Module 06</span>
+    <h1>Drug Delivery Simulation</h1>
+    <p>Follow a liposome on its journey through the body — from injection to drug release.</p>
+  </div>
+
+  <div class="sim-layout">
+    <div class="glass-card sim-stage">
+      <canvas id="sim-canvas" width="900" height="460"></canvas>
+      <div class="sim-controls">
+        <button class="ctrl-btn" id="sim-play">▶ Play</button>
+        <button class="ctrl-btn" id="sim-next">Next Stage ⏭</button>
+        <button class="ctrl-btn" id="sim-reset">⟲ Reset</button>
+        <span class="sim-stage-label" id="sim-stage-label">Stage 1 / 5 — Administration</span>
+      </div>
+    </div>
+    <aside class="glass-card sim-info" id="sim-info"></aside>
+  </div>
+
+  <div class="next-bar">
+    <span>Next: real liposomal medicines</span>
+    <button class="btn btn-primary" data-goto="applications">See Applications →</button>
+  </div>
+</section>
+
+<!-- ============ APPLICATIONS ============ -->
+<section class="section" id="section-applications">
+  <div class="page-head">
+    <span class="page-chip">Module 07</span>
+    <h1>Pharmaceutical Applications</h1>
+    <p>Real medicines that use liposomal technology — theory meets the clinic.</p>
+  </div>
+  <div class="apps-grid" id="apps-grid"></div>
+
+  <div class="next-bar">
+    <span>Next: test yourself</span>
+    <button class="btn btn-primary" data-goto="quiz">Quiz Center →</button>
+  </div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section class="section" id="section-quiz">
+  <div class="page-head">
+    <span class="page-chip">Module 08</span>
+    <h1>Quiz &amp; Challenge Center</h1>
+    <p>Test your knowledge — every answer comes with a scientific explanation.</p>
+  </div>
+  <div class="glass-card quiz-card" id="quiz-card"></div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section class="section" id="section-flashcards">
+  <div class="page-head">
+    <span class="page-chip">Study Tools</span>
+    <h1>Flashcards &amp; Glossary</h1>
+    <p>Quick revision cards and a scientific glossary with Arabic explanations.</p>
+  </div>
+
+  <div class="flash-wrap">
+    <div class="flash-card" id="flash-card">
+      <div class="flash-inner">
+        <div class="flash-face flash-front">
+          <span class="flash-tag">Term</span>
+          <h3 id="flash-term"></h3>
+          <span class="flash-hint">Click to flip ↻</span>
+        </div>
+        <div class="flash-face flash-back">
+          <span class="flash-tag">Definition</span>
+          <p id="flash-def"></p>
+          <p class="ar" id="flash-ar"></p>
+        </div>
+      </div>
+    </div>
+    <div class="flash-controls">
+      <button class="ctrl-btn" id="flash-prev">← Prev</button>
+      <span id="flash-counter">1 / 10</span>
+      <button class="ctrl-btn" id="flash-next">Next →</button>
+      <button class="ctrl-btn" id="flash-shuffle">🔀 Shuffle</button>
+    </div>
+  </div>
+
+  <h2 class="section-title">Scientific Glossary</h2>
+  <div class="glossary-search">
+    <input type="search" id="glossary-search" placeholder="🔍 Search a term…">
+  </div>
+  <div class="glossary-grid" id="glossary-grid"></div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="logo-text">LIPO<span>VERSE</span></span>
+    <p>An interactive learning platform about liposomes &amp; liposomal drug delivery — built for pharmacy students.</p>
+    <p class="footer-note">Content based on standard references in advanced drug delivery systems. Educational simulation — not medical advice.</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/sim.js"></script>
+</body>
+</html>
