@@ -294,10 +294,22 @@
     const total = document.getElementById('ee-total');
     const enc = document.getElementById('ee-enc');
     const out = document.getElementById('ee-value');
+    const warn = document.getElementById('ee-warn');
     function calcEE() {
-      const t = parseFloat(total.value) || 0;
-      const e = parseFloat(enc.value) || 0;
-      out.textContent = t > 0 ? Math.min(100, Math.max(0, (e / t) * 100)).toFixed(0) + '%' : '—';
+      const t = parseFloat(total.value);
+      const e = parseFloat(enc.value);
+      if (!Number.isFinite(t) || t <= 0 || !Number.isFinite(e) || e < 0) {
+        out.textContent = '—';
+        if (warn) warn.textContent = 'Enter a total above zero and an encapsulated amount that is not negative.';
+        return;
+      }
+      if (e > t) {
+        out.textContent = '—';
+        if (warn) warn.textContent = 'Encapsulated drug cannot be higher than the total drug added.';
+        return;
+      }
+      if (warn) warn.textContent = '';
+      out.textContent = ((e / t) * 100).toFixed(0) + '%';
     }
     total.addEventListener('input', calcEE);
     enc.addEventListener('input', calcEE);

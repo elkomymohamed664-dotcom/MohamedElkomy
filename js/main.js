@@ -115,6 +115,9 @@
   fitNav();
   window.addEventListener('resize', fitNav);
   window.addEventListener('load', fitNav);
+  document.querySelectorAll('.seal-bar img').forEach(img => {
+    if (!img.complete) img.addEventListener('load', fitNav);
+  });
 
   /* ---------- Module cards ---------- */
   function renderModuleCards() {
@@ -129,7 +132,6 @@
         <p>${m.desc}</p>
       </article>`).join('');
     grid.querySelectorAll('.module-card').forEach(card => {
-      card.addEventListener('click', () => showSection(card.dataset.goto));
       card.addEventListener('keydown', e => { if (e.key === 'Enter') showSection(card.dataset.goto); });
     });
   }

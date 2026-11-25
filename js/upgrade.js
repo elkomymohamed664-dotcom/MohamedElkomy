@@ -50,12 +50,11 @@ function renderBookmarkStrip() {
   const list = bookmarks();
   if (!list.length) { strip.innerHTML = ''; return; }
   strip.innerHTML = `<span class="bm-label">Saved</span>` + list.map(id => {
-    const btn = document.querySelector(`[data-section="${id}"]`);
-    const label = btn ? btn.textContent.trim() : id;
+    const label = document.querySelector(`#section-${id} h1`)?.textContent.trim() || id;
     return `<button type="button" data-go="${id}">${label}</button>`;
   }).join('');
   strip.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => {
-    location.hash = b.dataset.go;
+    window.LipoverseNav?.show(b.dataset.go);
   }));
 }
 function initContinue() {
@@ -73,30 +72,46 @@ function initContinue() {
 }
 
 /* ================= SEARCH ================= */
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+let searchItems = [];
+function rebuildSearch() {
+  searchItems = [];
+  document.querySelectorAll('section.section').forEach(sec => {
+    const id = sec.id.replace('section-', '');
+    const title = sec.querySelector('h1')?.textContent.trim() || sec.querySelector('h2')?.textContent.trim() || id;
+    const text = sec.innerText.replace(/\s+/g, ' ').slice(0, 1600);
+    searchItems.push({ id, title, text });
+  });
+  document.querySelectorAll('#glossary-grid .glossary-item').forEach(el => {
+    searchItems.push({ id: 'flashcards', title: el.querySelector('h4')?.textContent || 'Glossary', text: el.innerText });
+  });
+  if (typeof GALLERY !== 'undefined') {
+    GALLERY.forEach(g => searchItems.push({ id: 'gallery', title: g.name, text: g.blurb }));
+  }
+  if (typeof PAPERS !== 'undefined') {
+    PAPERS.forEach(p => searchItems.push({ id: 'research', title: p.title, text: `${p.authors} ${p.source} ${p.note}` }));
+  }
+}
 function initSearch() {
   const input = document.getElementById('global-search');
   const results = document.getElementById('search-results');
   if (!input || !results) return;
-  const items = [];
-  document.querySelectorAll('section.section').forEach(sec => {
-    const id = sec.id.replace('section-', '');
-    const title = sec.querySelector('h2')?.textContent.trim() || id;
-    const text = sec.innerText.replace(/\s+/g, ' ').slice(0, 400);
-    items.push({ id, title, text });
-  });
-  document.querySelectorAll('#glossary-grid .glossary-item, #glossary-grid article, #glossary-grid .glass-card').forEach(el => {
-    items.push({ id: 'flashcards', title: el.querySelector('h3, strong, .g-term')?.textContent || 'Glossary', text: el.innerText });
-  });
+  rebuildSearch();
   input.addEventListener('input', () => {
     const q = input.value.trim().toLowerCase();
     if (q.length < 2) { results.hidden = true; results.innerHTML = ''; return; }
-    const hits = items.filter(it => (it.title + ' ' + it.text).toLowerCase().includes(q)).slice(0, 8);
-    results.hidden = !hits.length;
-    results.innerHTML = hits.map(h => `<button type="button" data-go="${h.id}"><strong>${h.title}</strong><span>${h.text.slice(0, 90)}…</span></button>`).join('')
-      || '';
-    if (!hits.length) { results.hidden = false; results.innerHTML = `<p class="search-empty">No matches for “${input.value.trim()}”.</p>`; }
+    const hits = searchItems.filter(it => (it.title + ' ' + it.text).toLowerCase().includes(q)).slice(0, 8);
+    if (!hits.length) {
+      results.hidden = false;
+      results.innerHTML = `<p class="search-empty">No matches for “${esc(input.value.trim())}”.</p>`;
+      return;
+    }
+    results.hidden = false;
+    results.innerHTML = hits.map(h => `<button type="button" data-go="${esc(h.id)}"><strong>${esc(h.title)}</strong><span>${esc(h.text.slice(0, 90))}…</span></button>`).join('');
     results.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => {
-      location.hash = b.dataset.go;
+      window.LipoverseNav?.show(b.dataset.go);
       results.hidden = true;
       input.value = '';
     }));
@@ -123,7 +138,7 @@ function initNotes() {
     a.href = URL.createObjectURL(blob);
     a.download = 'lipoverse-notes.txt';
     a.click();
-    URL.revokeObjectURL(a.href);
+    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
   });
 }
 
@@ -131,13 +146,16 @@ function initNotes() {
 function initLabExtras() {
   const tabs = document.getElementById('lab-tabs');
   const panel = document.getElementById('lab-panel');
-  if (!tabs || !panel || tabs.querySelector('[data-method="extrusion"]')) return;
-  const btn = document.createElement('button');
+  if (!tabs || !panel) return;
+  const hasExtrusion = !!tabs.querySelector('[data-method="extrusion"]');
+  const btn = hasExtrusion ? null : document.createElement('button');
+  if (btn) {
   btn.className = 'ctrl-btn';
   btn.dataset.method = 'extrusion';
   btn.textContent = 'Membrane Extrusion';
   const micro = tabs.querySelector('[data-method="microfluidic"]');
   if (micro) tabs.insertBefore(btn, micro.nextSibling); else tabs.appendChild(btn);
+  }
 
   const method = {
     name: 'Membrane Extrusion',
@@ -192,7 +210,7 @@ function initLabExtras() {
     extrusion: { q: 'Why is the suspension usually passed through the membrane many times, not once?', options: ['Each pass further reduces large vesicles that did not yet pass as smaller ones', 'One pass always yields a monodisperse 50 nm population', 'Repeated passes remove all cholesterol'], answer: 0, why: 'Early passes still contain vesicles larger than the pore. Repeated passes narrow the distribution; they do not guarantee one exact diameter.' },
   };
 
-  btn.addEventListener('click', () => {
+  btn?.addEventListener('click', () => {
     tabs.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
     panel.innerHTML = `
       <h3>${method.name}</h3>
@@ -256,11 +274,18 @@ function initLoadingExtras() {
   const calc = () => {
     const a = Number(added.value), t = Number(trapped.value), m = Number(total.value);
     const warn = host.querySelector('#cap-warn');
-    if (![a, t, m].every(n => Number.isFinite(n)) || a < 0 || t < 0 || m <= 0) {
-      warn.textContent = 'Enter non-negative amounts and a formulation mass above zero.';
+    if (![a, t, m].every(n => Number.isFinite(n)) || a <= 0 || t < 0 || m <= 0) {
+      warn.textContent = 'Enter a drug amount above zero and a formulation mass above zero.';
+      host.querySelector('#cap-ee').textContent = '—';
+      host.querySelector('#cap-dlc').textContent = '—';
       return;
     }
-    if (t > a) { warn.textContent = 'Trapped drug cannot exceed drug added — check the assay.'; return; }
+    if (t > a) {
+      warn.textContent = 'Trapped drug cannot exceed drug added — check the assay.';
+      host.querySelector('#cap-ee').textContent = '—';
+      host.querySelector('#cap-dlc').textContent = '—';
+      return;
+    }
     warn.textContent = 'EE = trapped / added. Capacity = trapped / total formulation mass. Both are shown as percentages.';
     host.querySelector('#cap-ee').textContent = `${((t / a) * 100).toFixed(1)}%`;
     host.querySelector('#cap-dlc').textContent = `${((t / m) * 100).toFixed(1)}%`;
@@ -321,9 +346,10 @@ function initQuizExtras() {
   if (!root) return;
   const state = loadJSON(QUIZ_EX_KEY, { match: null, order: null, label: null });
 
+  const defOrder = MATCH.map((_, i) => i).sort(() => Math.random() - 0.5);
   root.querySelector('#match-board').innerHTML = `
     <div class="match-col">${MATCH.map((m, i) => `<button type="button" class="match-term" data-i="${i}">${m[0]}</button>`).join('')}</div>
-    <div class="match-col">${MATCH.map((m, i) => `<button type="button" class="match-def" data-i="${i}">${m[1]}</button>`).join('')}</div>
+    <div class="match-col">${defOrder.map(i => `<button type="button" class="match-def" data-i="${i}">${MATCH[i][1]}</button>`).join('')}</div>
     <p id="match-status" class="ee-note">Select a term, then its description.</p>`;
   let picked = null;
   const terms = [...root.querySelectorAll('.match-term')];
@@ -704,4 +730,5 @@ export function initUpgrade() {
   initResearch();
   initQuizExtras();
   initGallery();
+  rebuildSearch();
 }

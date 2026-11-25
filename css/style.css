@@ -454,7 +454,7 @@ main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; paddin
 .search-results button:hover, .bookmark-strip button:hover { background: var(--glass-strong); }
 .search-results span, .search-empty { display: block; color: var(--muted); font-size: 0.75rem; }
 .theme-btn { white-space: nowrap; }
-#gallery-block, #research-block, #notes-block, #capacity-panel { scroll-margin-top: 124px; }
+#research-block, #notes-block, #capacity-panel, #quiz-extra, .page-head { scroll-margin-top: calc(var(--nav-h) + 12px); }
 .bookmark-strip { display: none; gap: 8px; align-items: center; margin: 0 0 16px; flex-wrap: wrap; }
 .bookmark-strip:not(:empty) { display: flex; }
 .bookmark-strip button {
@@ -490,7 +490,11 @@ main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; paddin
 .sim-caveat { margin-top: 16px; }
 .lab-check { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
 .lab-check-opts { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
-.lab-check-opts button { text-align: left; }
+.lab-check-opts button {
+  text-align: left; background: var(--glass); color: var(--light); border: 1px solid var(--border);
+  border-radius: 10px; padding: 8px 10px; cursor: pointer; font: inherit;
+}
+.lab-check-opts button:disabled { cursor: default; }
 .lab-check-opts button.ok { border-color: #1F8A68; }
 .lab-check-opts button.bad { border-color: var(--danger); }
 .quiz-extra { margin-top: 28px; }
