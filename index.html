@@ -26,46 +26,48 @@
 <!-- ============ NAVBAR ============ -->
 <header class="navbar">
   <div class="nav-inner">
-    <a class="logo" href="#home" data-nav="home">
-      <span class="logo-mark">
-        <svg viewBox="0 0 40 40" width="30" height="30" aria-hidden="true">
-          <circle cx="20" cy="20" r="15" fill="none" stroke="#E4C99A" stroke-width="2.5"/>
-          <circle cx="20" cy="20" r="9" fill="none" stroke="#F6E7C1" stroke-width="2" stroke-dasharray="3 3"/>
-          <circle cx="20" cy="20" r="3.5" fill="#E4C99A"/>
-        </svg>
-      </span>
-      <span class="logo-text">LIPO<span>VERSE</span></span>
-    </a>
+    <div class="nav-top">
+      <a class="logo" href="#home" data-nav="home">
+        <span class="logo-mark">
+          <svg viewBox="0 0 40 40" width="30" height="30" aria-hidden="true">
+            <circle cx="20" cy="20" r="15" fill="none" stroke="#E4C99A" stroke-width="2.5"/>
+            <circle cx="20" cy="20" r="9" fill="none" stroke="#F6E7C1" stroke-width="2" stroke-dasharray="3 3"/>
+            <circle cx="20" cy="20" r="3.5" fill="#E4C99A"/>
+          </svg>
+        </span>
+        <span class="logo-text">LIPO<span>VERSE</span></span>
+      </a>
+      <div class="nav-tools">
+        <div class="search-wrap">
+          <input type="search" id="global-search" placeholder="Search" aria-label="Search lessons">
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button type="button" class="ctrl-btn theme-btn" id="theme-toggle" aria-pressed="false">Light</button>
+        <div class="nav-progress" title="Your progress">
+          <span id="nav-progress-pct">0%</span>
+          <div class="nav-progress-bar"><div id="nav-progress-fill"></div></div>
+        </div>
+      </div>
+    </div>
     <nav class="nav-links" id="nav-links">
       <a href="#home" data-nav="home" class="active">Home</a>
       <a href="#intro" data-nav="intro">Introduction</a>
-      <a href="#explorer" data-nav="explorer">3D Explorer</a>
+      <a href="#explorer" data-nav="explorer">Explorer</a>
       <a href="#types" data-nav="types">Types</a>
-      <a href="#lab" data-nav="lab">Preparation Lab</a>
-      <a href="#loading" data-nav="loading">Drug Loading</a>
+      <a href="#lab" data-nav="lab">Lab</a>
+      <a href="#loading" data-nav="loading">Loading</a>
       <a href="#simulation" data-nav="simulation">Simulation</a>
       <a href="#applications" data-nav="applications">Applications</a>
       <a href="#quiz" data-nav="quiz">Quiz</a>
       <a href="#flashcards" data-nav="flashcards">Flashcards</a>
-      <a href="#gallery" data-nav="gallery">3D Gallery</a>
+      <a href="#gallery" data-nav="gallery">Gallery</a>
       <a href="#research" data-nav="research">Research</a>
     </nav>
-    <div class="nav-tools">
-      <div class="search-wrap">
-        <input type="search" id="global-search" placeholder="Search lessons…" aria-label="Search lessons">
-        <div id="search-results" class="search-results" hidden></div>
-      </div>
-      <button type="button" class="ctrl-btn theme-btn" id="theme-toggle" aria-pressed="false">☀️ Light</button>
-    </div>
-    <div class="nav-progress" title="Your progress">
-      <span id="nav-progress-pct">0%</span>
-      <div class="nav-progress-bar"><div id="nav-progress-fill"></div></div>
-    </div>
   </div>
 </header>
-<div id="bookmark-strip" class="bookmark-strip"></div>
 
 <main id="app">
+<div id="bookmark-strip" class="bookmark-strip"></div>
 
 <!-- ============ HOME ============ -->
 <section class="section active" id="section-home">
@@ -267,7 +269,7 @@
   <p class="note">⚠️ Note: size ranges and classifications may vary between references and preparation methods.</p>
 
   <h2 class="section-title" id="gallery-block">3D models</h2>
-  <p class="page-head" style="margin-top:-8px">SUV, LUV, GUV, MLV, OLV, MVV, and the surface designs. Drag to rotate and scroll to zoom.</p>
+  <p class="lead">SUV, LUV, GUV, MLV, OLV, MVV, and the surface designs. Drag to rotate and scroll to zoom.</p>
   <div class="gallery-layout">
     <div class="glass-card gallery-stage">
       <canvas id="gallery-canvas"></canvas>

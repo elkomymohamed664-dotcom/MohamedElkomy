@@ -22,7 +22,7 @@ function applyTheme(next) {
   const btn = document.getElementById('theme-toggle');
   const light = next === 'light';
   if (btn) {
-    btn.textContent = light ? '🌙 Dark' : '☀️ Light';
+    btn.textContent = light ? 'Dark' : 'Light';
     btn.setAttribute('aria-pressed', String(light));
   }
 }
@@ -293,7 +293,7 @@ function initResearch() {
   const list = document.getElementById('research-list');
   if (!list) return;
   list.innerHTML = PAPERS.map(p => `
-    <article class="research-card">
+    <article class="research-card glass-card">
       <span class="research-year">${p.year}</span>
       <h3><a href="${p.url}" target="_blank" rel="noopener noreferrer">${p.title}</a></h3>
       <p class="research-meta">${p.authors} · ${p.source}</p>
