@@ -1,21 +1,21 @@
 # LIPOVERSE — Explore the Science of Liposomes
 
-The original dark scientific learning platform: navy and teal, glass cards, and a real phospholipid vesicle you can rotate.
+The pharmacy learning site: bilingual English and Arabic, a scrolling lab layout, and a detailed phospholipid vesicle in the explorer.
 
-*Beyond the Cell. Beyond the Science.*
+*Tiny vesicles. Big possibilities.*
 
 ## What you can do
 
-- Learning dashboard with saved progress
-- Introduction, history, and liposomes versus conventional delivery
-- 3D explorer: drag, zoom, click each part, cutaway, drug locations, and layer toggles
-- Types: SUV, LUV, GUV, MLV, and MVV
-- Preparation lab, drug-loading simulator, and delivery journey
-- Clinic examples, quiz, flashcards, and glossary
+- Switch between English and Arabic
+- Follow the introduction, history, and liposomes versus conventional delivery
+- Rotate the detailed 3D vesicle, open a cutaway, and show or hide each layer
+- Compare SUV, LUV, GUV, MLV and MVV
+- Walk through five preparation methods, drug loading, and the delivery journey
+- Review clinic examples, a 12-question quiz, flashcards, and a glossary
 
 ## Tech
 
-Static site. No build step. Three.js r180 and its examples are stored in `vendor/` (MIT; see `vendor/THREE-LICENSE.txt`). Display fonts load from Google Fonts, as in the original design.
+Static site. No build step. Three.js r180 is stored in `vendor/` (MIT; see `vendor/THREE-LICENSE.txt`). If WebGL is unavailable, the explorer keeps the schematic drawing.
 
 ## Run locally
 
