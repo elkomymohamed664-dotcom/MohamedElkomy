@@ -14,23 +14,21 @@ function loadJSON(key, fallback) {
 function saveJSON(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
 
 /* ================= THEME ================= */
-function initTheme() {
-  const saved = localStorage.getItem(THEME_KEY) || 'dark';
-  document.documentElement.setAttribute('data-theme', saved);
+function applyTheme(next) {
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem(THEME_KEY, next);
   const btn = document.getElementById('theme-toggle');
-  if (!btn) return;
-  const paint = () => {
-    const light = document.documentElement.getAttribute('data-theme') === 'light';
+  const light = next === 'light';
+  if (btn) {
     btn.textContent = light ? '🌙 Dark' : '☀️ Light';
     btn.setAttribute('aria-pressed', String(light));
-  };
-  paint();
-  btn.addEventListener('click', () => {
-    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem(THEME_KEY, next);
-    paint();
-  });
+  }
+}
+function initTheme() {
+  applyTheme(localStorage.getItem(THEME_KEY) || 'dark');
+  const toggle = () => applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+  document.getElementById('theme-toggle')?.addEventListener('click', toggle);
+  document.getElementById('home-theme')?.addEventListener('click', toggle);
 }
 
 /* ================= BOOKMARKS + CONTINUE ================= */
