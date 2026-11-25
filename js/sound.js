@@ -337,11 +337,15 @@
       const now = performance.now();
       if (now - lastTouch < 90) return;
       lastTouch = now;
-      const dest = vesicleOut();
-      const bend = 0.9 + Math.random() * 0.18;
-      tone(dest, 96 * bend, 46, 0.15, 0.1, 'sine');
-      tone(dest, 168 * bend, 72, 0.11, 0.028, 'sine');
-      noiseBurst(dest, 0.05, 0.02, 340 + Math.random() * 60, 'lowpass');
+      const dest = uiOut();
+      const root = 659 * (0.98 + Math.random() * 0.04);
+      tone(dest, root * 3, root * 2.2, 0.04, 0.018, 'triangle');
+      tone(dest, root, root, 0.28, 0.05, 'sine');
+      tone(dest, root * 2, root * 2, 0.12, 0.016, 'sine');
+      setTimeout(() => {
+        if (muted || !ctx) return;
+        tone(uiOut(), root * 1.5, root * 1.5, 0.2, 0.036, 'sine');
+      }, 70);
     },
     release() {
       const now = performance.now();
