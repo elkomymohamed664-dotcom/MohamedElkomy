@@ -78,6 +78,22 @@
     return bodyBus;
   }
 
+  function softTone(dest, freq, duration, peak) {
+    if (!ready()) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const now = ctx.currentTime;
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, now);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(Math.max(0.001, peak), now + 0.07);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    osc.connect(gain);
+    gain.connect(dest);
+    osc.start(now);
+    osc.stop(now + duration + 0.02);
+  }
+
   function tone(dest, from, to, duration, peak, type) {
     if (!ready()) return;
     const osc = ctx.createOscillator();
@@ -338,27 +354,22 @@
       if (now - lastTouch < 90) return;
       lastTouch = now;
       const dest = uiOut();
-      const root = 659 * (0.98 + Math.random() * 0.04);
-      tone(dest, root * 3, root * 2.2, 0.04, 0.018, 'triangle');
-      tone(dest, root, root, 0.28, 0.05, 'sine');
-      tone(dest, root * 2, root * 2, 0.12, 0.016, 'sine');
-      setTimeout(() => {
-        if (muted || !ctx) return;
-        tone(uiOut(), root * 1.5, root * 1.5, 0.2, 0.036, 'sine');
-      }, 70);
+      const bubble = 740 + Math.random() * 50;
+      softTone(dest, bubble, 0.2, 0.032);
+      softTone(dest, bubble * 1.25, 0.14, 0.012);
     },
     release() {
       const now = performance.now();
       if (now - lastRelease < 140) return;
       lastRelease = now;
-      sweep(280, 110, 0.1, 0.04);
+      softTone(uiOut(), 980, 0.12, 0.01);
     },
     whoosh() {
       if (!ready()) return;
       const now = performance.now();
-      if (now - lastWhoosh < 120) return;
+      if (now - lastWhoosh < 160) return;
       lastWhoosh = now;
-      noiseBurst(uiOut(), 0.07, 0.035, 700 + Math.random() * 300, 'bandpass');
+      noiseBurst(uiOut(), 0.05, 0.012, 1800 + Math.random() * 400, 'highpass');
     },
     pop() { playNamed('pop'); },
     chime() { playNamed('chime'); },
