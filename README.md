@@ -25,6 +25,12 @@ built for pharmacy students. *Beyond the Cell. Beyond the Science.*
 Static site — no build step. HTML, CSS, vanilla JavaScript, and Three.js (CDN) for the 3D explorer.
 Deploy anywhere static is served (e.g. Vercel, Netlify, GitHub Pages).
 
+## Live site
+
+**https://lipoverse.vercel.app**
+
+Hosted on Vercel (project `lipoverse`, team `mohamed-52f4`), deployed from this repository's `main` branch.
+
 ## Run locally
 
 ```bash
