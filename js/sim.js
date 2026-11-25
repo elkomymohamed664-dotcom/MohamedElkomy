@@ -48,9 +48,9 @@
 
   function bilayerRing(cx, cy, r) {
     return `
-      <circle cx="${cx}" cy="${cy}" r="${r + 4}" fill="none" stroke="#20BDB0" stroke-width="3.5"/>
-      <circle cx="${cx}" cy="${cy}" r="${r - 4}" fill="none" stroke="#8BE7E0" stroke-width="3.5"/>
-      <circle cx="${cx}" cy="${cy}" r="${r - 4}" fill="rgba(77,163,255,0.10)"/>`;
+      <circle cx="${cx}" cy="${cy}" r="${r + 4}" fill="none" stroke="#E4C99A" stroke-width="3.5"/>
+      <circle cx="${cx}" cy="${cy}" r="${r - 4}" fill="none" stroke="#F6E7C1" stroke-width="3.5"/>
+      <circle cx="${cx}" cy="${cy}" r="${r - 4}" fill="rgba(31,138,104,0.16)"/>`;
   }
 
   (function initTypes() {
@@ -162,45 +162,45 @@
 <div class="lab-anim">
   <span class="lab-anim-tag">▶ How it works</span>
   <svg viewBox="0 0 540 224" role="img" aria-label="Thin film hydration animation">
-    <path d="M118 24 h26 v36 a66 66 0 1 1 -26 0 z" fill="rgba(32,189,176,0.07)" stroke="#20BDB0" stroke-width="2.5"/>
-    <path d="M76 118 a48 48 0 0 0 90 0 z" fill="rgba(255,200,87,0.25)">
+    <path d="M118 24 h26 v36 a66 66 0 1 1 -26 0 z" fill="rgba(228,201,154,0.07)" stroke="#E4C99A" stroke-width="2.5"/>
+    <path d="M76 118 a48 48 0 0 0 90 0 z" fill="rgba(201,161,90,0.25)">
       <animate attributeName="opacity" values="1;1;0.15;0.15;1" keyTimes="0;0.35;0.5;0.85;1" dur="6s" repeatCount="indefinite"/>
     </path>
-    <path d="M80 108 a46 46 0 0 0 82 0" fill="none" stroke="#ffc857" stroke-width="5" stroke-linecap="round" opacity="0">
+    <path d="M80 108 a46 46 0 0 0 82 0" fill="none" stroke="#C9A15A" stroke-width="5" stroke-linecap="round" opacity="0">
       <animate attributeName="opacity" values="0;0;0.95;0.95;0" keyTimes="0;0.4;0.55;0.9;1" dur="6s" repeatCount="indefinite"/>
     </path>
-    <circle cx="112" cy="116" r="4" fill="#ffc857">
+    <circle cx="112" cy="116" r="4" fill="#C9A15A">
       <animate attributeName="cy" values="116;40" dur="2s" repeatCount="indefinite"/>
       <animate attributeName="opacity" values="0.9;0" dur="2s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="128" cy="116" r="3" fill="#ffc857">
+    <circle cx="128" cy="116" r="3" fill="#C9A15A">
       <animate attributeName="cy" values="116;38" dur="2.5s" begin="0.6s" repeatCount="indefinite"/>
       <animate attributeName="opacity" values="0.8;0" dur="2.5s" begin="0.6s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="100" cy="116" r="2.5" fill="#ffc857">
+    <circle cx="100" cy="116" r="2.5" fill="#C9A15A">
       <animate attributeName="cy" values="116;44" dur="1.7s" begin="1.1s" repeatCount="indefinite"/>
       <animate attributeName="opacity" values="0.8;0" dur="1.7s" begin="1.1s" repeatCount="indefinite"/>
     </circle>
     <text x="121" y="212" fill="#9fb4c8" font-size="11.5" text-anchor="middle">1 · Solvent evaporates → lipid film</text>
-    <g stroke="#8BE7E0" stroke-width="2.5" fill="#8BE7E0">
+    <g stroke="#F6E7C1" stroke-width="2.5" fill="#F6E7C1">
       <line x1="222" y1="96" x2="268" y2="96"/>
       <polygon points="268,96 257,90 257,102"/>
     </g>
-    <text x="245" y="83" fill="#8BE7E0" font-size="11" text-anchor="middle">+ buffer</text>
-    <path d="M398 30 h24 v36 a64 64 0 1 1 -24 0 z" fill="rgba(77,163,255,0.10)" stroke="#4da3ff" stroke-width="2.5"/>
-    <path d="M356 118 a48 48 0 0 0 88 0 z" fill="rgba(77,163,255,0.22)"/>
+    <text x="245" y="83" fill="#F6E7C1" font-size="11" text-anchor="middle">+ buffer</text>
+    <path d="M398 30 h24 v36 a64 64 0 1 1 -24 0 z" fill="rgba(31,138,104,0.10)" stroke="#1F8A68" stroke-width="2.5"/>
+    <path d="M356 118 a48 48 0 0 0 88 0 z" fill="rgba(31,138,104,0.22)"/>
     <g opacity="0">
-      <circle cx="384" cy="116" r="8" fill="none" stroke="#20BDB0" stroke-width="2.3"/>
-      <circle cx="384" cy="116" r="4.2" fill="none" stroke="#8BE7E0" stroke-width="1.8"/>
+      <circle cx="384" cy="116" r="8" fill="none" stroke="#E4C99A" stroke-width="2.3"/>
+      <circle cx="384" cy="116" r="4.2" fill="none" stroke="#F6E7C1" stroke-width="1.8"/>
       <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.45;0.58;0.92;1" dur="6s" repeatCount="indefinite"/>
     </g>
     <g opacity="0">
-      <circle cx="422" cy="112" r="6.5" fill="none" stroke="#20BDB0" stroke-width="2.3"/>
-      <circle cx="422" cy="112" r="3.4" fill="none" stroke="#8BE7E0" stroke-width="1.8"/>
+      <circle cx="422" cy="112" r="6.5" fill="none" stroke="#E4C99A" stroke-width="2.3"/>
+      <circle cx="422" cy="112" r="3.4" fill="none" stroke="#F6E7C1" stroke-width="1.8"/>
       <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.52;0.65;0.92;1" dur="6s" repeatCount="indefinite"/>
     </g>
     <g opacity="0">
-      <circle cx="400" cy="128" r="5" fill="none" stroke="#20BDB0" stroke-width="2"/>
+      <circle cx="400" cy="128" r="5" fill="none" stroke="#E4C99A" stroke-width="2"/>
       <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.6;0.72;0.92;1" dur="6s" repeatCount="indefinite"/>
     </g>
     <text x="410" y="212" fill="#9fb4c8" font-size="11.5" text-anchor="middle">2 · Film swells → MLVs bud off</text>
@@ -211,31 +211,31 @@
 <div class="lab-anim">
   <span class="lab-anim-tag">▶ How it works</span>
   <svg viewBox="0 0 540 224" role="img" aria-label="Reverse phase evaporation animation">
-    <rect x="66" y="30" width="120" height="150" rx="16" fill="rgba(255,200,87,0.10)" stroke="#ffc857" stroke-width="2.5"/>
-    <circle cx="110" cy="95" r="13" fill="rgba(77,163,255,0.45)" stroke="#4da3ff" stroke-width="2">
+    <rect x="66" y="30" width="120" height="150" rx="16" fill="rgba(201,161,90,0.10)" stroke="#C9A15A" stroke-width="2.5"/>
+    <circle cx="110" cy="95" r="13" fill="rgba(31,138,104,0.45)" stroke="#1F8A68" stroke-width="2">
       <animate attributeName="cy" values="95;88;95" dur="2.6s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="140" cy="140" r="10" fill="rgba(77,163,255,0.45)" stroke="#4da3ff" stroke-width="2">
+    <circle cx="140" cy="140" r="10" fill="rgba(31,138,104,0.45)" stroke="#1F8A68" stroke-width="2">
       <animate attributeName="cy" values="140;132;140" dur="2.1s" begin="0.5s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="98" cy="150" r="8" fill="rgba(77,163,255,0.45)" stroke="#4da3ff" stroke-width="2">
+    <circle cx="98" cy="150" r="8" fill="rgba(31,138,104,0.45)" stroke="#1F8A68" stroke-width="2">
       <animate attributeName="cy" values="150;144;150" dur="2.9s" begin="1s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="148" cy="78" r="7" fill="rgba(77,163,255,0.45)" stroke="#4da3ff" stroke-width="2">
+    <circle cx="148" cy="78" r="7" fill="rgba(31,138,104,0.45)" stroke="#1F8A68" stroke-width="2">
       <animate attributeName="cy" values="78;72;78" dur="2.3s" begin="0.3s" repeatCount="indefinite"/>
     </circle>
     <text x="126" y="208" fill="#9fb4c8" font-size="11.5" text-anchor="middle">1 · Water-in-oil emulsion</text>
-    <g stroke="#8BE7E0" stroke-width="2.5" fill="#8BE7E0">
+    <g stroke="#F6E7C1" stroke-width="2.5" fill="#F6E7C1">
       <line x1="215" y1="105" x2="262" y2="105"/>
       <polygon points="262,105 251,99 251,111"/>
     </g>
-    <text x="238" y="88" fill="#8BE7E0" font-size="10.5" text-anchor="middle">↓ solvent</text>
-    <path d="M392 30 h24 v36 a66 66 0 1 1 -24 0 z" fill="rgba(77,163,255,0.08)" stroke="#4da3ff" stroke-width="2.5"/>
-    <circle cx="388" cy="118" r="17" fill="rgba(77,163,255,0.16)" stroke="#20BDB0" stroke-width="3"/>
-    <circle cx="388" cy="118" r="9" fill="rgba(77,163,255,0.28)" stroke="#4da3ff" stroke-width="2"/>
-    <circle cx="430" cy="132" r="12" fill="rgba(77,163,255,0.16)" stroke="#20BDB0" stroke-width="3"/>
-    <circle cx="430" cy="132" r="6" fill="rgba(77,163,255,0.28)" stroke="#4da3ff" stroke-width="2"/>
-    <g fill="#ffc857">
+    <text x="238" y="88" fill="#F6E7C1" font-size="10.5" text-anchor="middle">↓ solvent</text>
+    <path d="M392 30 h24 v36 a66 66 0 1 1 -24 0 z" fill="rgba(31,138,104,0.08)" stroke="#1F8A68" stroke-width="2.5"/>
+    <circle cx="388" cy="118" r="17" fill="rgba(31,138,104,0.16)" stroke="#E4C99A" stroke-width="3"/>
+    <circle cx="388" cy="118" r="9" fill="rgba(31,138,104,0.28)" stroke="#1F8A68" stroke-width="2"/>
+    <circle cx="430" cy="132" r="12" fill="rgba(31,138,104,0.16)" stroke="#E4C99A" stroke-width="3"/>
+    <circle cx="430" cy="132" r="6" fill="rgba(31,138,104,0.28)" stroke="#1F8A68" stroke-width="2"/>
+    <g fill="#C9A15A">
       <circle cx="382" cy="114" r="2.2"/><circle cx="394" cy="123" r="2.2"/><circle cx="427" cy="129" r="2"/><circle cx="436" cy="136" r="2"/>
     </g>
     <text x="404" y="208" fill="#9fb4c8" font-size="11.5" text-anchor="middle">2 · LUVs trap the drug inside</text>
@@ -247,28 +247,28 @@
   <span class="lab-anim-tag">▶ How it works</span>
   <svg viewBox="0 0 540 224" role="img" aria-label="Ethanol injection animation">
     <g transform="translate(150,18) rotate(18)">
-      <rect x="-58" y="0" width="96" height="26" rx="5" fill="rgba(255,200,87,0.25)" stroke="#ffc857" stroke-width="2.5"/>
-      <rect x="-84" y="6" width="28" height="14" rx="3" fill="#ffc857" opacity="0.85"/>
-      <path d="M38 6 L66 14 L38 22 z" fill="rgba(255,200,87,0.4)" stroke="#ffc857" stroke-width="2"/>
+      <rect x="-58" y="0" width="96" height="26" rx="5" fill="rgba(201,161,90,0.25)" stroke="#C9A15A" stroke-width="2.5"/>
+      <rect x="-84" y="6" width="28" height="14" rx="3" fill="#C9A15A" opacity="0.85"/>
+      <path d="M38 6 L66 14 L38 22 z" fill="rgba(201,161,90,0.4)" stroke="#C9A15A" stroke-width="2"/>
     </g>
-    <circle cx="245" cy="112" r="4.5" fill="#ffc857">
+    <circle cx="245" cy="112" r="4.5" fill="#C9A15A">
       <animate attributeName="cy" values="62;128" dur="1.3s" repeatCount="indefinite"/>
       <animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="1.3s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="252" cy="112" r="3.4" fill="#ffc857">
+    <circle cx="252" cy="112" r="3.4" fill="#C9A15A">
       <animate attributeName="cy" values="62;128" dur="1.3s" begin="0.45s" repeatCount="indefinite"/>
       <animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="1.3s" begin="0.45s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="238" cy="112" r="3" fill="#ffc857">
+    <circle cx="238" cy="112" r="3" fill="#C9A15A">
       <animate attributeName="cy" values="62;128" dur="1.3s" begin="0.85s" repeatCount="indefinite"/>
       <animate attributeName="opacity" values="1;1;0" keyTimes="0;0.85;1" dur="1.3s" begin="0.85s" repeatCount="indefinite"/>
     </circle>
-    <path d="M150 140 h210 l-18 62 H168 z" fill="rgba(77,163,255,0.12)" stroke="#4da3ff" stroke-width="2.5"/>
-    <rect x="168" y="158" width="174" height="30" fill="rgba(77,163,255,0.18)"/>
-    <rect x="225" y="182" width="60" height="9" rx="4.5" fill="#8BE7E0" opacity="0.85">
+    <path d="M150 140 h210 l-18 62 H168 z" fill="rgba(31,138,104,0.12)" stroke="#1F8A68" stroke-width="2.5"/>
+    <rect x="168" y="158" width="174" height="30" fill="rgba(31,138,104,0.18)"/>
+    <rect x="225" y="182" width="60" height="9" rx="4.5" fill="#F6E7C1" opacity="0.85">
       <animateTransform attributeName="transform" type="rotate" values="0 255 186.5;360 255 186.5" dur="1.6s" repeatCount="indefinite"/>
     </rect>
-    <g fill="none" stroke="#20BDB0" stroke-width="2.2">
+    <g fill="none" stroke="#E4C99A" stroke-width="2.2">
       <circle cx="215" cy="168" r="5.5" opacity="0.9"><animate attributeName="opacity" values="0.15;1;0.15" dur="2.2s" repeatCount="indefinite"/></circle>
       <circle cx="262" cy="166" r="4.5" opacity="0.9"><animate attributeName="opacity" values="0.15;1;0.15" dur="2.2s" begin="0.7s" repeatCount="indefinite"/></circle>
       <circle cx="298" cy="170" r="5" opacity="0.9"><animate attributeName="opacity" values="0.15;1;0.15" dur="2.2s" begin="1.3s" repeatCount="indefinite"/></circle>
@@ -281,16 +281,16 @@
 <div class="lab-anim">
   <span class="lab-anim-tag">▶ How it works</span>
   <svg viewBox="0 0 540 224" role="img" aria-label="Detergent dialysis animation">
-    <rect x="30" y="24" width="480" height="160" rx="18" fill="rgba(77,163,255,0.06)" stroke="#4da3ff" stroke-width="2.5"/>
-    <path d="M30 96 q30 -10 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0" fill="none" stroke="rgba(109,185,255,0.5)" stroke-width="2"/>
-    <rect x="185" y="52" width="170" height="112" rx="22" fill="rgba(32,189,176,0.08)" stroke="#20BDB0" stroke-width="2.5" stroke-dasharray="7 5"/>
-    <text x="270" y="46" fill="#8BE7E0" font-size="10.5" text-anchor="middle">dialysis membrane</text>
-    <circle cx="240" cy="95" r="6" fill="#20BDB0" opacity="0.9"/>
-    <circle cx="275" cy="125" r="6" fill="#20BDB0" opacity="0.9"/>
-    <circle cx="300" cy="88" r="6" fill="#20BDB0" opacity="0.9"/>
-    <circle cx="255" cy="135" r="4" fill="#ffc857"/>
-    <circle cx="288" cy="108" r="4" fill="#ffc857"/>
-    <circle cx="222" cy="112" r="4" fill="#ffc857"/>
+    <rect x="30" y="24" width="480" height="160" rx="18" fill="rgba(31,138,104,0.06)" stroke="#1F8A68" stroke-width="2.5"/>
+    <path d="M30 96 q30 -10 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0" fill="none" stroke="rgba(125,206,176,0.5)" stroke-width="2"/>
+    <rect x="185" y="52" width="170" height="112" rx="22" fill="rgba(228,201,154,0.08)" stroke="#E4C99A" stroke-width="2.5" stroke-dasharray="7 5"/>
+    <text x="270" y="46" fill="#F6E7C1" font-size="10.5" text-anchor="middle">dialysis membrane</text>
+    <circle cx="240" cy="95" r="6" fill="#E4C99A" opacity="0.9"/>
+    <circle cx="275" cy="125" r="6" fill="#E4C99A" opacity="0.9"/>
+    <circle cx="300" cy="88" r="6" fill="#E4C99A" opacity="0.9"/>
+    <circle cx="255" cy="135" r="4" fill="#C9A15A"/>
+    <circle cx="288" cy="108" r="4" fill="#C9A15A"/>
+    <circle cx="222" cy="112" r="4" fill="#C9A15A"/>
     <circle r="3.6" fill="#ff7ad9">
       <animateMotion dur="3.2s" repeatCount="indefinite" path="M270,105 L150,105 L110,105"/>
       <animate attributeName="opacity" values="1;1;0" keyTimes="0;0.8;1" dur="3.2s" repeatCount="indefinite"/>
@@ -303,7 +303,7 @@
       <animateMotion dur="3.2s" begin="2.1s" repeatCount="indefinite" path="M260,120 L160,140 L95,150"/>
       <animate attributeName="opacity" values="1;1;0" keyTimes="0;0.8;1" dur="3.2s" begin="2.1s" repeatCount="indefinite"/>
     </circle>
-    <circle cx="270" cy="108" r="15" fill="none" stroke="#8BE7E0" stroke-width="2" opacity="0">
+    <circle cx="270" cy="108" r="15" fill="none" stroke="#F6E7C1" stroke-width="2" opacity="0">
       <animate attributeName="opacity" values="0;0;0.9;0.9;0" keyTimes="0;0.5;0.7;0.95;1" dur="6.4s" repeatCount="indefinite"/>
     </circle>
     <text x="270" y="212" fill="#9fb4c8" font-size="11.5" text-anchor="middle">Detergent leaves → lipids keep the cargo and close into a vesicle</text>
@@ -314,25 +314,25 @@
 <div class="lab-anim">
   <span class="lab-anim-tag">▶ How it works</span>
   <svg viewBox="0 0 540 224" role="img" aria-label="Microfluidic chip animation">
-    <rect x="36" y="28" width="468" height="164" rx="20" fill="rgba(139,231,224,0.05)" stroke="#8BE7E0" stroke-width="2.5"/>
-    <path d="M36 74 L170 74 L218 106" fill="none" stroke="#ffc857" stroke-width="10" stroke-linejoin="round" opacity="0.85"/>
-    <path d="M36 158 L170 158 L218 126" fill="none" stroke="#4da3ff" stroke-width="10" stroke-linejoin="round" opacity="0.85"/>
-    <path d="M218 116 C 252 116 252 66 296 66 C 340 66 340 166 384 166 C 428 166 420 116 504 112" fill="none" stroke="rgba(139,231,224,0.35)" stroke-width="10"/>
-    <text x="106" y="64" fill="#ffc857" font-size="10.5" text-anchor="middle">lipids in ethanol</text>
-    <text x="106" y="150" fill="#6db9ff" font-size="10.5" text-anchor="middle">aqueous phase</text>
-    <circle r="5" fill="#20BDB0" stroke="#8BE7E0" stroke-width="1.5">
+    <rect x="36" y="28" width="468" height="164" rx="20" fill="rgba(246,231,193,0.05)" stroke="#F6E7C1" stroke-width="2.5"/>
+    <path d="M36 74 L170 74 L218 106" fill="none" stroke="#C9A15A" stroke-width="10" stroke-linejoin="round" opacity="0.85"/>
+    <path d="M36 158 L170 158 L218 126" fill="none" stroke="#1F8A68" stroke-width="10" stroke-linejoin="round" opacity="0.85"/>
+    <path d="M218 116 C 252 116 252 66 296 66 C 340 66 340 166 384 166 C 428 166 420 116 504 112" fill="none" stroke="rgba(246,231,193,0.35)" stroke-width="10"/>
+    <text x="106" y="64" fill="#C9A15A" font-size="10.5" text-anchor="middle">lipids in ethanol</text>
+    <text x="106" y="150" fill="#7DCEB0" font-size="10.5" text-anchor="middle">aqueous phase</text>
+    <circle r="5" fill="#E4C99A" stroke="#F6E7C1" stroke-width="1.5">
       <animateMotion dur="2.6s" repeatCount="indefinite" path="M218 116 C 252 116 252 66 296 66 C 340 66 340 166 384 166 C 428 166 420 116 504 112"/>
     </circle>
-    <circle r="5" fill="#20BDB0" stroke="#8BE7E0" stroke-width="1.5">
+    <circle r="5" fill="#E4C99A" stroke="#F6E7C1" stroke-width="1.5">
       <animateMotion dur="2.6s" begin="0.55s" repeatCount="indefinite" path="M218 116 C 252 116 252 66 296 66 C 340 66 340 166 384 166 C 428 166 420 116 504 112"/>
     </circle>
-    <circle r="5" fill="#20BDB0" stroke="#8BE7E0" stroke-width="1.5">
+    <circle r="5" fill="#E4C99A" stroke="#F6E7C1" stroke-width="1.5">
       <animateMotion dur="2.6s" begin="1.1s" repeatCount="indefinite" path="M218 116 C 252 116 252 66 296 66 C 340 66 340 166 384 166 C 428 166 420 116 504 112"/>
     </circle>
-    <circle r="5" fill="#20BDB0" stroke="#8BE7E0" stroke-width="1.5">
+    <circle r="5" fill="#E4C99A" stroke="#F6E7C1" stroke-width="1.5">
       <animateMotion dur="2.6s" begin="1.65s" repeatCount="indefinite" path="M218 116 C 252 116 252 66 296 66 C 340 66 340 166 384 166 C 428 166 420 116 504 112"/>
     </circle>
-    <circle r="5" fill="#20BDB0" stroke="#8BE7E0" stroke-width="1.5">
+    <circle r="5" fill="#E4C99A" stroke="#F6E7C1" stroke-width="1.5">
       <animateMotion dur="2.6s" begin="2.2s" repeatCount="indefinite" path="M218 116 C 252 116 252 66 296 66 C 340 66 340 166 384 166 C 428 166 420 116 504 112"/>
     </circle>
     <text x="270" y="212" fill="#9fb4c8" font-size="11.5" text-anchor="middle">Controlled laminar mixing → one size, every time</text>
@@ -476,7 +476,7 @@
       ctx.arc(CELL.x, CELL.y, nucR, 0, Math.PI * 2);
       ctx.fillStyle = stage === 4 ? 'rgba(200,80,120,0.5)' : 'rgba(200,80,120,0.35)';
       ctx.fill();
-      ctx.fillStyle = 'rgba(242,247,252,0.8)';
+      ctx.fillStyle = 'rgba(248,241,227,0.8)';
       ctx.font = '600 13px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('Tumor Cell', CELL.x, CELL.y + CELL.r + 22);
@@ -486,18 +486,18 @@
       if (stage === 4 && t > 0.25) return; // dissolved
       const r = 26 * pos.s;
       const glow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, r * 2.2);
-      glow.addColorStop(0, 'rgba(32,189,176,0.35)');
-      glow.addColorStop(1, 'rgba(32,189,176,0)');
+      glow.addColorStop(0, 'rgba(228,201,154,0.35)');
+      glow.addColorStop(1, 'rgba(228,201,154,0)');
       ctx.fillStyle = glow;
       ctx.beginPath(); ctx.arc(pos.x, pos.y, r * 2.2, 0, Math.PI * 2); ctx.fill();
 
       ctx.beginPath(); ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(77,163,255,0.18)'; ctx.fill();
-      ctx.strokeStyle = '#20BDB0'; ctx.lineWidth = 5; ctx.stroke();
+      ctx.fillStyle = 'rgba(31,138,104,0.22)'; ctx.fill();
+      ctx.strokeStyle = '#E4C99A'; ctx.lineWidth = 5; ctx.stroke();
       ctx.beginPath(); ctx.arc(pos.x, pos.y, r - 6, 0, Math.PI * 2);
-      ctx.strokeStyle = '#8BE7E0'; ctx.lineWidth = 3; ctx.stroke();
+      ctx.strokeStyle = '#F6E7C1'; ctx.lineWidth = 3; ctx.stroke();
       ctx.beginPath(); ctx.arc(pos.x, pos.y, 5, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffc857'; ctx.fill();
+      ctx.fillStyle = '#C9A15A'; ctx.fill();
     }
 
     function drawDrugs() {
@@ -508,7 +508,7 @@
           drugDots.push({ x: CELL.x, y: CELL.y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, r: 2.5 + Math.random() * 3 });
         }
       }
-      ctx.fillStyle = '#ffc857';
+      ctx.fillStyle = '#C9A15A';
       drugDots.forEach(d => {
         d.x += d.vx; d.y += d.vy; d.vx *= 0.985; d.vy *= 0.985;
         ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2); ctx.fill();
@@ -727,7 +727,7 @@
       const q = QUIZ[idx];
       const correct = i === q.a;
       if (correct) score++;
-      answers.push({ q: q.q, chosen: q.opts[i], correctText: q.opts[q.a], ok: correct });
+      answers.push({ q: q.q, chosen: q.opts[i], correctText: q.opts[q.a], ok: correct, ex: q.ex });
       card.querySelectorAll('.quiz-opt').forEach(btn => {
         btn.disabled = true;
         const bi = parseInt(btn.dataset.i, 10);
@@ -751,6 +751,11 @@
         : 'Keep learning — explore the 3D Explorer and try again!';
       if (window.LipoverseProgress) window.LipoverseProgress.setQuizBest(pct);
       const wrong = answers.filter(a => !a.ok);
+      try {
+        localStorage.setItem('lipoverse-wrong', JSON.stringify(wrong.map(a => ({
+          q: a.q, correct: a.correctText, explanation: a.ex || '',
+        }))));
+      } catch (e) { /* ignore */ }
       card.innerHTML = `
         <div class="quiz-result">
           <div class="quiz-score-big">${pct}%</div>

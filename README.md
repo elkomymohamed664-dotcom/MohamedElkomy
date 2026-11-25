@@ -1,44 +1,33 @@
 # LIPOVERSE — Explore the Science of Liposomes
 
-An interactive 3D learning platform about **liposomes** and liposomal drug delivery,
-built for pharmacy students. *Beyond the Cell. Beyond the Science.*
+The learning platform in deep emerald and champagne, with glass cards and a real phospholipid vesicle you can rotate.
 
-## Features
+*Beyond the Cell. Beyond the Science.*
 
-- **Home & Learning Dashboard** — module map with progress tracking (saved locally)
-- **Introduction** — definition, history timeline, and liposomes vs conventional delivery
-- **3D Liposome Explorer** — a real-time Three.js model: rotate, zoom, click each part
-  (phospholipid bilayer, hydrophilic head, hydrophobic tail, aqueous core, cholesterol),
-  cutaway view, drug-location overlay, and layer toggles
-- **Types of Liposomes** — SUV, LUV, GUV, MLV, MVV with visual diagrams and comparison table
-- **Virtual Preparation Lab** — 5 methods (thin film hydration, reverse phase evaporation,
-  ethanol injection, detergent removal, microfluidics), each with its own **animated
-  walkthrough**, principle, steps, pros and cons
-- **Drug Loading Simulator** — real-time **3D** model showing where hydrophilic (aqueous
-  core) and lipophilic (bilayer) drugs load, cutaway view, passive vs active loading,
-  and an encapsulation-efficiency calculator
-- **Build Your Own Liposome** — interactive formulation lab: pick SUV/LUV/GUV/MLV/MVV,
-  set the number of bilayers (1–5), cholesterol (0–50 mol%) and PEG (“stealth”) coating,
-  choose a drug — and watch the 3D model, composition chips and an educational
-  "predicted behavior" profile update live
-- **Drug Delivery Simulation** — animated 5-stage journey through the body
-- **Applications** — Doxil®, AmBisome®, Onivyde®, Exparel®
-- **Quiz Center** — 28 explained questions across 6 categories (Structure, Preparation,
-  Loading & EE, In Vivo & Stealth, Applications, History) with shuffled options,
-  score tracking and answer review
-- **Flashcards & Glossary** — flip cards and a searchable glossary with Arabic explanations
-- **References** — curated scientific references at the end of every module, with notes
-  where claims (e.g. toxicity reduction, EE) are drug- and formulation-specific
+## What you can do
+
+- Learning dashboard with saved progress
+- Introduction, history, and liposomes versus conventional delivery
+- 3D Liposome Explorer: drag, zoom, click each part, cutaway view, drug-location overlay, and layer toggles
+- Types: SUV, LUV, GUV, MLV, and MVV with diagrams and a comparison table
+- Preparation lab with **animated walkthroughs** for each of the 5 methods (thin film hydration, reverse phase evaporation, ethanol injection, detergent removal, microfluidics), principle, steps, pros and cons
+- Drug Loading Simulator as a real-time **3D** model: hydrophilic (gold, aqueous core) vs lipophilic (orange, lipid bilayer), cutaway view, passive vs active (remote) loading, and an encapsulation-efficiency calculator
+- **Build Your Own Liposome** — interactive formulation lab: pick SUV/LUV/GUV/MLV/MVV, set the number of bilayers (1–5), cholesterol (0–50 mol%) and a PEG (“stealth”) coating, choose a drug — the 3D model, composition chips and an educational “predicted behavior” profile update live
+- Delivery journey simulation (injection → bloodstream → EPR → uptake → release)
+- Clinic examples (Doxil®, AmBisome®, Onivyde®, Exparel®)
+- Quiz Center — **28 explained questions across 6 categories** (Structure, Preparation, Loading & EE, In Vivo & Stealth, Applications, History) with category filters and shuffled options, plus matching / ordering / labeling practice
+- Flashcards, searchable glossary with Arabic explanations, and downloadable study notes
+- 3D Molecular Gallery, membrane extrusion method and lab checks, encapsulation vs loading capacity, global search, bookmarks, light mode, research links
+- **References** at the end of every module, with notes where claims (e.g. toxicity reduction, EE) are drug- and formulation-specific
 
 ## Tech
 
-Static site — no build step. HTML, CSS, vanilla JavaScript, and Three.js (CDN) for the 3D views
-(explorer, drug loading, and the liposome builder).
-Deploy anywhere static is served (e.g. Vercel, Netlify, GitHub Pages).
+Static site — no build step. HTML, CSS, vanilla JavaScript. Three.js r180 and its examples are stored in `vendor/` (MIT; see `vendor/THREE-LICENSE.txt`). Display fonts load from Google Fonts, as in the original design.
 
 ## Run locally
 
 ```bash
-python3 -m http.server 8080
-# open http://localhost:8080
+python3 -m http.server 8080 --bind 0.0.0.0
 ```
+
+Open the site root. Educational simulation — not medical advice.

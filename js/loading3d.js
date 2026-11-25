@@ -33,18 +33,18 @@ if (wrap) {
   const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
   keyLight.position.set(5, 6, 8);
   scene.add(keyLight);
-  const rim = new THREE.PointLight(0x20BDB0, 25, 30);
+  const rim = new THREE.PointLight(0xC4A46A, 25, 30);
   rim.position.set(-6, -3, -5);
   scene.add(rim);
 
   /* ---------- Materials ---------- */
-  const headMat = new THREE.MeshStandardMaterial({ color: 0x20BDB0, roughness: 0.32, metalness: 0.08, emissive: 0x20BDB0, emissiveIntensity: 0.14 });
-  const tailMat = new THREE.MeshStandardMaterial({ color: 0x8BE7E0, roughness: 0.45, metalness: 0.05, emissive: 0x8BE7E0, emissiveIntensity: 0.1 });
-  const cholMat = new THREE.MeshStandardMaterial({ color: 0xffc857, roughness: 0.25, metalness: 0.1, emissive: 0xffc857, emissiveIntensity: 0.25 });
-  const coreMat = new THREE.MeshStandardMaterial({ color: 0x4da3ff, transparent: true, opacity: 0.18, roughness: 0.1, emissive: 0x4da3ff, emissiveIntensity: 0.3, side: THREE.DoubleSide, depthWrite: false });
-  const waterMat = new THREE.MeshStandardMaterial({ color: 0x6db9ff, roughness: 0.15, transparent: true, opacity: 0.75 });
-  const drugHydroMat = new THREE.MeshStandardMaterial({ color: 0xffc857, roughness: 0.2, emissive: 0xffb62e, emissiveIntensity: 0.75 });
-  const drugLipoMat = new THREE.MeshStandardMaterial({ color: 0xff8a5c, roughness: 0.2, emissive: 0xff6a3d, emissiveIntensity: 0.75 });
+  const headMat = new THREE.MeshStandardMaterial({ color: 0xE4C99A, roughness: 0.32, metalness: 0.08, emissive: 0xE4C99A, emissiveIntensity: 0.14 });
+  const tailMat = new THREE.MeshStandardMaterial({ color: 0xF6E7C1, roughness: 0.45, metalness: 0.05, emissive: 0xF6E7C1, emissiveIntensity: 0.1 });
+  const cholMat = new THREE.MeshStandardMaterial({ color: 0xC9A15A, roughness: 0.25, metalness: 0.1, emissive: 0xC9A15A, emissiveIntensity: 0.25 });
+  const coreMat = new THREE.MeshStandardMaterial({ color: 0x1F8A68, transparent: true, opacity: 0.18, roughness: 0.1, emissive: 0x1F8A68, emissiveIntensity: 0.3, side: THREE.DoubleSide, depthWrite: false });
+  const waterMat = new THREE.MeshStandardMaterial({ color: 0x7DCEB0, roughness: 0.15, transparent: true, opacity: 0.75 });
+  const drugHydroMat = new THREE.MeshStandardMaterial({ color: 0xF0D48A, roughness: 0.2, emissive: 0xE8C87E, emissiveIntensity: 0.8 });
+  const drugLipoMat = new THREE.MeshStandardMaterial({ color: 0xC9845A, roughness: 0.2, emissive: 0xA86B3E, emissiveIntensity: 0.8 });
 
   /* ---------- Geometry helpers ---------- */
   function fibonacciSphere(n) {
@@ -132,8 +132,8 @@ if (wrap) {
   glowCanvas.width = glowCanvas.height = 256;
   const gctx = glowCanvas.getContext('2d');
   const grad = gctx.createRadialGradient(128, 128, 0, 128, 128, 128);
-  grad.addColorStop(0, 'rgba(32,189,176,0.35)');
-  grad.addColorStop(1, 'rgba(32,189,176,0)');
+  grad.addColorStop(0, 'rgba(228,201,154,0.35)');
+  grad.addColorStop(1, 'rgba(228,201,154,0)');
   gctx.fillStyle = grad;
   gctx.fillRect(0, 0, 256, 256);
   const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(glowCanvas), transparent: true, depthWrite: false }));

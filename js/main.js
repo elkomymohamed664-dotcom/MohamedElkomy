@@ -76,7 +76,12 @@
     sections.forEach(s => s.classList.toggle('active', s.id === 'section-' + id));
     navLinks.forEach(a => a.classList.toggle('active', a.dataset.nav === id));
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
+    if (location.hash.replace(/^#/, '') !== id && !applyingHash) {
+      applyingHash = true;
+      history.replaceState(null, '', '#' + id);
+      // replaceState does not fire hashchange, so just reset the guard
+      applyingHash = false;
+    }
     markVisited(id);
     renderModuleCards();
 
@@ -187,12 +192,12 @@
         ctx.beginPath();
         if (p.ring) {
           ctx.arc(p.x, p.y, p.r * 2.4, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(139,231,224,' + (p.a * 0.7) + ')';
+          ctx.strokeStyle = 'rgba(246,231,193,' + (p.a * 0.7) + ')';
           ctx.lineWidth = 1;
           ctx.stroke();
         } else {
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(32,189,176,' + p.a + ')';
+          ctx.fillStyle = 'rgba(228,201,154,' + p.a + ')';
           ctx.fill();
         }
       }
@@ -250,6 +255,18 @@
       }
     }
   };
+
+  /* ---------- Deep links & browser back/forward ---------- */
+  // The SPA sets the hash on every navigation (history.replaceState). Listen for hash changes
+  // so external hash links (e.g. from search results, the Continue button) actually navigate.
+  let applyingHash = false;
+  window.addEventListener('hashchange', () => {
+    const id = (location.hash || '#home').replace('#', '');
+    if (applyingHash) return;
+    applyingHash = true;
+    showSection(document.getElementById('section-' + id) ? id : 'home');
+    applyingHash = false;
+  });
 
   /* ---------- Init ---------- */
   renderModuleCards();
