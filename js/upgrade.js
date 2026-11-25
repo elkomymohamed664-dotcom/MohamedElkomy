@@ -457,10 +457,10 @@ const GALLERY = [
   { id: 'mvv', name: 'MVV', blurb: 'Multivesicular vesicle: smaller vesicles enclosed in one larger vesicle.', shells: [{ r: 1.82, n: 170 }], inner: 5 },
   { id: 'peg', name: 'PEGylated', blurb: 'PEG chains extend from the outer heads and slow protein binding.', shells: [{ r: 1.32, n: 160 }], peg: 1 },
   { id: 'cat', name: 'Cationic', blurb: 'Cationic head-groups give the surface a positive charge.', shells: [{ r: 1.32, n: 160 }], head: 0x7EB6FF },
-  { id: 'an', name: 'Anionic', blurb: 'Anionic head-groups give the surface a negative charge.', shells: [{ r: 1.32, n: 160 }], head: 0xD4785A },
+  { id: 'an', name: 'Anionic', blurb: 'Anionic head-groups give the surface a negative charge.', shells: [{ r: 1.32, n: 160 }], head: 0xF472B6 },
   { id: 'tgt', name: 'Targeted', blurb: 'Ligands on the surface are intended to bind a receptor.', shells: [{ r: 1.32, n: 160 }], ligand: 1 },
   { id: 'ph', name: 'pH-sensitive', blurb: 'The opening shows how an acid trigger can let the core leak. This is a model, not a measured pKa.', shells: [{ r: 1.32, n: 170 }], pore: 1 },
-  { id: 'th', name: 'Thermosensitive', blurb: 'Looser packing near the transition temperature. Mild heat can disorder the shell.', shells: [{ r: 1.32, n: 120 }], head: 0xE07A4A, loose: 1 },
+  { id: 'th', name: 'Thermosensitive', blurb: 'Looser packing near the transition temperature. Mild heat can disorder the shell.', shells: [{ r: 1.32, n: 120 }], head: 0xFB7185, loose: 1 },
 ];
 
 let galleryState = { built: false, renderer: null, scene: null, camera: null, controls: null, mesh: null, frame: 0, running: false };
@@ -510,7 +510,7 @@ function addPeg(group, radius) {
     geos.push(orientedCylinder(start, end, 0.016));
     geos.push(sphereAt(end, 0.03, 6));
   });
-  group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(geos), lipidMat(0x8FD4C0)));
+  group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(geos), lipidMat(0xE9D5FF)));
 }
 
 function addLigands(group, radius) {
@@ -521,7 +521,7 @@ function addLigands(group, radius) {
     geos.push(orientedCylinder(start, end, 0.012));
     geos.push(sphereAt(end, 0.055, 8));
   });
-  group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(geos), lipidMat(0xC9A15A, { metalness: 0.4, emissiveIntensity: 0.28 })));
+  group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(geos), lipidMat(0xF0ABFC, { metalness: 0.4, emissiveIntensity: 0.28 })));
 }
 
 function addBilayer(group, radius, count, spec, flags) {
@@ -552,21 +552,21 @@ function addBilayer(group, radius, count, spec, flags) {
     if ((headGeos.length / 2) % 5 === 0) cholGeos.push(sphereAt(d.clone().multiplyScalar((rOut + rIn) / 2), headR * 0.5, 6));
   });
   if (!headGeos.length) return rOut;
-  group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(headGeos), lipidMat(spec.head || 0xE4C99A)));
-  group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(tailGeos), lipidMat(0xF6E7C1, { roughness: 0.46 })));
-  if (cholGeos.length) group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(cholGeos), lipidMat(0xC9A15A, { roughness: 0.22 })));
+  group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(headGeos), lipidMat(spec.head || 0xC4B5FD)));
+  group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(tailGeos), lipidMat(0xEDE4FF, { roughness: 0.46 })));
+  if (cholGeos.length) group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(cholGeos), lipidMat(0xA78BFA, { roughness: 0.22 })));
   if (flags.core) {
     group.add(new THREE.Mesh(
       new THREE.SphereGeometry(Math.max(0.08, rIn - headR), 28, 20),
       new THREE.MeshStandardMaterial({
-        color: 0x1F8A68, transparent: true, opacity: 0.28, roughness: 0.18,
-        emissive: 0x1F8A68, emissiveIntensity: 0.22, depthWrite: false, side: THREE.DoubleSide,
+        color: 0x6D28D9, transparent: true, opacity: 0.28, roughness: 0.18,
+        emissive: 0x6D28D9, emissiveIntensity: 0.22, depthWrite: false, side: THREE.DoubleSide,
       })
     ));
     const waters = [];
     const limit = Math.max(0.05, rIn - headR * 1.6);
     for (let i = 0; i < 28; i++) waters.push(sphereAt(new THREE.Vector3().randomDirection().multiplyScalar(Math.random() * limit), headR * 0.4, 5));
-    group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(waters), lipidMat(0x7DCEB0, { roughness: 0.12 })));
+    group.add(new THREE.Mesh(BufferGeometryUtils.mergeGeometries(waters), lipidMat(0xDDD6FE, { roughness: 0.12 })));
   }
   if (flags.peg) addPeg(group, rOut);
   if (flags.ligand) addLigands(group, rOut);
@@ -586,7 +586,7 @@ function makeVesicle(spec) {
   if (spec.inner) {
     for (let i = 0; i < spec.inner; i++) {
       const baby = new THREE.Group();
-      addBilayer(baby, 0.36, 48, { head: 0xE4C99A }, { core: true });
+      addBilayer(baby, 0.36, 48, { head: 0xC4B5FD }, { core: true });
       const a = (i / spec.inner) * Math.PI * 2;
       baby.position.set(Math.cos(a) * 0.78, i % 2 ? 0.26 : -0.22, Math.sin(a) * 0.78);
       group.add(baby);
@@ -661,9 +661,9 @@ function initGallery() {
     }
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-    renderer.setClearColor(0x04140f, 1);
+    renderer.setClearColor(0x141218, 1);
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x04140f);
+    scene.background = new THREE.Color(0x141218);
     const camera = new THREE.PerspectiveCamera(42, 1, 0.08, 40);
     camera.position.set(0.6, 1.3, 4.2);
     const controls = new OrbitControls(camera, canvas);
@@ -675,10 +675,10 @@ function initGallery() {
     const key = new THREE.DirectionalLight(0xffffff, 1.75);
     key.position.set(4, 6, 7);
     scene.add(key);
-    const rim = new THREE.PointLight(0xC4A46A, 22, 28);
+    const rim = new THREE.PointLight(0x7C3AED, 26, 28);
     rim.position.set(-5, -2, -4);
     scene.add(rim);
-    const fill = new THREE.PointLight(0x1F8A68, 8, 18);
+    const fill = new THREE.PointLight(0xC4B5FD, 10, 18);
     fill.position.set(3, -2, 4);
     scene.add(fill);
     galleryState = { built: true, renderer, scene, camera, controls, mesh: null, frame: 0, running: true };
@@ -717,6 +717,117 @@ function initGallery() {
   });
   if (section?.classList.contains('active')) startGallery();
   if (section) watch.observe(section, { attributes: true, attributeFilter: ['class'] });
+}
+
+function initHeroLiposome() {
+  const canvas = document.getElementById('hero-liposome');
+  const section = document.getElementById('section-home');
+  if (!canvas || !section) return;
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let renderer = null;
+  let scene = null;
+  let camera = null;
+  let controls = null;
+  let main = null;
+  let near = null;
+  let far = null;
+  let running = false;
+  let frame = 0;
+
+  const resize = () => {
+    if (!renderer || !camera) return;
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    if (w < 2 || h < 2) return;
+    const pr = renderer.getPixelRatio();
+    if (canvas.width !== Math.floor(w * pr) || canvas.height !== Math.floor(h * pr)) {
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+  };
+
+  const loop = () => {
+    if (!running) return;
+    frame = requestAnimationFrame(loop);
+    resize();
+    const t = performance.now() * 0.001;
+    if (main && !motion.matches) {
+      main.rotation.y = t * 0.32;
+      main.rotation.x = Math.sin(t * 0.35) * 0.16;
+      main.position.y = Math.sin(t * 0.75) * 0.1;
+    }
+    if (near && !motion.matches) {
+      const a = t * 0.42;
+      near.position.set(Math.cos(a) * 1.9, Math.sin(a * 0.8) * 0.55 + 0.25, Math.sin(a) * 0.7);
+      near.rotation.y = t * 0.7;
+    }
+    if (far && !motion.matches) {
+      const a = t * 0.28 + 2.1;
+      far.position.set(Math.cos(a) * 1.55, Math.sin(a * 0.6) * 0.4 - 0.75, Math.cos(a) * 0.55);
+      far.rotation.z = t * 0.45;
+    }
+    controls?.update();
+    renderer?.render(scene, camera);
+  };
+
+  const start = () => {
+    if (!renderer) {
+      const mobile = window.innerWidth < 760;
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.25 : 1.75));
+      renderer.setClearColor(0x000000, 0);
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(36, 1, 0.08, 40);
+      camera.position.set(0.15, 0.35, 4.55);
+      controls = new OrbitControls(camera, canvas);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.07;
+      controls.enablePan = false;
+      controls.autoRotate = !motion.matches;
+      controls.autoRotateSpeed = 0.7;
+      controls.minDistance = 3.1;
+      controls.maxDistance = 8.5;
+      scene.add(new THREE.HemisphereLight(0xEDE4FF, 0x2A2140, 0.72));
+      scene.add(new THREE.AmbientLight(0xffffff, 0.28));
+      const key = new THREE.DirectionalLight(0xffffff, 1.55);
+      key.position.set(4, 5, 6);
+      scene.add(key);
+      const rim = new THREE.PointLight(0x7C3AED, 28, 30);
+      rim.position.set(-4.5, -1.2, -3);
+      scene.add(rim);
+      const fill = new THREE.PointLight(0xC4B5FD, 14, 22);
+      fill.position.set(2.4, 1.6, 3.2);
+      scene.add(fill);
+      main = makeVesicle({ shells: [{ r: 1.38, n: mobile ? 76 : 124 }], head: 0xC4B5FD });
+      near = makeVesicle({ shells: [{ r: 0.42, n: mobile ? 30 : 46 }], head: 0xDDD6FE });
+      far = makeVesicle({ shells: [{ r: 0.3, n: mobile ? 22 : 34 }], head: 0xA78BFA });
+      near.position.set(1.7, 0.4, 0.15);
+      far.position.set(-1.35, -0.7, 0.1);
+      scene.add(main, near, far);
+    }
+    if (running) return;
+    running = true;
+    resize();
+    loop();
+  };
+
+  const stop = () => {
+    running = false;
+    cancelAnimationFrame(frame);
+  };
+
+  const watch = new MutationObserver(() => {
+    if (section.classList.contains('active')) start();
+    else stop();
+  });
+  watch.observe(section, { attributes: true, attributeFilter: ['class'] });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else if (section.classList.contains('active')) start();
+  });
+  window.addEventListener('resize', resize);
+  if (section.classList.contains('active')) start();
 }
 
 function initInquiry() {
@@ -775,6 +886,7 @@ export function initUpgrade() {
   initResearch();
   initQuizExtras();
   initGallery();
+  initHeroLiposome();
   initInquiry();
   rebuildSearch();
 }

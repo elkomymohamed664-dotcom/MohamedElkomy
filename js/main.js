@@ -197,12 +197,12 @@
         ctx.beginPath();
         if (p.ring) {
           ctx.arc(p.x, p.y, p.r * 2.4, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(246,231,193,' + (p.a * 0.7) + ')';
+          ctx.strokeStyle = 'rgba(196,181,253,' + (p.a * 0.75) + ')';
           ctx.lineWidth = 1;
           ctx.stroke();
         } else {
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(228,201,154,' + p.a + ')';
+          ctx.fillStyle = 'rgba(167,139,250,' + p.a + ')';
           ctx.fill();
         }
       }
