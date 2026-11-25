@@ -28,6 +28,7 @@
       </button>
 
       <nav class="main-nav" id="site-nav" aria-label="Main navigation">
+        <a href="#home" data-en="Home" data-ar="الرئيسية">Home</a>
         <a href="#overview" data-en="Introduction" data-ar="المقدمة">Introduction</a>
         <a href="#explorer" data-en="Explorer" data-ar="المستكشف">Explorer</a>
         <a href="#types" data-en="Types" data-ar="الأنواع">Types</a>
@@ -38,6 +39,10 @@
         <a href="#quiz" data-en="Quiz" data-ar="الاختبار">Quiz</a>
       </nav>
 
+      <div class="nav-progress" title="Learning progress">
+        <span id="nav-progress-pct">0%</span>
+        <div class="nav-progress-bar" aria-hidden="true"><div id="nav-progress-fill"></div></div>
+      </div>
       <div class="header-actions">
         <button class="language-toggle" id="language-toggle" type="button" aria-label="Switch language"><span data-en="العربية" data-ar="English">العربية</span></button>
         <a class="button button-small button-primary" href="#explorer"><span data-en="Explore the lab" data-ar="استكشف المعمل">Explore the lab</span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M10 5l5 5-5 5"/></svg></a>
@@ -46,6 +51,7 @@
   </header>
 
   <main id="main-content">
+    <div class="app-view is-view-active" data-view="home" id="view-home">
     <section class="hero" id="home" aria-labelledby="hero-title">
       <div class="container hero-grid">
         <div class="hero-copy">
@@ -56,12 +62,63 @@
             <a class="button button-primary" href="#explorer"><span data-en="Explore the 3D model" data-ar="استكشف النموذج التفاعلي">Explore the 3D model</span><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M10 5l5 5-5 5"/></svg></a>
             <a class="text-link" href="#overview"><span data-en="Start with the basics" data-ar="ابدأ بالمفاهيم الأساسية">Start with the basics</span><span aria-hidden="true">↓</span></a>
           </div>
+          <div class="hero-stats" aria-label="What is inside">
+            <div><strong>8</strong><span data-en="Modules" data-ar="وحدات">Modules</span></div>
+            <div><strong>5</strong><span data-en="Prep methods" data-ar="طرق تحضير">Prep methods</span></div>
+            <div><strong>12</strong><span data-en="Quiz questions" data-ar="أسئلة">Quiz questions</span></div>
+            <div><strong>3D</strong><span data-en="Live model" data-ar="نموذج حي">Live model</span></div>
+          </div>
           <div class="hero-footnote"><span class="footnote-icon" aria-hidden="true">✳</span><span data-en="Built for curious pharmacy minds · Learn at your own pace" data-ar="للعقول الصيدلانية الفضولية · تعلّم بالسرعة المناسبة لك">Built for curious pharmacy minds · Learn at your own pace</span></div>
         </div>
 
-        <div class="hero-art" aria-label="Illustration of a liposome carrying drug molecules">
+        <div class="hero-art has-live-model" aria-label="Interactive liposome model">
           <div class="art-topline"><span data-en="MODEL 01 / PHOSPHOLIPID VESICLE" data-ar="النموذج ٠١ / حويصلة فوسفوليبيدية">MODEL 01 / PHOSPHOLIPID VESICLE</span><span class="live-tag"><i></i><span data-en="LIVE VIEW" data-ar="عرض حي">LIVE VIEW</span></span></div>
           <div class="hero-visual">
+            <div class="hero-stage-slot" id="hero-stage-slot"></div>
+<div class="explorer-stage" id="explorer-stage">
+            <div class="stage-toolbar"><span class="stage-code"><i></i><span data-en="VESICLE / CROSS-SECTION" data-ar="حويصلة / مقطع توضيحي">VESICLE / CROSS-SECTION</span></span><button class="cutaway-button" id="cutaway-toggle" type="button" aria-pressed="false"><span id="cutaway-label" data-en="Show cutaway" data-ar="أظهر المقطع">Show cutaway</span><span aria-hidden="true">◐</span></button></div>
+            <div class="diagram-viewport" id="diagram-viewport" aria-label="Interactive liposome model. Drag to rotate and use the zoom controls.">
+              <svg class="explorer-svg" id="explorer-svg" viewBox="0 0 640 500" role="img" aria-labelledby="diagram-title diagram-desc">
+                <title id="diagram-title">Interactive liposome cross-section</title>
+                <desc id="diagram-desc">Select the diagram components or the component list to learn about the bilayer, hydrophilic head, hydrophobic tail, cholesterol and aqueous core.</desc>
+                <defs>
+                  <radialGradient id="membrane-fill" cx="37%" cy="28%" r="82%"><stop offset="0" stop-color="#54dfcf" stop-opacity=".34"/><stop offset=".65" stop-color="#2aa69e" stop-opacity=".23"/><stop offset="1" stop-color="#144c58" stop-opacity=".23"/></radialGradient>
+                  <radialGradient id="core-fill" cx="34%" cy="30%" r="90%"><stop offset="0" stop-color="#1f5361"/><stop offset=".75" stop-color="#102d3a"/><stop offset="1" stop-color="#0d2633"/></radialGradient>
+                  <linearGradient id="head-fill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e4fff7"/><stop offset=".52" stop-color="#63e5d4"/><stop offset="1" stop-color="#38adbd"/></linearGradient>
+                  <linearGradient id="tail-fill" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#d6ceff" stop-opacity=".88"/><stop offset="1" stop-color="#7a91c8" stop-opacity=".5"/></linearGradient>
+                  <filter id="diagram-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                </defs>
+                <ellipse class="diagram-orbit" cx="320" cy="250" rx="236" ry="184" fill="none" stroke="#7ce8df" stroke-opacity=".1" stroke-width="1" stroke-dasharray="3 8"/>
+                <ellipse class="diagram-orbit orbit-inner" cx="320" cy="250" rx="212" ry="163" fill="none" stroke="#b9a9ff" stroke-opacity=".12" stroke-width="1"/>
+                <ellipse class="vesicle-shadow" cx="320" cy="410" rx="155" ry="14" fill="#02080d" opacity=".46"/>
+                <g id="layer-bilayer-back" data-component-visual="bilayer">
+                  <ellipse class="vesicle-shell" cx="320" cy="250" rx="190" ry="145" fill="url(#membrane-fill)" stroke="#68e7d6" stroke-opacity=".28" stroke-width="1.3"/>
+                  <g id="lipid-tails" data-component-visual="tail"></g>
+                </g>
+                <g id="layer-core" data-component-visual="core"><ellipse class="vesicle-core" cx="320" cy="250" rx="147" ry="105" fill="url(#core-fill)" stroke="#9cfff0" stroke-opacity=".43" stroke-width="1.2"/></g>
+                <g id="layer-bilayer-front" data-component-visual="bilayer head"><g id="lipid-heads" data-component-visual="head"></g></g>
+                <g id="layer-cholesterol" data-component-visual="cholesterol"><g id="cholesterol-nodes"></g></g>
+                <g id="layer-payload" data-component-visual="payload">
+                  <g class="payload-glow"><circle cx="295" cy="227" r="20"/><circle cx="355" cy="262" r="21"/></g>
+                  <g class="payload-dots"><circle cx="295" cy="227" r="6"/><circle cx="329" cy="211" r="4.5"/><circle cx="355" cy="262" r="7"/><circle cx="300" cy="277" r="4.5"/><circle cx="340" cy="284" r="3.8"/><circle cx="372" cy="225" r="4.4"/></g>
+                </g>
+                <g id="cutaway-window" aria-hidden="true"><path d="M320 250 163 162a181 137 0 0 1 111-87Z" fill="#07151d" opacity=".82"/><path d="M163 162a181 137 0 0 1 111-87" fill="none" stroke="#9bf3e7" stroke-width="3" stroke-linecap="round" filter="url(#diagram-glow)"/></g>
+                <g id="diagram-hotspots" aria-label="Select a liposome component">
+                  <circle class="component-hotspot" data-part-target="head" tabindex="0" role="button" aria-label="Hydrophilic head" cx="504" cy="250" r="23"/>
+                  <circle class="component-hotspot" data-part-target="tail" tabindex="0" role="button" aria-label="Hydrophobic tail" cx="479" cy="204" r="21"/>
+                  <circle class="component-hotspot" data-part-target="bilayer" tabindex="0" role="button" aria-label="Phospholipid bilayer" cx="473" cy="293" r="22"/>
+                  <circle class="component-hotspot" data-part-target="cholesterol" tabindex="0" role="button" aria-label="Cholesterol" cx="412" cy="133" r="22"/>
+                  <circle class="component-hotspot" data-part-target="core" tabindex="0" role="button" aria-label="Aqueous core" cx="320" cy="250" r="32"/>
+                </g>
+              </svg>
+              <span class="diagram-caption caption-top"><i></i><span data-en="OUTER AQUEOUS ENVIRONMENT" data-ar="البيئة المائية الخارجية">OUTER AQUEOUS ENVIRONMENT</span></span>
+              <span class="diagram-caption caption-bottom"><i></i><span data-en="INNER AQUEOUS CORE" data-ar="النواة المائية الداخلية">INNER AQUEOUS CORE</span></span>
+            </div>
+            <div class="diagram-controls" aria-label="Model controls">
+              <span class="drag-hint"><span aria-hidden="true">⤧</span><span data-en="Drag to rotate" data-ar="اسحب لتدوير النموذج">Drag to rotate</span></span>
+              <div class="zoom-controls"><button type="button" id="zoom-out" aria-label="Zoom out">−</button><button type="button" id="zoom-reset" aria-label="Reset model view"><span data-en="Reset" data-ar="إعادة">Reset</span></button><button type="button" id="zoom-in" aria-label="Zoom in">+</button></div>
+            </div>
+          </div>
             <div class="hero-orbit orbit-a" aria-hidden="true"></div>
             <div class="hero-orbit orbit-b" aria-hidden="true"></div>
             <div class="hero-crosshair crosshair-one" aria-hidden="true"></div>
@@ -122,7 +179,22 @@
       </div>
     </section>
 
-    <section class="section intro-section" id="overview" aria-labelledby="overview-title">
+
+    <section class="module-board" aria-labelledby="modules-title">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow"><span data-en="CHOOSE A MODULE" data-ar="اختر وحدة">CHOOSE A MODULE</span></p>
+            <h2 id="modules-title" data-en="Jump in. The science stays with you." data-ar="ادخل مباشرة. العلم يظل معك.">Jump in. The science stays with you.</h2>
+          </div>
+        </div>
+        <div class="modules-grid" id="modules-grid"></div>
+      </div>
+    </section>
+
+    </div>
+
+    <section class="section intro-section" id="overview" aria-labelledby="overview-title" data-view="overview">
       <div class="container">
         <div class="section-heading section-heading-wide">
           <div><p class="eyebrow section-kicker"><span>01</span><span data-en="THE IDEA, IN A MINUTE" data-ar="الفكرة في دقيقة">THE IDEA, IN A MINUTE</span></p><h2 id="overview-title"><span data-en="Two worlds." data-ar="عالمان.">Two worlds.</span> <span class="gradient-text" data-en="One carrier." data-ar="وناقل واحد.">One carrier.</span></h2></div>
@@ -138,7 +210,7 @@
             <p class="eyebrow"><span data-en="HISTORY" data-ar="نبذة تاريخية">HISTORY</span></p>
             <h3 data-en="How the idea grew" data-ar="كيف تطوّرت الفكرة">How the idea grew</h3>
           </div>
-          <ol class="timeline">
+          <ol class="timeline timeline-cards">
             <li><strong>1965</strong><span data-en="Alec Bangham describes phospholipid vesicles. Liposomes enter the scientific record." data-ar="يصف أليك بانغهام الحويصلات الفوسفوليبيدية، وتدخل الليبوسومات السجل العلمي.">Alec Bangham describes phospholipid vesicles. Liposomes enter the scientific record.</span></li>
             <li><strong>1970s</strong><span data-en="Researchers explore vesicles as carriers for drugs, enzymes and antigens." data-ar="يستكشف الباحثون الحويصلات كحوامل للأدوية والإنزيمات والمستضدات.">Researchers explore vesicles as carriers for drugs, enzymes and antigens.</span></li>
             <li><strong>1980s</strong><span data-en="Surface coatings such as PEG are studied to slow immune clearance — the “stealth” idea." data-ar="تُدرس تغطيات سطحية مثل PEG لإبطاء إزالة الجهاز المناعي — فكرة الليبوسوم «الشبح».">Surface coatings such as PEG are studied to slow immune clearance — the “stealth” idea.</span></li>
@@ -189,7 +261,7 @@
       </div>
     </section>
 
-    <section class="section explorer-section" id="explorer" aria-labelledby="explorer-title">
+    <section class="section explorer-section" id="explorer" aria-labelledby="explorer-title" data-view="explorer">
       <div class="container">
         <div class="section-heading">
           <div><p class="eyebrow section-kicker"><span>02</span><span data-en="INTERACTIVE 3D EXPLORER" data-ar="مستكشف تفاعلي ثلاثي الأبعاد">INTERACTIVE 3D EXPLORER</span></p><h2 id="explorer-title" data-en="Meet the liposome." data-ar="تعرّف على الليبوسوم.">Meet the liposome.</h2></div>
@@ -197,50 +269,7 @@
         </div>
 
         <div class="explorer-layout">
-          <div class="explorer-stage" id="explorer-stage">
-            <div class="stage-toolbar"><span class="stage-code"><i></i><span data-en="VESICLE / CROSS-SECTION" data-ar="حويصلة / مقطع توضيحي">VESICLE / CROSS-SECTION</span></span><button class="cutaway-button" id="cutaway-toggle" type="button" aria-pressed="false"><span id="cutaway-label" data-en="Show cutaway" data-ar="أظهر المقطع">Show cutaway</span><span aria-hidden="true">◐</span></button></div>
-            <div class="diagram-viewport" id="diagram-viewport" aria-label="Interactive liposome model. Drag to rotate and use the zoom controls.">
-              <svg class="explorer-svg" id="explorer-svg" viewBox="0 0 640 500" role="img" aria-labelledby="diagram-title diagram-desc">
-                <title id="diagram-title">Interactive liposome cross-section</title>
-                <desc id="diagram-desc">Select the diagram components or the component list to learn about the bilayer, hydrophilic head, hydrophobic tail, cholesterol and aqueous core.</desc>
-                <defs>
-                  <radialGradient id="membrane-fill" cx="37%" cy="28%" r="82%"><stop offset="0" stop-color="#54dfcf" stop-opacity=".34"/><stop offset=".65" stop-color="#2aa69e" stop-opacity=".23"/><stop offset="1" stop-color="#144c58" stop-opacity=".23"/></radialGradient>
-                  <radialGradient id="core-fill" cx="34%" cy="30%" r="90%"><stop offset="0" stop-color="#1f5361"/><stop offset=".75" stop-color="#102d3a"/><stop offset="1" stop-color="#0d2633"/></radialGradient>
-                  <linearGradient id="head-fill" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e4fff7"/><stop offset=".52" stop-color="#63e5d4"/><stop offset="1" stop-color="#38adbd"/></linearGradient>
-                  <linearGradient id="tail-fill" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#d6ceff" stop-opacity=".88"/><stop offset="1" stop-color="#7a91c8" stop-opacity=".5"/></linearGradient>
-                  <filter id="diagram-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-                </defs>
-                <ellipse class="diagram-orbit" cx="320" cy="250" rx="236" ry="184" fill="none" stroke="#7ce8df" stroke-opacity=".1" stroke-width="1" stroke-dasharray="3 8"/>
-                <ellipse class="diagram-orbit orbit-inner" cx="320" cy="250" rx="212" ry="163" fill="none" stroke="#b9a9ff" stroke-opacity=".12" stroke-width="1"/>
-                <ellipse class="vesicle-shadow" cx="320" cy="410" rx="155" ry="14" fill="#02080d" opacity=".46"/>
-                <g id="layer-bilayer-back" data-component-visual="bilayer">
-                  <ellipse class="vesicle-shell" cx="320" cy="250" rx="190" ry="145" fill="url(#membrane-fill)" stroke="#68e7d6" stroke-opacity=".28" stroke-width="1.3"/>
-                  <g id="lipid-tails" data-component-visual="tail"></g>
-                </g>
-                <g id="layer-core" data-component-visual="core"><ellipse class="vesicle-core" cx="320" cy="250" rx="147" ry="105" fill="url(#core-fill)" stroke="#9cfff0" stroke-opacity=".43" stroke-width="1.2"/></g>
-                <g id="layer-bilayer-front" data-component-visual="bilayer head"><g id="lipid-heads" data-component-visual="head"></g></g>
-                <g id="layer-cholesterol" data-component-visual="cholesterol"><g id="cholesterol-nodes"></g></g>
-                <g id="layer-payload" data-component-visual="payload">
-                  <g class="payload-glow"><circle cx="295" cy="227" r="20"/><circle cx="355" cy="262" r="21"/></g>
-                  <g class="payload-dots"><circle cx="295" cy="227" r="6"/><circle cx="329" cy="211" r="4.5"/><circle cx="355" cy="262" r="7"/><circle cx="300" cy="277" r="4.5"/><circle cx="340" cy="284" r="3.8"/><circle cx="372" cy="225" r="4.4"/></g>
-                </g>
-                <g id="cutaway-window" aria-hidden="true"><path d="M320 250 163 162a181 137 0 0 1 111-87Z" fill="#07151d" opacity=".82"/><path d="M163 162a181 137 0 0 1 111-87" fill="none" stroke="#9bf3e7" stroke-width="3" stroke-linecap="round" filter="url(#diagram-glow)"/></g>
-                <g id="diagram-hotspots" aria-label="Select a liposome component">
-                  <circle class="component-hotspot" data-part-target="head" tabindex="0" role="button" aria-label="Hydrophilic head" cx="504" cy="250" r="23"/>
-                  <circle class="component-hotspot" data-part-target="tail" tabindex="0" role="button" aria-label="Hydrophobic tail" cx="479" cy="204" r="21"/>
-                  <circle class="component-hotspot" data-part-target="bilayer" tabindex="0" role="button" aria-label="Phospholipid bilayer" cx="473" cy="293" r="22"/>
-                  <circle class="component-hotspot" data-part-target="cholesterol" tabindex="0" role="button" aria-label="Cholesterol" cx="412" cy="133" r="22"/>
-                  <circle class="component-hotspot" data-part-target="core" tabindex="0" role="button" aria-label="Aqueous core" cx="320" cy="250" r="32"/>
-                </g>
-              </svg>
-              <span class="diagram-caption caption-top"><i></i><span data-en="OUTER AQUEOUS ENVIRONMENT" data-ar="البيئة المائية الخارجية">OUTER AQUEOUS ENVIRONMENT</span></span>
-              <span class="diagram-caption caption-bottom"><i></i><span data-en="INNER AQUEOUS CORE" data-ar="النواة المائية الداخلية">INNER AQUEOUS CORE</span></span>
-            </div>
-            <div class="diagram-controls" aria-label="Model controls">
-              <span class="drag-hint"><span aria-hidden="true">⤧</span><span data-en="Drag to rotate" data-ar="اسحب لتدوير النموذج">Drag to rotate</span></span>
-              <div class="zoom-controls"><button type="button" id="zoom-out" aria-label="Zoom out">−</button><button type="button" id="zoom-reset" aria-label="Reset model view"><span data-en="Reset" data-ar="إعادة">Reset</span></button><button type="button" id="zoom-in" aria-label="Zoom in">+</button></div>
-            </div>
-          </div>
+          <div class="explorer-stage-slot" id="explorer-stage-slot"></div>
 
           <aside class="explorer-info" aria-label="Liposome component details">
             <div class="info-panel">
@@ -272,7 +301,7 @@
       </div>
     </section>
 
-    <section class="section types-section" id="types" aria-labelledby="types-title">
+    <section class="section types-section" id="types" aria-labelledby="types-title" data-view="types">
       <div class="container">
         <div class="section-heading">
           <div><p class="eyebrow section-kicker"><span>03</span><span data-en="VESICLE ARCHITECTURE" data-ar="بنية الحويصلات">VESICLE ARCHITECTURE</span></p><h2 id="types-title" data-en="One membrane—or many?" data-ar="غشاء واحد أم عدة أغشية؟">One membrane—or many?</h2></div>
@@ -363,7 +392,7 @@
       </div>
     </section>
 
-    <section class="section loading-section" id="loading" aria-labelledby="loading-title">
+    <section class="section loading-section" id="loading" aria-labelledby="loading-title" data-view="loading">
       <div class="container">
         <div class="section-heading">
           <div><p class="eyebrow section-kicker"><span>04</span><span data-en="DRUG-LOADING SIMULATOR" data-ar="محاكي تحميل الدواء">DRUG-LOADING SIMULATOR</span></p><h2 id="loading-title" data-en="Where does the cargo go?" data-ar="أين تستقر الحمولة؟">Where does the cargo go?</h2></div>
@@ -413,7 +442,7 @@
       </div>
     </section>
 
-    <section class="section lab-section" id="lab" aria-labelledby="lab-title">
+    <section class="section lab-section" id="lab" aria-labelledby="lab-title" data-view="lab">
       <div class="container">
         <div class="section-heading">
           <div><p class="eyebrow section-kicker"><span>05</span><span data-en="VIRTUAL PREPARATION LAB" data-ar="معمل التحضير الافتراضي">VIRTUAL PREPARATION LAB</span></p><h2 id="lab-title" data-en="How are vesicles made?" data-ar="كيف تتكوّن الحويصلات؟">How are vesicles made?</h2></div>
@@ -446,7 +475,7 @@
       </div>
     </section>
 
-    <section class="section journey-section" id="journey" aria-labelledby="journey-title">
+    <section class="section journey-section" id="journey" aria-labelledby="journey-title" data-view="journey">
       <div class="container">
         <div class="section-heading">
           <div><p class="eyebrow section-kicker"><span>06</span><span data-en="DRUG-DELIVERY SIMULATION" data-ar="محاكاة توصيل الدواء">DRUG-DELIVERY SIMULATION</span></p><h2 id="journey-title" data-en="Follow the journey." data-ar="تابع الرحلة.">Follow the journey.</h2></div>
@@ -477,7 +506,7 @@
       </div>
     </section>
 
-    <section class="section applications-section" id="applications" aria-labelledby="applications-title">
+    <section class="section applications-section" id="applications" aria-labelledby="applications-title" data-view="applications">
       <div class="container">
         <div class="section-heading">
           <div><p class="eyebrow section-kicker"><span>07</span><span data-en="LIPOSOMES IN MEDICINE" data-ar="الليبوسومات في الطب">LIPOSOMES IN MEDICINE</span></p><h2 id="applications-title" data-en="From concept to clinic." data-ar="من الفكرة إلى التطبيق.">From concept to clinic.</h2></div>
@@ -493,7 +522,7 @@
       </div>
     </section>
 
-    <section class="section quiz-section" id="quiz" aria-labelledby="quiz-title">
+    <section class="section quiz-section" id="quiz" aria-labelledby="quiz-title" data-view="quiz">
       <div class="container">
         <div class="quiz-banner">
           <div class="quiz-heading"><p class="eyebrow section-kicker"><span>08</span><span data-en="QUIZ & CHALLENGE CENTER" data-ar="مركز الاختبارات والتحديات">QUIZ & CHALLENGE CENTER</span></p><h2 id="quiz-title"><span data-en="Ready to test your" data-ar="هل أنت مستعد لاختبار">Ready to test your</span><br><span class="gradient-text" data-en="liposome logic?" data-ar="فهمك لليبوسومات؟">liposome logic?</span></h2><p data-en="Twelve questions. Instant explanations. A review at the end — no pressure, just a sharper model." data-ar="اثنا عشر سؤالًا، وشرح فوري، ومراجعة في النهاية. بلا ضغط؛ فقط فهم أوضح.">Twelve questions. Instant explanations. A review at the end — no pressure, just a sharper model.</p><div class="best-score"><span class="best-icon">✳</span><span><small data-en="YOUR BEST" data-ar="أفضل نتيجة">YOUR BEST</small><strong id="best-score">— / 12</strong></span></div></div>
@@ -508,7 +537,7 @@
       </div>
     </section>
 
-    <section class="section revision-section" id="revision" aria-labelledby="revision-title">
+    <section class="section revision-section" id="revision" aria-labelledby="revision-title" data-view="revision">
       <div class="container">
         <div class="section-heading">
           <div><p class="eyebrow section-kicker"><span>09</span><span data-en="QUICK REVISION" data-ar="مراجعة سريعة">QUICK REVISION</span></p><h2 id="revision-title" data-en="Keep the key terms close." data-ar="احتفظ بالمصطلحات الأساسية.">Keep the key terms close.</h2></div>

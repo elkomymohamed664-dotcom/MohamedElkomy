@@ -724,14 +724,14 @@
     menuToggle.setAttribute('aria-expanded', String(open));
     siteNav?.classList.toggle('is-open', open);
   });
-  $$('.main-nav a').forEach((link) => link.addEventListener('click', () => {
-    closeMenu();
-    const id = (link.getAttribute('href') || '').replace('#', '');
-    if (!learningModules.some((module) => module.id === id) || visited.has(id)) return;
-    visited.add(id);
-    storage.set('lipoverse-visited', JSON.stringify([...visited]));
-    renderDashboard();
-  }));
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('a[href^="#"]');
+    if (!link) return;
+    const id = (link.getAttribute('href') || '').slice(1);
+    if (!id || !document.querySelector(`[data-view="${id}"]`)) return;
+    event.preventDefault();
+    showView(id);
+  });
 
   let toastTimer = null;
   function announce(message) {
@@ -758,6 +758,37 @@
     JSON.parse(storage.get('lipoverse-visited') || '[]').forEach((id) => visited.add(id));
   } catch (_) { /* ignore a damaged save */ }
 
+  const moduleCards = [
+    { id: 'overview', en: 'Introduction', ar: 'المقدمة', enNote: 'Definition, history, and free drug versus carrier', arNote: 'التعريف والتاريخ ومقارنة الدواء الحر' },
+    { id: 'explorer', en: '3D Explorer', ar: 'المستكشف', enNote: 'Rotate the live vesicle and name each part', arNote: 'أدر الحويصلة الحية وتعرّف على أجزائها' },
+    { id: 'types', en: 'Types', ar: 'الأنواع', enNote: 'SUV, LUV, GUV, MLV and MVV as cards', arNote: 'بطاقات للأنواع الخمسة' },
+    { id: 'loading', en: 'Drug loading', ar: 'التحميل', enNote: 'Watch cargo move, then calculate EE%', arNote: 'شاهد مكان الحمولة واحسب الكفاءة' },
+    { id: 'lab', en: 'Preparation lab', ar: 'المعمل', enNote: 'Five preparation ideas, not a bench protocol', arNote: 'خمس أفكار للتحضير، وليست بروتوكولًا' },
+    { id: 'journey', en: 'Simulation', ar: 'المحاكاة', enNote: 'A five-stage educational journey', arNote: 'رحلة تعليمية من خمس مراحل' },
+    { id: 'applications', en: 'Clinic', ar: 'التطبيقات', enNote: 'Doxil, AmBisome, Onivyde and Exparel', arNote: 'دوكسيل وأمبيزوم وأونيفيد وإكسباريل' },
+    { id: 'quiz', en: 'Quiz', ar: 'الاختبار', enNote: 'Twelve questions and an end review', arNote: 'اثنا عشر سؤالًا ومراجعة في النهاية' },
+    { id: 'revision', en: 'Review', ar: 'مراجعة', enNote: 'Glossary and shuffleable flashcards', arNote: 'القاموس وبطاقات قابلة للخلط' }
+  ];
+
+  function renderModuleCards() {
+    const grid = $('#modules-grid');
+    if (!grid) return;
+    grid.replaceChildren();
+    moduleCards.forEach((card, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'module-card';
+      button.dataset.module = card.id;
+      if (visited.has(card.id)) button.classList.add('is-visited');
+      const number = String(index + 1).padStart(2, '0');
+      button.innerHTML = `<span class="module-index">${number}</span><strong></strong><small></small><b aria-hidden="true">↗</b>`;
+      setText(button.querySelector('strong'), card[lang]);
+      setText(button.querySelector('small'), lang === 'ar' ? card.arNote : card.enNote);
+      button.addEventListener('click', () => showView(card.id));
+      grid.appendChild(button);
+    });
+  }
+
   function renderDashboard() {
     const done = learningModules.filter((module) => visited.has(module.id)).length;
     const total = learningModules.length;
@@ -768,22 +799,51 @@
     setText($('#dash-quiz'), bestScore > 0 ? `${bestScore} / ${quizQuestions.length}` : '—');
     setText($('#dash-next'), next ? next[lang] : copy('All modules visited', 'زرت كل الوحدات'));
     setText($('#continue-label'), next ? copy(`Continue: ${next.en}`, `واصل: ${next.ar}`) : copy('Review the explorer', 'راجع المستكشف'));
-    const fill = $('#dash-fill');
-    if (fill) fill.style.width = `${pct}%`;
+    setText($('#nav-progress-pct'), `${pct}%`);
+    ['#dash-fill', '#nav-progress-fill'].forEach((selector) => {
+      const fill = $(selector);
+      if (fill) fill.style.width = `${pct}%`;
+    });
+    renderModuleCards();
+  }
+
+  function placeStage(view) {
+    const stage = document.getElementById('explorer-stage');
+    const heroSlot = document.getElementById('hero-stage-slot');
+    const explorerSlot = document.getElementById('explorer-stage-slot');
+    if (!stage || !heroSlot || !explorerSlot) return;
+    const target = view === 'explorer' ? explorerSlot : heroSlot;
+    if (stage.parentElement !== target) target.appendChild(stage);
+    document.querySelector('.hero-art')?.classList.toggle('has-live-model', view !== 'explorer');
+    window.requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+  }
+
+  function showView(id) {
+    const known = new Set(['home', 'revision', ...learningModules.map((module) => module.id)]);
+    const view = known.has(id) ? id : 'home';
+    document.body.dataset.view = view;
+    $$('[data-view]').forEach((element) => {
+      element.classList.toggle('is-view-active', element.getAttribute('data-view') === view);
+    });
+    placeStage(view);
+    if (learningModules.some((module) => module.id === view) && !visited.has(view)) {
+      visited.add(view);
+      storage.set('lipoverse-visited', JSON.stringify([...visited]));
+    }
+    renderDashboard();
+    markCurrentNav();
+    closeMenu();
+    if (location.hash !== `#${view}`) history.replaceState(null, '', `#${view}`);
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
   }
 
   function markCurrentNav() {
-    const links = $$('.main-nav a');
-    const marker = window.scrollY + 120;
-    let current = learningModules[0].id;
-    learningModules.forEach((module) => {
-      const section = document.getElementById(module.id);
-      if (section && section.offsetTop <= marker) current = module.id;
-    });
-    links.forEach((link) => {
+    const current = document.body.dataset.view || 'home';
+    $$('.main-nav a').forEach((link) => {
       const active = link.getAttribute('href') === `#${current}`;
       link.classList.toggle('is-current', active);
-      if (active) link.setAttribute('aria-current', 'true');
+      if (active) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     });
   }
@@ -811,7 +871,19 @@
 
   $('#continue-learning')?.addEventListener('click', () => {
     const next = learningModules.find((module) => !visited.has(module.id)) || learningModules[1];
-    document.getElementById(next.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showView(next.id);
+  });
+  $$('.timeline-cards li').forEach((item) => {
+    item.tabIndex = 0;
+    item.setAttribute('role', 'button');
+    const toggle = () => item.classList.toggle('is-open');
+    item.addEventListener('click', toggle);
+    item.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggle();
+      }
+    });
   });
 
   if ('IntersectionObserver' in window) {
@@ -831,7 +903,7 @@
       if (section) progressObserver.observe(section);
     });
   }
-  window.addEventListener('scroll', markCurrentNav, { passive: true });
+
 
   function applyLanguage(nextLang) {
     lang = nextLang === 'ar' ? 'ar' : 'en';
@@ -877,10 +949,11 @@
     if (event.key === 'Escape') closeMenu();
     if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
       event.preventDefault();
+      showView('revision');
       $('#glossary-search')?.focus();
-      $('#glossary-search')?.scrollIntoView({ block: 'center', behavior: 'smooth' });
     }
   });
   setText($('#current-year'), String(new Date().getFullYear()));
   applyLanguage(lang);
+  showView((location.hash || '#home').replace('#', '') || 'home');
 })();
