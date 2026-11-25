@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>LIPOVERSE — Explore the Science of Liposomes</title>
 <meta name="description" content="LIPOVERSE is an interactive 3D learning platform about liposomes and liposomal drug delivery for pharmacy students.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -68,6 +68,7 @@
       <a href="#flashcards" data-nav="flashcards">Flashcards</a>
       <a href="#gallery" data-nav="gallery">3D Models</a>
       <a href="#research" data-nav="research">Research</a>
+      <a href="#inquiries" data-nav="inquiries">Inquiries</a>
     </nav>
   </div>
 </header>
@@ -99,6 +100,7 @@
       <button type="button" class="ctrl-btn" data-goto="research">Research papers</button>
       <button type="button" class="ctrl-btn" data-goto="practice">Quiz practice</button>
       <button type="button" class="ctrl-btn" data-goto="notes">Notes</button>
+      <button type="button" class="ctrl-btn" data-goto="inquiries">Inquiries</button>
     </div>
     <div class="hero-stats">
       <div class="stat"><strong>10</strong><span>Learning Modules</span></div>
@@ -548,6 +550,38 @@
   </div>
 </section>
 
+<!-- ============ INQUIRIES ============ -->
+<section class="section" id="section-inquiries">
+  <div class="page-head">
+    <span class="page-chip">Contact</span>
+    <h1>Inquiries</h1>
+    <p>Ask about a lesson, a figure, or the platform. The reply goes to the email you enter.</p>
+    <p class="ar">أرسل استفسارك هنا. الرد هيوصل على البريد اللي هتكتبه.</p>
+  </div>
+  <form class="glass-card inquiry-form" id="inquiry-form" action="/api/contact" method="post">
+    <div class="inquiry-grid">
+      <label>Name · الاسم
+        <input id="inquiry-name" name="name" type="text" autocomplete="name" maxlength="80" required>
+      </label>
+      <label>Email · البريد
+        <input id="inquiry-email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" required>
+      </label>
+    </div>
+    <label>Inquiry · الاستفسار
+      <textarea id="inquiry-message" name="message" rows="6" maxlength="3000" required placeholder="Write your question…"></textarea>
+    </label>
+    <div class="inquiry-honeypot" aria-hidden="true">
+      <label for="inquiry-website">Leave this empty</label>
+      <input id="inquiry-website" name="website" type="text" tabindex="-1" autocomplete="off">
+    </div>
+    <p class="ee-note">Do not send private medical details or passwords through this form.</p>
+    <div class="inquiry-actions">
+      <button class="btn btn-primary" type="submit">Send inquiry</button>
+      <p id="inquiry-status" class="inquiry-status" role="status" aria-live="polite"></p>
+    </div>
+  </form>
+</section>
+
 </main>
 
 <footer class="footer">
@@ -557,6 +591,7 @@
     <p class="supervisor-name">Prof. Dr. Marwa S. El-Dahhan</p>
     <span class="logo-text">LIPO<span>VERSE</span></span>
     <p>An interactive learning platform about liposomes &amp; liposomal drug delivery — built for pharmacy students.</p>
+    <p><a href="#inquiries" data-nav="inquiries">Send an inquiry · أرسل استفسارًا</a></p>
     <p class="footer-note">Content based on standard references in advanced drug delivery systems. Educational simulation — not medical advice.</p>
   </div>
 </footer>

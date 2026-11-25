@@ -719,6 +719,51 @@ function initGallery() {
   if (section) watch.observe(section, { attributes: true, attributeFilter: ['class'] });
 }
 
+function initInquiry() {
+  const form = document.getElementById('inquiry-form');
+  const status = document.getElementById('inquiry-status');
+  if (!form || !status) return;
+  const submit = form.querySelector('button[type="submit"]');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const fields = new FormData(form);
+    const payload = {
+      name: fields.get('name'),
+      email: fields.get('email'),
+      message: fields.get('message'),
+      website: fields.get('website'),
+    };
+    if (submit) submit.disabled = true;
+    status.dataset.state = '';
+    status.textContent = 'Sending…';
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.ok) {
+        status.dataset.state = 'bad';
+        status.textContent = data.code === 'EMAIL_NOT_CONFIGURED'
+          ? 'The inquiry API is not finished on this project yet. Email elkomymohamed664@gmail.com directly.'
+          : (data.message || 'The inquiry could not be sent. Try again later.');
+        return;
+      }
+      form.reset();
+      status.dataset.state = 'ok';
+      status.textContent = data.message || 'Your inquiry was sent.';
+    } catch (error) {
+      status.dataset.state = 'bad';
+      status.textContent = 'The inquiry could not be sent. Check your connection and try again.';
+    } finally {
+      if (submit) submit.disabled = false;
+    }
+  });
+}
+
 export function initUpgrade() {
   initTheme();
   initContinue();
@@ -730,5 +775,6 @@ export function initUpgrade() {
   initResearch();
   initQuizExtras();
   initGallery();
+  initInquiry();
   rebuildSearch();
 }

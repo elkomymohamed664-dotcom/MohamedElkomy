@@ -66,6 +66,7 @@ body {
   background: rgba(7, 28, 22, 0.82);
   backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
+  padding-top: env(safe-area-inset-top);
 }
 .nav-inner {
   max-width: 1280px; margin: 0 auto; padding: 0 20px;
@@ -526,7 +527,21 @@ html[data-theme="light"] .navbar, html[data-theme="light"] .bookmark-strip { bac
 html[data-theme="light"] .search-results { background: #fff; }
 
 /* ---------- Footer ---------- */
-.footer { position: relative; z-index: 1; border-top: 1px solid var(--border); margin-top: 60px; background: rgba(7,28,22,0.72); }
+.inquiry-form { display: flex; flex-direction: column; gap: 14px; max-width: 760px; }
+.inquiry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.inquiry-form label { display: flex; flex-direction: column; gap: 6px; color: var(--muted); font-size: 0.88rem; }
+.inquiry-form input, .inquiry-form textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--light);
+  border-radius: 12px; padding: 12px 14px; font: inherit; font-size: 16px;
+}
+.inquiry-form input:focus, .inquiry-form textarea:focus { outline: none; border-color: var(--teal); }
+.inquiry-honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.inquiry-actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.inquiry-status { margin: 0; color: var(--muted); }
+.inquiry-status[data-state="ok"] { color: var(--teal); }
+.inquiry-status[data-state="bad"] { color: var(--danger); }
+.footer a { color: var(--cyan); }
+.footer { position: relative; z-index: 1; border-top: 1px solid var(--border); margin-top: 60px; background: rgba(7,28,22,0.72); padding-bottom: env(safe-area-inset-bottom); }
 .footer-inner { max-width: 1280px; margin: 0 auto; padding: 28px 20px 36px; text-align: center; }
 .credit-kicker { font-family: var(--font-display); color: var(--teal); margin: 0; letter-spacing: 0.3px; }
 .supervisor-name { font-family: var(--font-display); color: var(--light); font-size: 1.05rem; margin: 6px 0 0; }
@@ -536,22 +551,39 @@ html[data-theme="light"] .footer { background: rgba(248, 241, 227, 0.94); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
-  .explorer-layout, .type-layout, .loading-layout, .sim-layout, .lab-cols, .quiz-extra-grid, .cap-grid, .research-list { grid-template-columns: 1fr; }
+  .explorer-layout, .type-layout, .loading-layout, .sim-layout, .lab-cols, .quiz-extra-grid, .cap-grid, .research-list, .inquiry-grid { grid-template-columns: 1fr; }
   #explorer-canvas-wrap { height: 420px; }
+  .nav-top { height: auto; flex-wrap: wrap; padding: 8px 0; }
+}
+@media (max-width: 760px) {
+  .nav-inner { padding: 0 12px; }
+  .nav-tools { width: 100%; flex-wrap: wrap; }
+  .search-wrap { flex: 1 1 140px; }
+  .search-wrap input { width: 100%; min-width: 0; }
+  .nav-links {
+    flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin; padding-bottom: 8px;
+  }
+  .nav-links a { padding: 8px 12px; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn, .inquiry-actions .btn, .ctrl-btn { min-height: 44px; }
+  .dash-progress { text-align: left; min-width: 0; width: 100%; }
+  .apps-grid, .glossary-grid, .modules-grid { grid-template-columns: 1fr; }
+  .gallery-caption h2 { min-width: 0; }
+  input, textarea, select { font-size: 16px; }
 }
 @media (max-width: 640px) {
   main { padding: calc(var(--nav-h) + 16px) 14px 30px; }
   .page-head:has(.bookmark-btn) { padding-right: 0; }
   .bookmark-btn { position: static; margin-top: 10px; }
-  .search-wrap input { width: 108px; }
-  .seal-bar { flex-wrap: wrap; }
-  .seal-bar img { width: 28px; height: 28px; }
+  .seal-bar img { width: 36px; height: 36px; }
   .gallery-caption { flex-direction: column; gap: 4px; }
   #gallery-canvas { height: 300px; }
-  .glass-card { padding: 20px; }
+  .glass-card { padding: 18px; }
   .hero-stats .stat { min-width: 45%; }
   .nav-progress-bar { width: 46px; }
   .sim-stage-label { margin-left: 0; width: 100%; }
   .type-facts { grid-template-columns: 1fr; }
   #explorer-canvas-wrap { height: 340px; }
+  .ee-card input { width: 100%; margin: 6px 0 0; }
 }

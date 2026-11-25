@@ -92,6 +92,12 @@
     }
     if (page === 'loading' && window.LipoverseLoading) window.LipoverseLoading.start();
     if (page === 'simulation' && window.LipoverseSim) window.LipoverseSim.start();
+    const activeLink = document.querySelector('.nav-links a.active');
+    const linkBar = document.getElementById('nav-links');
+    if (activeLink && linkBar && linkBar.scrollWidth > linkBar.clientWidth) {
+      const left = activeLink.offsetLeft - (linkBar.clientWidth - activeLink.offsetWidth) / 2;
+      linkBar.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+    }
     const focus = FOCUS[id];
     if (focus) {
       setTimeout(() => document.getElementById(focus)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
