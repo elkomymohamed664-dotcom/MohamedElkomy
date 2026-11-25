@@ -1,0 +1,242 @@
+/* ============================================================
+   LIPOVERSE — main.js
+   Navigation · Progress tracking · Background particles
+   Dashboard · Flashcards · Glossary
+   ============================================================ */
+(function () {
+  'use strict';
+
+  /* ---------- Data ---------- */
+  const MODULES = [
+    { id: 'intro',        num: '01', icon: '🧬', title: 'Introduction',       desc: 'Definition, history and why liposomes matter in pharmacy.' },
+    { id: 'explorer',     num: '02', icon: '🔭', title: '3D Explorer',        desc: 'Rotate and click through the liposome structure in 3D.' },
+    { id: 'types',        num: '03', icon: '⭕', title: 'Types of Liposomes', desc: 'SUV, LUV, GUV, MLV and MVV — sizes, layers and features.' },
+    { id: 'lab',          num: '04', icon: '🧪', title: 'Preparation Lab',    desc: 'Five preparation methods, step by step.' },
+    { id: 'loading',      num: '05', icon: '💊', title: 'Drug Loading',       desc: 'Where hydrophilic and lipophilic drugs are loaded.' },
+    { id: 'simulation',   num: '06', icon: '🩸', title: 'Delivery Simulation',desc: 'Follow the drug journey through the body.' },
+    { id: 'applications', num: '07', icon: '🏥', title: 'Applications',       desc: 'Doxil, AmBisome, Onivyde and Exparel in the clinic.' },
+    { id: 'quiz',         num: '08', icon: '🏆', title: 'Quiz Center',        desc: 'Test yourself with explained questions.' },
+  ];
+
+  const FLASHCARDS = [
+    { term: 'Liposome', def: 'A spherical vesicle made of phospholipid bilayers enclosing an aqueous core — used as a drug carrier.', ar: 'حويصلة كروية من طبقات الفوسفوليبيدات تستخدم كناقل للدواء.' },
+    { term: 'Phospholipid', def: 'An amphiphilic molecule with a hydrophilic head and hydrophobic tails that forms cell membranes.', ar: 'جزيء مزدوج المحبة يتكون منه غشاء الخلية.' },
+    { term: 'Bilayer', def: 'Two layers of phospholipids arranged tail-to-tail, forming the wall of the liposome.', ar: 'طبقتان من الفوسفوليبيدات متعاكستان الذيلين.' },
+    { term: 'Cholesterol', def: 'A sterol inserted between phospholipid tails that modulates membrane fluidity and stability.', ar: 'ستيرول يُدخل بين ذيول الفوسفوليبيدات لتنظيم سيولة الغشاء وثباته.' },
+    { term: 'SUV', def: 'Small Unilamellar Vesicle — a single-bilayer vesicle of 20–100 nm.', ar: 'حويصلة صغيرة أحادية الطبقة حجمها ٢٠–١٠٠ نانومتر.' },
+    { term: 'MLV', def: 'Multilamellar Vesicle — a vesicle with multiple concentric bilayers.', ar: 'حويصلة متعددة الطبقات المتراكزة.' },
+    { term: 'Encapsulation Efficiency', def: 'The percentage of total drug successfully entrapped inside the liposomes.', ar: 'النسبة المئوية من الدواء المحبوس بنجاح داخل الليبوسومات.' },
+    { term: 'PEGylation', def: 'Coating liposomes with polyethylene glycol to prolong circulation ("stealth" liposomes).', ar: 'تغليف الليبوسومات بالبولي إيثيلين جلايكول لإطالة بقائها في الدم.' },
+    { term: 'EPR Effect', def: 'Enhanced Permeability and Retention — leaky tumor vessels let nanoparticles accumulate in tumors.', ar: 'تأثير النفاذية والاحتفاظ المعزز في الأورام.' },
+    { term: 'Remote Loading', def: 'Active loading of a drug after vesicle formation, driven by a pH or ion gradient.', ar: 'تحميل الدواء بعد تكوين الحويصلة بواسطة تدرج حموضة أو أيوني.' },
+  ];
+
+  const GLOSSARY = [
+    { term: 'Amphiphilic', def: 'A molecule having both water-loving and water-repelling parts.', ar: 'جزيء له جزء محب للماء وجزء كاره للماء.' },
+    { term: 'Aqueous Core', def: 'The water-filled interior of a liposome where hydrophilic drugs are stored.', ar: 'القلب المائي داخل الليبوسوم.' },
+    { term: 'Bilayer', def: 'Two phospholipid layers arranged tail-to-tail.', ar: 'طبقة مزدوجة من الفوسفوليبيدات.' },
+    { term: 'Cholesterol', def: 'Sterol that stabilizes the bilayer and controls fluidity.', ar: 'ستيرول يثبّت الطبقة ويتحكم في سيولتها.' },
+    { term: 'Encapsulation Efficiency', def: '(Encapsulated drug ÷ total drug) × 100.', ar: 'كفاءة التغليف: نسبة الدواء المحبوس من الإجمالي.' },
+    { term: 'Hydrophilic', def: 'Water-loving — dissolves easily in water.', ar: 'محب للماء — يذوب بسهولة في الماء.' },
+    { term: 'Hydrophobic', def: 'Water-repelling — avoids water, prefers fats.', ar: 'كاره للماء — يتجنب الماء ويفضل الدهون.' },
+    { term: 'Liposome', def: 'Spherical phospholipid vesicle used as a drug delivery system.', ar: 'حويصلة فوسفوليبيدية كروية لنقل الدواء.' },
+    { term: 'PEGylation', def: 'Attaching PEG chains to prolong circulation time.', ar: 'إضافة سلاسل PEG لإطالة الدوران الدموي.' },
+    { term: 'Phospholipid', def: 'The main building block of cell membranes and liposomes.', ar: 'المكوّن الأساسي لأغشية الخلايا والليبوسومات.' },
+    { term: 'Polydispersity Index (PDI)', def: 'A measure of the size uniformity of nanoparticles (0 = uniform).', ar: 'مؤشر تشتت الحجم — كلما اقترب من صفر كان الحجم أكثر تجانسًا.' },
+    { term: 'Zeta Potential', def: 'The surface charge of particles; predicts colloidal stability.', ar: 'الشحنة السطحية للجسيمات — تتنبأ بثبات المستحضر.' },
+  ];
+
+  /* ---------- Progress (localStorage) ---------- */
+  const LS_KEY = 'lipoverse_progress_v1';
+  let progress = { visited: [], quizBest: null };
+  try { progress = JSON.parse(localStorage.getItem(LS_KEY)) || progress; } catch (e) { /* ignore */ }
+
+  function saveProgress() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(progress)); } catch (e) { /* ignore */ }
+    renderDashboard();
+  }
+
+  function markVisited(id) {
+    if (!MODULES.some(m => m.id === id)) return;
+    if (!progress.visited.includes(id)) {
+      progress.visited.push(id);
+      saveProgress();
+    }
+  }
+
+  /* ---------- Navigation ---------- */
+  const sections = document.querySelectorAll('.section');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  let explorerLoaded = false;
+
+  function showSection(id) {
+    sections.forEach(s => s.classList.toggle('active', s.id === 'section-' + id));
+    navLinks.forEach(a => a.classList.toggle('active', a.dataset.nav === id));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
+    markVisited(id);
+    renderModuleCards();
+
+    if (id === 'explorer' && !explorerLoaded) {
+      explorerLoaded = true;
+      import('./explorer.js').catch(err => {
+        console.error('3D explorer failed to load:', err);
+        const wrap = document.getElementById('explorer-canvas-wrap');
+        if (wrap) wrap.innerHTML = '<p style="padding:30px;color:var(--muted)">⚠️ Could not load the 3D engine. Please check your internet connection and reload.</p>';
+      });
+    }
+    if (id === 'loading' && window.LipoverseLoading) window.LipoverseLoading.start();
+    if (id === 'simulation' && window.LipoverseSim) window.LipoverseSim.start();
+  }
+
+  document.querySelectorAll('[data-nav]').forEach(el => {
+    el.addEventListener('click', e => { e.preventDefault(); showSection(el.dataset.nav); });
+  });
+  document.querySelectorAll('[data-goto]').forEach(el => {
+    el.addEventListener('click', () => showSection(el.dataset.goto));
+  });
+
+  /* ---------- Module cards ---------- */
+  function renderModuleCards() {
+    const grid = document.getElementById('modules-grid');
+    if (!grid) return;
+    grid.innerHTML = MODULES.map(m => `
+      <article class="glass-card module-card ${progress.visited.includes(m.id) ? 'visited' : ''}" data-goto="${m.id}" role="button" tabindex="0">
+        <span class="module-done">✓ Visited</span>
+        <div class="module-icon">${m.icon}</div>
+        <span class="module-num">MODULE ${m.num}</span>
+        <h3>${m.title}</h3>
+        <p>${m.desc}</p>
+      </article>`).join('');
+    grid.querySelectorAll('.module-card').forEach(card => {
+      card.addEventListener('click', () => showSection(card.dataset.goto));
+      card.addEventListener('keydown', e => { if (e.key === 'Enter') showSection(card.dataset.goto); });
+    });
+  }
+
+  /* ---------- Dashboard ---------- */
+  function renderDashboard() {
+    const total = MODULES.length;
+    const done = progress.visited.length;
+    const pct = Math.round((done / total) * 100);
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('nav-progress-pct', pct + '%');
+    set('dash-pct', pct + '%');
+    set('dash-count', done + ' / ' + total + ' modules visited');
+    const fill = document.getElementById('nav-progress-fill'); if (fill) fill.style.width = pct + '%';
+    const dfill = document.getElementById('dash-fill'); if (dfill) dfill.style.width = pct + '%';
+    set('dash-quiz', progress.quizBest !== null ? progress.quizBest + '% — keep it up!' : 'Not taken yet');
+
+    const next = MODULES.find(m => !progress.visited.includes(m.id));
+    set('dash-next', next ? next.title : 'All modules completed 🎉');
+    const btn = document.getElementById('continue-btn');
+    if (btn) btn.textContent = next ? 'Continue: ' + next.title + ' →' : 'Review the 3D Explorer →';
+    if (btn) btn.onclick = () => showSection(next ? next.id : 'explorer');
+  }
+
+  /* ---------- Background particles ---------- */
+  (function initBackground() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
+    const COUNT = window.innerWidth < 700 ? 35 : 70;
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    for (let i = 0; i < COUNT; i++) {
+      particles.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: 1 + Math.random() * 2.6,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        a: 0.15 + Math.random() * 0.5,
+        ring: Math.random() < 0.3
+      });
+    }
+
+    function tick() {
+      ctx.clearRect(0, 0, W, H);
+      for (const p of particles) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < -10) p.x = W + 10; if (p.x > W + 10) p.x = -10;
+        if (p.y < -10) p.y = H + 10; if (p.y > H + 10) p.y = -10;
+        ctx.beginPath();
+        if (p.ring) {
+          ctx.arc(p.x, p.y, p.r * 2.4, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(139,231,224,' + (p.a * 0.7) + ')';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        } else {
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(32,189,176,' + p.a + ')';
+          ctx.fill();
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+    tick();
+  })();
+
+  /* ---------- Flashcards ---------- */
+  (function initFlashcards() {
+    const card = document.getElementById('flash-card');
+    if (!card) return;
+    let order = FLASHCARDS.map((_, i) => i);
+    let pos = 0;
+
+    function render() {
+      const f = FLASHCARDS[order[pos]];
+      document.getElementById('flash-term').textContent = f.term;
+      document.getElementById('flash-def').textContent = f.def;
+      document.getElementById('flash-ar').textContent = f.ar;
+      document.getElementById('flash-counter').textContent = (pos + 1) + ' / ' + order.length;
+      card.classList.remove('flipped');
+    }
+    card.addEventListener('click', () => card.classList.toggle('flipped'));
+    document.getElementById('flash-next').addEventListener('click', () => { pos = (pos + 1) % order.length; render(); });
+    document.getElementById('flash-prev').addEventListener('click', () => { pos = (pos - 1 + order.length) % order.length; render(); });
+    document.getElementById('flash-shuffle').addEventListener('click', () => {
+      order = FLASHCARDS.map((_, i) => i).sort(() => Math.random() - 0.5);
+      pos = 0; render();
+    });
+    render();
+  })();
+
+  /* ---------- Glossary ---------- */
+  (function initGlossary() {
+    const grid = document.getElementById('glossary-grid');
+    const search = document.getElementById('glossary-search');
+    if (!grid) return;
+    function render(filter) {
+      const items = GLOSSARY.filter(g => !filter || g.term.toLowerCase().includes(filter.toLowerCase()));
+      grid.innerHTML = items.length
+        ? items.map(g => `<div class="glass-card glossary-item"><h4>${g.term}</h4><p>${g.def}</p><p class="ar">${g.ar}</p></div>`).join('')
+        : '<p style="color:var(--muted)">No terms match your search.</p>';
+    }
+    search.addEventListener('input', () => render(search.value));
+    render('');
+  })();
+
+  /* ---------- Public hook (used by the quiz) ---------- */
+  window.LipoverseProgress = {
+    setQuizBest(score) {
+      if (progress.quizBest === null || score > progress.quizBest) {
+        progress.quizBest = score;
+        saveProgress();
+      }
+    }
+  };
+
+  /* ---------- Init ---------- */
+  renderModuleCards();
+  renderDashboard();
+
+  const initial = (location.hash || '#home').replace('#', '');
+  showSection(document.getElementById('section-' + initial) ? initial : 'home');
+})();
