@@ -13,31 +13,31 @@ if (!wrap) throw new Error('Explorer container not found');
 /* ---------- Part data ---------- */
 const PARTS = {
   bilayer: {
-    label: 'Phospholipid Bilayer', color: '#20BDB0',
+    label: 'Phospholipid Bilayer', color: '#E4C99A',
     ar: 'الطبقة الدهنية الفوسفورية',
     desc: 'The vesicle wall, formed by two layers of phospholipid molecules arranged tail-to-tail. It separates the internal aqueous core from the outside world and controls what can enter or leave.',
     points: ['Two leaflets: outer and inner', 'Self-assembles in water — like a cell membrane', 'Lipophilic drugs dissolve inside it']
   },
   head: {
-    label: 'Hydrophilic Head', color: '#20BDB0',
+    label: 'Hydrophilic Head', color: '#E4C99A',
     ar: 'الرأس المحب للماء',
     desc: 'The polar phosphate head of each phospholipid. It loves water (hydrophilic) and always faces an aqueous environment — either outside the liposome or inside the core.',
     points: ['Made of phosphate + glycerol', 'Faces water on both sides of the bilayer', 'Gives the liposome its water compatibility']
   },
   tail: {
-    label: 'Hydrophobic Tail', color: '#8BE7E0',
+    label: 'Hydrophobic Tail', color: '#F6E7C1',
     ar: 'الذيل الكاره للماء',
     desc: 'The fatty-acid chains of each phospholipid. They repel water (hydrophobic) and point toward each other inside the bilayer, away from water.',
     points: ['Fatty-acid chains (non-polar)', 'Meet in the middle of the bilayer', 'Lipophilic drugs are loaded here']
   },
   core: {
-    label: 'Aqueous Core', color: '#4da3ff',
+    label: 'Aqueous Core', color: '#1F8A68',
     ar: 'القلب المائي',
     desc: 'The water-filled interior of the liposome. Hydrophilic (water-soluble) drugs are encapsulated here, protected from the outside environment.',
     points: ['Filled with aqueous buffer', 'Holds hydrophilic drugs', 'Protected from enzymes and degradation']
   },
   cholesterol: {
-    label: 'Cholesterol', color: '#ffc857',
+    label: 'Cholesterol', color: '#C9A15A',
     ar: 'الكوليسترول',
     desc: 'A sterol molecule inserted between the phospholipid tails. It modulates membrane fluidity, improves stability and reduces drug leakage from the vesicle.',
     points: ['Sits between the fatty tails', 'Buffers fluidity at different temperatures', 'Reduces permeability and leakage']
@@ -67,7 +67,7 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.55));
 const keyLight = new THREE.DirectionalLight(0xffffff, 1.6);
 keyLight.position.set(5, 6, 8);
 scene.add(keyLight);
-const rimLight = new THREE.PointLight(0x20BDB0, 30, 30);
+const rimLight = new THREE.PointLight(0xC4A46A, 30, 30);
 rimLight.position.set(-6, -3, -5);
 scene.add(rimLight);
 
@@ -78,17 +78,17 @@ function makeMat(color, opts) {
     emissive: color, emissiveIntensity: 0.12
   }, opts || {}));
 }
-const headMat = makeMat(0x20BDB0);
-const tailMat = makeMat(0x8BE7E0, { roughness: 0.45 });
-const cholMat = makeMat(0xffc857, { roughness: 0.25 });
+const headMat = makeMat(0xE4C99A);
+const tailMat = makeMat(0xF6E7C1, { roughness: 0.45 });
+const cholMat = makeMat(0xC9A15A, { roughness: 0.25 });
 const coreMat = new THREE.MeshStandardMaterial({
-  color: 0x4da3ff, transparent: true, opacity: 0.16,
-  roughness: 0.1, metalness: 0, emissive: 0x4da3ff, emissiveIntensity: 0.25,
+  color: 0x1F8A68, transparent: true, opacity: 0.18,
+  roughness: 0.1, metalness: 0, emissive: 0x1F8A68, emissiveIntensity: 0.25,
   side: THREE.DoubleSide, depthWrite: false
 });
-const waterMat = makeMat(0x6db9ff, { roughness: 0.15 });
-const drugCoreMat = makeMat(0xffc857, { roughness: 0.2 });
-const drugBilayerMat = makeMat(0xff8a5c, { roughness: 0.2 });
+const waterMat = makeMat(0x7DCEB0, { roughness: 0.15 });
+const drugCoreMat = makeMat(0xF0D48A, { roughness: 0.2 });
+const drugBilayerMat = makeMat(0xC9845A, { roughness: 0.2 });
 
 const liposome = new THREE.Group();
 scene.add(liposome);
@@ -204,8 +204,8 @@ const glowCanvas = document.createElement('canvas');
 glowCanvas.width = glowCanvas.height = 256;
 const gctx = glowCanvas.getContext('2d');
 const grad = gctx.createRadialGradient(128, 128, 0, 128, 128, 128);
-grad.addColorStop(0, 'rgba(32,189,176,0.35)');
-grad.addColorStop(1, 'rgba(32,189,176,0)');
+grad.addColorStop(0, 'rgba(228,201,154,0.34)');
+grad.addColorStop(1, 'rgba(228,201,154,0)');
 gctx.fillStyle = grad;
 gctx.fillRect(0, 0, 256, 256);
 const glow = new THREE.Sprite(new THREE.SpriteMaterial({

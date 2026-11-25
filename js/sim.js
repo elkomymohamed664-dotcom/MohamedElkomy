@@ -48,9 +48,9 @@
 
   function bilayerRing(cx, cy, r) {
     return `
-      <circle cx="${cx}" cy="${cy}" r="${r + 4}" fill="none" stroke="#20BDB0" stroke-width="3.5"/>
-      <circle cx="${cx}" cy="${cy}" r="${r - 4}" fill="none" stroke="#8BE7E0" stroke-width="3.5"/>
-      <circle cx="${cx}" cy="${cy}" r="${r - 4}" fill="rgba(77,163,255,0.10)"/>`;
+      <circle cx="${cx}" cy="${cy}" r="${r + 4}" fill="none" stroke="#E4C99A" stroke-width="3.5"/>
+      <circle cx="${cx}" cy="${cy}" r="${r - 4}" fill="none" stroke="#F6E7C1" stroke-width="3.5"/>
+      <circle cx="${cx}" cy="${cy}" r="${r - 4}" fill="rgba(31,138,104,0.16)"/>`;
   }
 
   (function initTypes() {
@@ -224,18 +224,18 @@
       // Core
       ctx.beginPath();
       ctx.arc(C.x, C.y, R_IN, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(77,163,255,0.12)';
+      ctx.fillStyle = 'rgba(31,138,104,0.16)';
       ctx.fill();
 
       // Bilayer ring
       ctx.beginPath();
       ctx.arc(C.x, C.y, R_OUT, 0, Math.PI * 2);
       ctx.arc(C.x, C.y, R_IN, 0, Math.PI * 2, true);
-      ctx.fillStyle = 'rgba(32,189,176,0.20)';
+      ctx.fillStyle = 'rgba(228,201,154,0.22)';
       ctx.fill();
 
       // Heads (outer + inner)
-      ctx.fillStyle = '#20BDB0';
+      ctx.fillStyle = '#E4C99A';
       for (let i = 0; i < 64; i++) {
         const a = (i / 64) * Math.PI * 2;
         ctx.beginPath(); ctx.arc(C.x + Math.cos(a) * R_OUT, C.y + Math.sin(a) * R_OUT, 5, 0, Math.PI * 2); ctx.fill();
@@ -243,7 +243,7 @@
       }
 
       // Drug particles
-      ctx.fillStyle = '#ffc857';
+      ctx.fillStyle = '#C9A15A';
       particles.forEach(p => {
         const age = frame - p.delay;
         if (age < 0) return;
@@ -254,7 +254,7 @@
       ctx.globalAlpha = 1;
 
       // Label
-      ctx.fillStyle = 'rgba(242,247,252,0.85)';
+      ctx.fillStyle = 'rgba(248,241,227,0.85)';
       ctx.font = '600 15px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(mode === 'hydrophilic' ? '💧 Drug in the aqueous core' : '🫧 Drug in the lipid bilayer', C.x, H - 14);
@@ -381,7 +381,7 @@
       ctx.arc(CELL.x, CELL.y, nucR, 0, Math.PI * 2);
       ctx.fillStyle = stage === 4 ? 'rgba(200,80,120,0.5)' : 'rgba(200,80,120,0.35)';
       ctx.fill();
-      ctx.fillStyle = 'rgba(242,247,252,0.8)';
+      ctx.fillStyle = 'rgba(248,241,227,0.8)';
       ctx.font = '600 13px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('Tumor Cell', CELL.x, CELL.y + CELL.r + 22);
@@ -391,18 +391,18 @@
       if (stage === 4 && t > 0.25) return; // dissolved
       const r = 26 * pos.s;
       const glow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, r * 2.2);
-      glow.addColorStop(0, 'rgba(32,189,176,0.35)');
-      glow.addColorStop(1, 'rgba(32,189,176,0)');
+      glow.addColorStop(0, 'rgba(228,201,154,0.35)');
+      glow.addColorStop(1, 'rgba(228,201,154,0)');
       ctx.fillStyle = glow;
       ctx.beginPath(); ctx.arc(pos.x, pos.y, r * 2.2, 0, Math.PI * 2); ctx.fill();
 
       ctx.beginPath(); ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(77,163,255,0.18)'; ctx.fill();
-      ctx.strokeStyle = '#20BDB0'; ctx.lineWidth = 5; ctx.stroke();
+      ctx.fillStyle = 'rgba(31,138,104,0.22)'; ctx.fill();
+      ctx.strokeStyle = '#E4C99A'; ctx.lineWidth = 5; ctx.stroke();
       ctx.beginPath(); ctx.arc(pos.x, pos.y, r - 6, 0, Math.PI * 2);
-      ctx.strokeStyle = '#8BE7E0'; ctx.lineWidth = 3; ctx.stroke();
+      ctx.strokeStyle = '#F6E7C1'; ctx.lineWidth = 3; ctx.stroke();
       ctx.beginPath(); ctx.arc(pos.x, pos.y, 5, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffc857'; ctx.fill();
+      ctx.fillStyle = '#C9A15A'; ctx.fill();
     }
 
     function drawDrugs() {
@@ -413,7 +413,7 @@
           drugDots.push({ x: CELL.x, y: CELL.y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, r: 2.5 + Math.random() * 3 });
         }
       }
-      ctx.fillStyle = '#ffc857';
+      ctx.fillStyle = '#C9A15A';
       drugDots.forEach(d => {
         d.x += d.vx; d.y += d.vy; d.vx *= 0.985; d.vy *= 0.985;
         ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2); ctx.fill();

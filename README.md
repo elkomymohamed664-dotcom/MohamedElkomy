@@ -1,6 +1,6 @@
 # LIPOVERSE — Explore the Science of Liposomes
 
-The original dark scientific learning platform: navy and teal, glass cards, and a real phospholipid vesicle you can rotate.
+The original learning platform in deep emerald and champagne, with glass cards and a real phospholipid vesicle you can rotate.
 
 *Beyond the Cell. Beyond the Science.*
 
