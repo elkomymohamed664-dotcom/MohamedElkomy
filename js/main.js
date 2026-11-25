@@ -12,10 +12,11 @@
     { id: 'explorer',     num: '02', icon: '🔭', title: '3D Explorer',        desc: 'Rotate and click through the liposome structure in 3D.' },
     { id: 'types',        num: '03', icon: '⭕', title: 'Types of Liposomes', desc: 'SUV, LUV, GUV, MLV and MVV — sizes, layers and features.' },
     { id: 'lab',          num: '04', icon: '🧪', title: 'Preparation Lab',    desc: 'Five preparation methods, step by step.' },
-    { id: 'loading',      num: '05', icon: '💊', title: 'Drug Loading',       desc: 'Where hydrophilic and lipophilic drugs are loaded.' },
-    { id: 'simulation',   num: '06', icon: '🩸', title: 'Delivery Simulation',desc: 'Follow the drug journey through the body.' },
-    { id: 'applications', num: '07', icon: '🏥', title: 'Applications',       desc: 'Doxil, AmBisome, Onivyde and Exparel in the clinic.' },
-    { id: 'quiz',         num: '08', icon: '🏆', title: 'Quiz Center',        desc: 'Test yourself with explained questions.' },
+    { id: 'loading',      num: '05', icon: '💊', title: 'Drug Loading',       desc: 'Where hydrophilic and lipophilic drugs are loaded — in 3D.' },
+    { id: 'builder',      num: '06', icon: '⚗️', title: 'Build Your Own Liposome', desc: 'Choose type, cholesterol, PEG and drug — see the result live in 3D.' },
+    { id: 'simulation',   num: '07', icon: '🩸', title: 'Delivery Simulation',desc: 'Follow the drug journey through the body.' },
+    { id: 'applications', num: '08', icon: '🏥', title: 'Applications',       desc: 'Doxil, AmBisome, Onivyde and Exparel in the clinic.' },
+    { id: 'quiz',         num: '09', icon: '🏆', title: 'Quiz Center',        desc: '28 explained questions across 6 categories.' },
   ];
 
   const FLASHCARDS = [
@@ -68,6 +69,8 @@
   const sections = document.querySelectorAll('.section');
   const navLinks = document.querySelectorAll('.nav-links a');
   let explorerLoaded = false;
+  let loadingLoaded = false;
+  let builderLoaded = false;
 
   function showSection(id) {
     sections.forEach(s => s.classList.toggle('active', s.id === 'section-' + id));
@@ -85,7 +88,22 @@
         if (wrap) wrap.innerHTML = '<p style="padding:30px;color:var(--muted)">⚠️ Could not load the 3D engine. Please check your internet connection and reload.</p>';
       });
     }
-    if (id === 'loading' && window.LipoverseLoading) window.LipoverseLoading.start();
+    if (id === 'loading' && !loadingLoaded) {
+      loadingLoaded = true;
+      import('./loading3d.js').catch(err => {
+        console.error('3D drug-loading view failed to load:', err);
+        const wrap = document.getElementById('loading-canvas-wrap');
+        if (wrap) wrap.innerHTML = '<p style="padding:30px;color:var(--muted)">⚠️ Could not load the 3D engine. Please check your internet connection and reload.</p>';
+      });
+    }
+    if (id === 'builder' && !builderLoaded) {
+      builderLoaded = true;
+      import('./builder.js').catch(err => {
+        console.error('Liposome builder failed to load:', err);
+        const wrap = document.getElementById('builder-canvas-wrap');
+        if (wrap) wrap.innerHTML = '<p style="padding:30px;color:var(--muted)">⚠️ Could not load the 3D engine. Please check your internet connection and reload.</p>';
+      });
+    }
     if (id === 'simulation' && window.LipoverseSim) window.LipoverseSim.start();
   }
 
