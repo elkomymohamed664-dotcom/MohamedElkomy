@@ -1,33 +1,30 @@
 # LIPOVERSE — Explore the Science of Liposomes
 
-An interactive 3D learning platform about **liposomes** and liposomal drug delivery,
-built for pharmacy students. *Beyond the Cell. Beyond the Science.*
+An interactive pharmacy learning site about liposomes and liposomal drug delivery.
+English and Arabic, with right-to-left layout. *Beyond the Cell. Beyond the Science.*
 
-## Features
+## What you can do
 
-- **Home & Learning Dashboard** — module map with progress tracking (saved locally)
-- **Introduction** — definition, history timeline, and liposomes vs conventional delivery
-- **3D Liposome Explorer** — a real-time Three.js model: rotate, zoom, click each part
-  (phospholipid bilayer, hydrophilic head, hydrophobic tail, aqueous core, cholesterol),
-  cutaway view, drug-location overlay, and layer toggles
-- **Types of Liposomes** — SUV, LUV, GUV, MLV, MVV with visual diagrams and comparison table
-- **Virtual Preparation Lab** — 5 methods (thin film hydration, reverse phase evaporation,
-  ethanol injection, detergent removal, microfluidics) with steps, pros and cons
-- **Drug Loading Simulator** — animated view of hydrophilic vs lipophilic loading,
-  passive vs active loading, and an encapsulation-efficiency calculator
-- **Drug Delivery Simulation** — animated 5-stage journey through the body
-- **Applications** — Doxil®, AmBisome®, Onivyde®, Exparel®
-- **Quiz Center** — 12 explained questions (MCQ + True/False) with score and review
-- **Flashcards & Glossary** — flip cards and a searchable glossary with Arabic explanations
+- **Learning dashboard** — module progress and best quiz score, saved in this browser
+- **Introduction** — definition, history timeline, and liposomes versus conventional delivery
+- **3D Liposome Explorer** — local Three.js model: drag, zoom, click each part, cutaway, drug-location overlay, and layer toggles. An SVG model stays available if WebGL is unavailable
+- **Types** — SUV, LUV, GUV, MLV and MVV, with diagrams and a comparison table
+- **Virtual Preparation Lab** — five methods (thin-film hydration, ethanol injection, microfluidics, reverse-phase evaporation, detergent removal) with steps, advantages and limits. Conceptual only — not a bench protocol
+- **Drug Loading Simulator** — hydrophilic versus lipophilic cargo, passive versus remote loading, and an encapsulation-efficiency calculator
+- **Delivery simulation** — a five-stage animated journey
+- **Applications** — Doxil, AmBisome, Onivyde and Exparel, for learning only
+- **Quiz** — 12 explained questions, score, and a full review
+- **Flashcards and glossary** — shuffleable cards and a searchable bilingual glossary
 
 ## Tech
 
-Static site — no build step. HTML, CSS, vanilla JavaScript, and Three.js (CDN) for the 3D explorer.
-Deploy anywhere static is served (e.g. Vercel, Netlify, GitHub Pages).
+Static site. No build step and no external network requests at runtime.
+Three.js is bundled in `vendor/` (MIT; see `vendor/THREE-LICENSE.txt`).
 
 ## Run locally
 
 ```bash
-python3 -m http.server 8080
-# open http://localhost:8080
+python3 -m http.server 8080 --bind 0.0.0.0
 ```
+
+Open the site root. Educational simulation — not medical advice. Diagrams are not to scale; check current official labels before any clinical use.
