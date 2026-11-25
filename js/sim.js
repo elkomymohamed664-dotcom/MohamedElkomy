@@ -288,8 +288,8 @@
         : 'Fat-soluble drugs dissolve among the lipid tails.';
       frame = 0; spawn();
     }
-    btnH.addEventListener('click', () => { setMode('hydrophilic'); window.LipoverseSound?.bubble(); });
-    btnL.addEventListener('click', () => { setMode('lipophilic'); window.LipoverseSound?.bubble(); });
+    btnH.addEventListener('click', () => setMode('hydrophilic'));
+    btnL.addEventListener('click', () => setMode('lipophilic'));
 
     // Encapsulation efficiency calculator
     const total = document.getElementById('ee-total');
@@ -464,14 +464,9 @@
       time += 0.016;
       if (playing) {
         t += 0.016 / STAGE_TIME;
-        const simOn = document.getElementById('section-simulation')?.classList.contains('active');
-        if (simOn) {
-          const beat = Math.floor(time / 0.85);
-          if (beat !== soundBeat) { soundBeat = beat; window.LipoverseSound?.bubble(); }
-        }
         if (t >= 1) {
-          if (stage < STAGES.length - 1) { stage++; t = 0; drugDots = []; renderInfo(); window.LipoverseSound?.chime(); }
-          else { playing = false; t = 1; updatePlayBtn(); window.LipoverseSound?.pulse(); }
+          if (stage < STAGES.length - 1) { stage++; t = 0; drugDots = []; renderInfo(); }
+          else { playing = false; t = 1; updatePlayBtn(); }
         }
       }
       ctx.clearRect(0, 0, W, H);
@@ -480,23 +475,29 @@
       drawCell();
       drawLiposome(liposomePos());
       drawDrugs();
+      const simOn = document.getElementById('section-simulation')?.classList.contains('active');
+      window.LipoverseSound?.syncBody?.({ on: playing && !!simOn, stage, t });
       requestAnimationFrame(loop);
     }
 
-    let soundBeat = -1;
     const playBtn = document.getElementById('sim-play');
     function updatePlayBtn() { playBtn.textContent = playing ? '⏸ Pause' : '▶ Play'; }
     playBtn.addEventListener('click', () => {
       if (stage === STAGES.length - 1 && t >= 1) { stage = 0; t = 0; drugDots = []; renderInfo(); }
       playing = !playing; updatePlayBtn();
-      window.LipoverseSound?.unlock();
-      if (playing) window.LipoverseSound?.pulse();
+      if (playing) window.LipoverseSound?.startBody?.(stage);
+      else window.LipoverseSound?.stopBody?.();
     });
     document.getElementById('sim-next').addEventListener('click', () => {
-      if (stage < STAGES.length - 1) { stage++; t = 0; drugDots = []; renderInfo(); window.LipoverseSound?.chime(); }
+      if (stage < STAGES.length - 1) {
+        stage++; t = 0; drugDots = []; renderInfo();
+        if (playing) window.LipoverseSound?.syncBody?.({ on: true, stage, t: 0 });
+        else window.LipoverseSound?.stageCue?.(stage);
+      }
     });
     document.getElementById('sim-reset').addEventListener('click', () => {
       stage = 0; t = 0; playing = false; drugDots = []; updatePlayBtn(); renderInfo();
+      window.LipoverseSound?.stopBody?.();
     });
 
     renderInfo();

@@ -644,13 +644,11 @@ function initGallery() {
     pendingModel = b.dataset.id;
     if (!galleryState.built) startGallery();
     else showGalleryModel(GALLERY.findIndex(g => g.id === b.dataset.id));
-    window.LipoverseSound?.chime();
   }));
   document.querySelectorAll('[data-shape-row]').forEach(row => {
     row.innerHTML = GALLERY.map(g => `<button type="button" class="ctrl-btn" data-model="${g.id}">${g.name}</button>`).join('');
     row.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
       openGalleryModel(b.dataset.model);
-      window.LipoverseSound?.chime();
     }));
   });
   document.querySelector('[data-open-method="extrusion"]')?.addEventListener('click', () => {
@@ -864,16 +862,19 @@ function initInquiry() {
       const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.ok) {
         status.dataset.state = 'bad';
+        window.LipoverseSound?.bad();
         status.textContent = data.code === 'EMAIL_NOT_CONFIGURED'
           ? 'The inquiry API is not finished on this project yet. Email elkomymohamed664@gmail.com directly.'
           : (data.message || 'The inquiry could not be sent. Try again later.');
         return;
       }
       form.reset();
+      window.LipoverseSound?.ok();
       status.dataset.state = 'ok';
       status.textContent = data.message || 'Your inquiry was sent.';
     } catch (error) {
       status.dataset.state = 'bad';
+      window.LipoverseSound?.bad();
       status.textContent = 'The inquiry could not be sent. Check your connection and try again.';
     } finally {
       if (submit) submit.disabled = false;
