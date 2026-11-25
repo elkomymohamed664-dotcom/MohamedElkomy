@@ -569,6 +569,16 @@ function makeVesicle(spec) {
   return group;
 }
 
+let pendingModel = null;
+
+function openGalleryModel(id) {
+  pendingModel = id;
+  window.LipoverseNav?.show('gallery');
+  if (!galleryState.built) return;
+  const i = GALLERY.findIndex(g => g.id === id);
+  if (i >= 0) showGalleryModel(i);
+}
+
 function showGalleryModel(i) {
   const spec = GALLERY[i];
   if (!galleryState.scene) return;
@@ -596,6 +606,7 @@ function showGalleryModel(i) {
   if (name) name.textContent = spec.name;
   if (blurb) blurb.textContent = spec.blurb;
   document.querySelectorAll('#gallery-picks button').forEach(b => b.classList.toggle('active', b.dataset.id === spec.id));
+  document.querySelectorAll('[data-shape-row] button').forEach(b => b.classList.toggle('active', b.dataset.model === spec.id));
 }
 
 function initGallery() {
@@ -604,9 +615,18 @@ function initGallery() {
   if (!canvas || !picks) return;
   picks.innerHTML = GALLERY.map(g => `<button type="button" class="ctrl-btn" data-id="${g.id}">${g.name}</button>`).join('');
   picks.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    pendingModel = b.dataset.id;
     if (!galleryState.built) startGallery();
-    showGalleryModel(GALLERY.findIndex(g => g.id === b.dataset.id));
+    else showGalleryModel(GALLERY.findIndex(g => g.id === b.dataset.id));
   }));
+  document.querySelectorAll('[data-shape-row]').forEach(row => {
+    row.innerHTML = GALLERY.map(g => `<button type="button" class="ctrl-btn" data-model="${g.id}">${g.name}</button>`).join('');
+    row.querySelectorAll('button').forEach(b => b.addEventListener('click', () => openGalleryModel(b.dataset.model)));
+  });
+  document.querySelector('[data-open-method="extrusion"]')?.addEventListener('click', () => {
+    window.LipoverseNav?.show('lab');
+    setTimeout(() => document.querySelector('[data-method="extrusion"]')?.click(), 40);
+  });
 
   const startGallery = () => {
     if (galleryState.built) {
@@ -655,11 +675,12 @@ function initGallery() {
       renderer.render(scene, camera);
     };
     galleryState.loop = loop;
-    showGalleryModel(0);
+    const startAt = GALLERY.findIndex(g => g.id === pendingModel);
+    showGalleryModel(startAt >= 0 ? startAt : 0);
     loop();
   };
 
-  const section = document.getElementById('section-types');
+  const section = document.getElementById('section-gallery');
   const watch = new MutationObserver(() => {
     const on = section?.classList.contains('active');
     if (on) startGallery();

@@ -71,8 +71,8 @@
   const navLinks = document.querySelectorAll('.nav-links a');
   let explorerLoaded = false;
 
-  const PAGE = { gallery: 'types', research: 'applications' };
-  const FOCUS = { gallery: 'gallery-block', research: 'research-block' };
+  const PAGE = { research: 'applications', capacity: 'loading', notes: 'flashcards', practice: 'quiz' };
+  const FOCUS = { research: 'research-block', capacity: 'capacity-panel', notes: 'notes-block', practice: 'quiz-extra' };
 
   function showSection(id) {
     const page = PAGE[id] || id;
@@ -100,12 +100,21 @@
     }
   }
 
-  document.querySelectorAll('[data-nav]').forEach(el => {
-    el.addEventListener('click', e => { e.preventDefault(); showSection(el.dataset.nav); });
+  document.addEventListener('click', e => {
+    const nav = e.target.closest('[data-nav]');
+    if (nav) { e.preventDefault(); showSection(nav.dataset.nav); return; }
+    const go = e.target.closest('[data-goto]');
+    if (go) showSection(go.dataset.goto);
   });
-  document.querySelectorAll('[data-goto]').forEach(el => {
-    el.addEventListener('click', () => showSection(el.dataset.goto));
-  });
+  window.LipoverseNav = { show: showSection };
+
+  function fitNav() {
+    const bar = document.querySelector('.navbar');
+    if (bar) document.documentElement.style.setProperty('--nav-h', Math.ceil(bar.getBoundingClientRect().height) + 'px');
+  }
+  fitNav();
+  window.addEventListener('resize', fitNav);
+  window.addEventListener('load', fitNav);
 
   /* ---------- Module cards ---------- */
   function renderModuleCards() {

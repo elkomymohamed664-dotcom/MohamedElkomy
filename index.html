@@ -42,6 +42,7 @@
           <input type="search" id="global-search" placeholder="Search" aria-label="Search lessons">
           <div id="search-results" class="search-results" hidden></div>
         </div>
+        <button type="button" class="ctrl-btn" data-nav="gallery">3D Models</button>
         <button type="button" class="ctrl-btn theme-btn" id="theme-toggle" aria-pressed="false">Light</button>
         <div class="nav-progress" title="Your progress">
           <span id="nav-progress-pct">0%</span>
@@ -60,7 +61,7 @@
       <a href="#applications" data-nav="applications">Applications</a>
       <a href="#quiz" data-nav="quiz">Quiz</a>
       <a href="#flashcards" data-nav="flashcards">Flashcards</a>
-      <a href="#gallery" data-nav="gallery">Gallery</a>
+      <a href="#gallery" data-nav="gallery">3D Models</a>
       <a href="#research" data-nav="research">Research</a>
     </nav>
   </div>
@@ -83,7 +84,16 @@
     </p>
     <div class="hero-actions">
       <button class="btn btn-primary" data-goto="explorer">Explore 3D →</button>
+      <button class="btn btn-primary" data-goto="gallery">12 vesicle models</button>
       <button class="btn btn-ghost" data-goto="intro">Start Learning</button>
+    </div>
+    <div class="quick-row">
+      <button type="button" class="ctrl-btn" data-goto="gallery">3D shapes</button>
+      <button type="button" class="ctrl-btn" data-open-method="extrusion">Extrusion</button>
+      <button type="button" class="ctrl-btn" data-goto="capacity">Loading capacity</button>
+      <button type="button" class="ctrl-btn" data-goto="research">Research papers</button>
+      <button type="button" class="ctrl-btn" data-goto="practice">Quiz practice</button>
+      <button type="button" class="ctrl-btn" data-goto="notes">Notes</button>
     </div>
     <div class="hero-stats">
       <div class="stat"><strong>10</strong><span>Learning Modules</span></div>
@@ -204,6 +214,13 @@
     <p>Rotate, zoom and click on each part of the liposome to discover its function.</p>
   </div>
 
+  <div class="shape-panel glass-card">
+    <h2>Other 3D shapes</h2>
+    <p>This page shows one detailed vesicle. The twelve buttons open a separate orbitable model for each type and surface.</p>
+    <p class="ar">الأشكال التانية هنا. دوس على أي اسم وهيفتح الموديل ثلاثي الأبعاد.</p>
+    <div class="gallery-picks" data-shape-row></div>
+  </div>
+
   <div class="explorer-layout">
     <div class="explorer-view glass-card">
       <div id="explorer-canvas-wrap"></div>
@@ -240,6 +257,30 @@
   </div>
 </section>
 
+<!-- ============ 3D GALLERY ============ -->
+<section class="section" id="section-gallery">
+  <div class="page-head">
+    <span class="page-chip">12 models</span>
+    <h1>3D vesicle models</h1>
+    <p>Pick a shape: SUV, LUV, GUV, MLV, OLV, MVV, PEGylated, Cationic, Anionic, Targeted, pH-sensitive, or Thermosensitive. Drag to rotate and scroll to zoom.</p>
+    <p class="ar">اختار الشكل من الأزرار اللي فوق الموديل.</p>
+  </div>
+  <div class="gallery-picks" id="gallery-picks"></div>
+  <div class="glass-card gallery-stage">
+    <canvas id="gallery-canvas"></canvas>
+    <div class="explorer-hint">Drag to rotate · Scroll to zoom</div>
+    <div class="gallery-caption">
+      <h2 id="gallery-name">SUV</h2>
+      <p id="gallery-blurb"></p>
+    </div>
+  </div>
+  <p class="note">Sizes and surface details are teaching models. Reported ranges vary by reference and by how the batch was made.</p>
+  <div class="next-bar">
+    <span>Next: compare the types in a table</span>
+    <button class="btn btn-primary" data-goto="types">Types table →</button>
+  </div>
+</section>
+
 <!-- ============ TYPES ============ -->
 <section class="section" id="section-types">
   <div class="page-head">
@@ -247,6 +288,12 @@
     <h1>Types of Liposomes</h1>
     <p>Select a type to see how its structure changes — number of bilayers and internal compartments.</p>
     <button type="button" class="bookmark-btn" data-bookmark="types">☆ Save</button>
+  </div>
+
+  <div class="shape-panel glass-card">
+    <h2>Open this type in 3D</h2>
+    <p class="ar">الأشكال ثلاثية الأبعاد مش الرسم اللي تحت. دوس على الاسم.</p>
+    <div class="gallery-picks" data-shape-row></div>
   </div>
 
   <div class="type-selector" id="type-selector"></div>
@@ -267,21 +314,6 @@
     </table>
   </div>
   <p class="note">⚠️ Note: size ranges and classifications may vary between references and preparation methods.</p>
-
-  <h2 class="section-title" id="gallery-block">3D models</h2>
-  <p class="lead">SUV, LUV, GUV, MLV, OLV, MVV, and the surface designs. Drag to rotate and scroll to zoom.</p>
-  <div class="gallery-layout">
-    <div class="glass-card gallery-stage">
-      <canvas id="gallery-canvas"></canvas>
-      <div class="explorer-hint">Drag to rotate · Scroll to zoom</div>
-      <div class="gallery-caption">
-        <h2 id="gallery-name">SUV</h2>
-        <p id="gallery-blurb"></p>
-      </div>
-    </div>
-    <div class="gallery-picks" id="gallery-picks"></div>
-  </div>
-  <p class="note">Sizes and surface details are teaching models. Reported ranges vary by reference and by how the batch was made.</p>
 
   <div class="next-bar">
     <span>Next: how liposomes are prepared</span>
