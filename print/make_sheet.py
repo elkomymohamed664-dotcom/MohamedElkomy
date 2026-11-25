@@ -82,13 +82,53 @@ def load_seal(path, size):
 
 
 def make_qr(size):
+    """QR with the site liposome in the center. Error correction H keeps it scannable."""
     code = segno.make(URL, error="h")
-    path = os.path.join(ROOT, "_qr.png")
-    code.save(path, scale=18, border=2, dark="#141218", light="#ffffff")
-    img = Image.open(path).convert("RGB")
-    img = img.resize((size, size), Image.Resampling.NEAREST)
-    os.remove(path)
-    return img
+    matrix = code.matrix
+    n = len(matrix)
+    border = 4
+    logo_modules = 13
+    modules = n + border * 2
+    module_px = max(4, size // modules)
+    canvas = modules * module_px
+    start = (n - logo_modules) // 2
+    im = Image.new("RGBA", (canvas, canvas), (255, 255, 255, 255))
+    draw = ImageDraw.Draw(im)
+    dark = INK + (255,)
+    finder = (76, 29, 149, 255)
+    for r in range(n):
+        for c in range(n):
+            if start <= r < start + logo_modules and start <= c < start + logo_modules:
+                continue
+            if not matrix[r][c]:
+                continue
+            x0 = (c + border) * module_px
+            y0 = (r + border) * module_px
+            in_finder = (r < 7 and c < 7) or (r < 7 and c >= n - 7) or (r >= n - 7 and c < 7)
+            if in_finder:
+                draw.rectangle((x0, y0, x0 + module_px - 1, y0 + module_px - 1), fill=finder)
+            else:
+                pad = max(1, module_px // 6)
+                draw.ellipse(
+                    (x0 + pad, y0 + pad, x0 + module_px - 1 - pad, y0 + module_px - 1 - pad),
+                    fill=dark,
+                )
+    inner = (logo_modules - 2) * module_px
+    hero = Image.open(os.path.join(ROOT, "liposome-hero.png"))
+    mark = circle_image(hero, inner, ring=max(2, inner // 36), ring_color=VIOLET)
+    ox = (start + border + 1) * module_px
+    oy = ox
+    disc = inner + module_px
+    plate = Image.new("RGBA", (disc, disc), (0, 0, 0, 0))
+    ImageDraw.Draw(plate).ellipse((0, 0, disc - 1, disc - 1), fill=(255, 255, 255, 255))
+    im.paste(plate, (ox - (disc - inner) // 2, oy - (disc - inner) // 2), plate)
+    im.paste(mark, (ox, oy), mark)
+    if canvas != size:
+        page = Image.new("RGB", (size, size), WHITE)
+        left = (size - canvas) // 2
+        page.paste(im.convert("RGB"), (left, left))
+        return page
+    return im.convert("RGB")
 
 
 def paste_rgba(base, overlay, xy):
