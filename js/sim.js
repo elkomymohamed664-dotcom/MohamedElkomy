@@ -152,6 +152,19 @@
       ],
       pros: ['Excellent size control & reproducibility', 'Continuous production', 'Low PDI'],
       cons: ['Specialized equipment needed', 'Higher initial cost', 'Chip fouling possible']
+    },
+    {
+      id: 'extrusion', name: 'Membrane Extrusion',
+      principle: 'A coarse suspension is forced through track-etched polycarbonate membranes of a chosen pore size. Repeated passes narrow the size distribution. Extrusion is usually the sizing step after thin-film hydration.',
+      materials: ['Hydrated MLV suspension', 'Polycarbonate membranes', 'Extruder', 'Support filters'],
+      steps: [
+        ['Hydrate first', 'Prepare a polydisperse MLV suspension, often from a thin lipid film.'],
+        ['Choose the pore', 'Fit a membrane of the target pore size, commonly 100 nm or 200 nm.'],
+        ['Pass repeatedly', 'Force the suspension through the membrane, usually 10 or more times, above the lipid transition temperature.'],
+        ['Check the size', 'Collect the suspension and measure diameter and PDI by dynamic light scattering.']
+      ],
+      pros: ['Tight, reproducible size control', 'Scales from syringes to larger extruders', 'Standard route to SUVs and small LUVs'],
+      cons: ['Membranes clog if the sample is concentrated', 'Some lipid is lost on the membrane', 'Does not by itself create a remote-loading gradient']
     }
   ];
 

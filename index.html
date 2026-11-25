@@ -266,20 +266,8 @@
   </div>
   <p class="note">⚠️ Note: size ranges and classifications may vary between references and preparation methods.</p>
 
-  <div class="next-bar">
-    <span>Next: how liposomes are prepared</span>
-    <button class="btn btn-primary" data-goto="lab">Enter the Lab →</button>
-  </div>
-</section>
-
-<!-- ============ 3D GALLERY ============ -->
-<section class="section" id="section-gallery">
-  <div class="page-head">
-    <span class="page-chip">Gallery</span>
-    <h1>3D Molecular Gallery</h1>
-    <p>SUV, LUV, GUV, MLV, OLV, MVV, and the main surface designs. Drag to rotate and scroll to zoom.</p>
-    <button type="button" class="bookmark-btn" data-bookmark="gallery">☆ Save</button>
-  </div>
+  <h2 class="section-title" id="gallery-block">3D models</h2>
+  <p class="page-head" style="margin-top:-8px">SUV, LUV, GUV, MLV, OLV, MVV, and the surface designs. Drag to rotate and scroll to zoom.</p>
   <div class="gallery-layout">
     <div class="glass-card gallery-stage">
       <canvas id="gallery-canvas"></canvas>
@@ -292,6 +280,11 @@
     <div class="gallery-picks" id="gallery-picks"></div>
   </div>
   <p class="note">Sizes and surface details are teaching models. Reported ranges vary by reference and by how the batch was made.</p>
+
+  <div class="next-bar">
+    <span>Next: how liposomes are prepared</span>
+    <button class="btn btn-primary" data-goto="lab">Enter the Lab →</button>
+  </div>
 </section>
 
 <!-- ============ PREPARATION LAB ============ -->
@@ -363,6 +356,21 @@
     </div>
   </div>
 
+  <div class="capacity-panel glass-card" id="capacity-panel">
+    <h3>Drug-loading capacity</h3>
+    <p class="ee-note">Encapsulation efficiency is the fraction of added drug that ended up inside. Loading capacity is how much drug mass the formulation mass can carry.</p>
+    <div class="cap-grid">
+      <label>Drug added (mg)<input id="cap-added" type="number" min="0" step="0.1" value="10"></label>
+      <label>Drug trapped inside (mg)<input id="cap-trapped" type="number" min="0" step="0.1" value="8"></label>
+      <label>Total formulation mass (mg)<input id="cap-total" type="number" min="0" step="0.1" value="100"></label>
+    </div>
+    <div class="cap-out">
+      <div><span>Encapsulation efficiency</span><strong id="cap-ee">—</strong></div>
+      <div><span>Drug-loading capacity</span><strong id="cap-dlc">—</strong></div>
+    </div>
+    <p id="cap-warn" class="ee-note"></p>
+  </div>
+
   <div class="next-bar">
     <span>Next: follow the drug's journey in the body</span>
     <button class="btn btn-primary" data-goto="simulation">Run Simulation →</button>
@@ -389,6 +397,7 @@
     </div>
     <aside class="glass-card sim-info" id="sim-info"></aside>
   </div>
+  <p id="sim-caveat" class="sim-caveat">This is one teaching pathway: circulation, leaky-tumor accumulation, cell contact, uptake, and release. Real liposomes do not all follow it. Some release drug outside the cell, some fuse, some are cleared by liver and spleen macrophages, and some products act locally rather than in a tumor.</p>
 
   <div class="next-bar">
     <span>Next: real liposomal medicines</span>
@@ -404,6 +413,10 @@
     <p>Real medicines that use liposomal technology — theory meets the clinic.</p>
   </div>
   <div class="apps-grid" id="apps-grid"></div>
+
+  <h2 class="section-title" id="research-block">Research</h2>
+  <p>Published reviews on liposomal drug delivery. Read the paper before citing a number from it.</p>
+  <div class="research-list" id="research-list"></div>
 
   <div class="next-bar">
     <span>Next: test yourself</span>
@@ -450,23 +463,6 @@
   </div>
 </section>
 
-<!-- ============ RESEARCH ============ -->
-<section class="section" id="section-research">
-  <div class="page-head">
-    <span class="page-chip">Library</span>
-    <h1>Research</h1>
-    <p>Published reviews on liposomal drug delivery. Read the paper before citing a number from it.</p>
-    <button type="button" class="bookmark-btn" data-bookmark="research">☆ Save</button>
-  </div>
-  <div class="research-list" id="research-list"></div>
-  <div class="glass-card notes-card">
-    <h2>Your notes</h2>
-    <p class="ee-note">Saved in this browser. Download makes a plain text file.</p>
-    <textarea id="study-notes" rows="8" placeholder="Write a reminder, a question, or a citation…"></textarea>
-    <button type="button" class="btn btn-primary" id="download-notes">Download notes</button>
-  </div>
-</section>
-
 <!-- ============ FLASHCARDS ============ -->
 <section class="section" id="section-flashcards">
   <div class="page-head">
@@ -503,6 +499,13 @@
     <input type="search" id="glossary-search" placeholder="🔍 Search a term…">
   </div>
   <div class="glossary-grid" id="glossary-grid"></div>
+
+  <h2 class="section-title" id="notes-block">Notes</h2>
+  <div class="glass-card notes-card">
+    <p class="ee-note">Saved in this browser. Download makes a plain text file.</p>
+    <textarea id="study-notes" rows="8" placeholder="Write a reminder, a question, or a citation…"></textarea>
+    <button type="button" class="btn btn-primary" id="download-notes">Download notes</button>
+  </div>
 </section>
 
 </main>

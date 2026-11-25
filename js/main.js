@@ -71,10 +71,13 @@
   const navLinks = document.querySelectorAll('.nav-links a');
   let explorerLoaded = false;
 
+  const PAGE = { gallery: 'types', research: 'applications' };
+  const FOCUS = { gallery: 'gallery-block', research: 'research-block' };
+
   function showSection(id) {
-    sections.forEach(s => s.classList.toggle('active', s.id === 'section-' + id));
-    navLinks.forEach(a => a.classList.toggle('active', a.dataset.nav === id));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const page = PAGE[id] || id;
+    sections.forEach(s => s.classList.toggle('active', s.id === 'section-' + page));
+    navLinks.forEach(a => a.classList.toggle('active', a.dataset.nav === id || (id === page && a.dataset.nav === page)));
     if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
     markVisited(id);
     renderModuleCards();
@@ -87,8 +90,14 @@
         if (wrap) wrap.innerHTML = '<p style="padding:30px;color:var(--muted)">⚠️ Could not load the 3D engine. Please check your internet connection and reload.</p>';
       });
     }
-    if (id === 'loading' && window.LipoverseLoading) window.LipoverseLoading.start();
-    if (id === 'simulation' && window.LipoverseSim) window.LipoverseSim.start();
+    if (page === 'loading' && window.LipoverseLoading) window.LipoverseLoading.start();
+    if (page === 'simulation' && window.LipoverseSim) window.LipoverseSim.start();
+    const focus = FOCUS[id];
+    if (focus) {
+      setTimeout(() => document.getElementById(focus)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   document.querySelectorAll('[data-nav]').forEach(el => {
@@ -240,5 +249,10 @@
   renderDashboard();
 
   const initial = (location.hash || '#home').replace('#', '');
-  showSection(document.getElementById('section-' + initial) ? initial : 'home');
+  const initialPage = PAGE[initial] || initial;
+  showSection(document.getElementById('section-' + initialPage) ? initial : 'home');
+  window.addEventListener('hashchange', () => {
+    const id = location.hash.replace('#', '');
+    if (id) showSection(id);
+  });
 })();

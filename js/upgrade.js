@@ -189,6 +189,7 @@ function initLabExtras() {
     ethanol: { q: 'What drives vesicle formation in ethanol injection?', options: ['Lipids crashing out of water as the solvent is diluted', 'Heating lipids above 200 °C', 'Adding detergent above its CMC only'], answer: 0, why: 'Lipids dissolved in ethanol (or another water-miscible solvent) self-assemble as the solvent mixes into excess aqueous phase.' },
     detergent: { q: 'What must be removed to leave closed vesicles?', options: ['All phospholipid', 'Detergent, until its concentration falls below the level that keeps mixed micelles', 'Cholesterol only'], answer: 1, why: 'Detergent holds lipids in micelles. Dialysis, dilution, or beads drop detergent below that threshold and bilayers close.' },
     microfluidic: { q: 'What mainly sets vesicle size in a hydrodynamic-focusing chip?', options: ['Only the color of the lipids', 'Flow-rate ratio and mixing of solvent and aqueous streams', 'The brand of the glass vial downstream'], answer: 1, why: 'The flow-rate ratio controls how fast solvent is diluted. Faster, controlled mixing tends to give smaller, more uniform vesicles.' },
+    extrusion: { q: 'Why is the suspension usually passed through the membrane many times, not once?', options: ['Each pass further reduces large vesicles that did not yet pass as smaller ones', 'One pass always yields a monodisperse 50 nm population', 'Repeated passes remove all cholesterol'], answer: 0, why: 'Early passes still contain vesicles larger than the pore. Repeated passes narrow the distribution; they do not guarantee one exact diameter.' },
   };
 
   btn.addEventListener('click', () => {
@@ -228,24 +229,27 @@ function initLabExtras() {
 /* ================= LOADING: capacity + numbers ================= */
 function initLoadingExtras() {
   const section = document.getElementById('section-loading');
-  if (!section || document.getElementById('capacity-panel')) return;
-  const host = document.createElement('div');
-  host.className = 'capacity-panel card';
-  host.id = 'capacity-panel';
-  host.innerHTML = `
-    <h3>Encapsulation efficiency vs drug-loading capacity</h3>
-    <p class="ee-note">These are different ratios. Encapsulation efficiency asks what fraction of the drug you added ended up inside. Loading capacity asks how much drug mass the vesicle mass can carry. A process can trap most of a tiny dose (high EE, low capacity) or carry a heavy cargo inefficiently.</p>
-    <div class="cap-grid">
-      <label>Drug added (mg)<input id="cap-added" type="number" min="0" step="0.1" value="10"></label>
-      <label>Drug trapped inside (mg)<input id="cap-trapped" type="number" min="0" step="0.1" value="8"></label>
-      <label>Total formulation mass (mg)<input id="cap-total" type="number" min="0" step="0.1" value="100"></label>
-    </div>
-    <div class="cap-out">
-      <div><span>Encapsulation efficiency</span><strong id="cap-ee">—</strong></div>
-      <div><span>Drug-loading capacity</span><strong id="cap-dlc">—</strong></div>
-    </div>
-    <p id="cap-warn" class="ee-note"></p>`;
-  section.querySelector('.section-inner')?.appendChild(host);
+  let host = document.getElementById('capacity-panel');
+  if (!host && section) {
+    host = document.createElement('div');
+    host.className = 'capacity-panel glass-card';
+    host.id = 'capacity-panel';
+    host.innerHTML = `
+      <h3>Encapsulation efficiency vs drug-loading capacity</h3>
+      <p class="ee-note">These are different ratios. Encapsulation efficiency asks what fraction of the drug you added ended up inside. Loading capacity asks how much drug mass the vesicle mass can carry.</p>
+      <div class="cap-grid">
+        <label>Drug added (mg)<input id="cap-added" type="number" min="0" step="0.1" value="10"></label>
+        <label>Drug trapped inside (mg)<input id="cap-trapped" type="number" min="0" step="0.1" value="8"></label>
+        <label>Total formulation mass (mg)<input id="cap-total" type="number" min="0" step="0.1" value="100"></label>
+      </div>
+      <div class="cap-out">
+        <div><span>Encapsulation efficiency</span><strong id="cap-ee">—</strong></div>
+        <div><span>Drug-loading capacity</span><strong id="cap-dlc">—</strong></div>
+      </div>
+      <p id="cap-warn" class="ee-note"></p>`;
+    section.querySelector('.next-bar')?.before(host);
+  }
+  if (!host) return;
   const added = host.querySelector('#cap-added');
   const trapped = host.querySelector('#cap-trapped');
   const total = host.querySelector('#cap-total');
@@ -273,7 +277,7 @@ function initSimExtras() {
     note.id = 'sim-caveat';
     note.className = 'sim-caveat';
     note.textContent = 'This is one teaching pathway: circulation, leaky-tumor accumulation, cell contact, uptake, and release. Real liposomes do not all follow it. Some release drug outside the cell, some fuse, some are cleared by liver and spleen macrophages, and some products are meant to act locally rather than in a tumor. The animation is a model, not a claim that every vesicle uses these stages.';
-    section.querySelector('.section-inner')?.appendChild(note);
+    section.querySelector('.next-bar')?.before(note);
   }
 }
 
@@ -655,7 +659,7 @@ function initGallery() {
     loop();
   };
 
-  const section = document.getElementById('section-gallery');
+  const section = document.getElementById('section-types');
   const watch = new MutationObserver(() => {
     const on = section?.classList.contains('active');
     if (on) startGallery();

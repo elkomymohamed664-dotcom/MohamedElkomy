@@ -21,6 +21,7 @@
   --font-display: 'Sora', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-ar: 'Cairo', sans-serif;
+  --nav-h: 118px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -67,8 +68,8 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .nav-inner {
-  max-width: 1280px; margin: 0 auto; padding: 0 20px;
-  display: flex; align-items: center; gap: 22px; height: 64px;
+  max-width: 1280px; margin: 0 auto; padding: 8px 20px 10px;
+  display: flex; align-items: center; gap: 14px 22px; min-height: 64px; flex-wrap: wrap;
 }
 .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
 .logo-mark { display: flex; animation: spin 14s linear infinite; }
@@ -77,8 +78,8 @@ body {
 .logo-text span { color: var(--teal); }
 
 .nav-links {
-  display: flex; gap: 4px; overflow-x: auto; flex: 1; min-width: 0;
-  scrollbar-width: thin; padding: 4px 0;
+  display: flex; gap: 4px; flex: 1 1 100%; order: 5; flex-wrap: wrap;
+  padding: 2px 0 0;
 }
 .nav-links::-webkit-scrollbar { display: none; }
 .nav-links a {
@@ -94,7 +95,7 @@ body {
 .nav-progress-bar div { height: 100%; width: 0%; background: linear-gradient(90deg, var(--teal), var(--cyan)); border-radius: 99px; transition: width 0.5s; }
 
 /* ---------- Layout ---------- */
-main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 100px 20px 40px; }
+main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: calc(var(--nav-h) + 28px) 20px 40px; }
 .section { display: none; animation: fadeUp 0.45s ease both; }
 .section.active { display: block; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
@@ -434,8 +435,9 @@ main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; paddin
 .search-results button:hover, .bookmark-strip button:hover { background: var(--glass-strong); }
 .search-results span, .search-empty { display: block; color: var(--muted); font-size: 0.75rem; }
 .theme-btn { white-space: nowrap; }
+#gallery-block, #research-block, #notes-block, #capacity-panel { scroll-margin-top: 130px; }
 .bookmark-strip {
-  position: fixed; top: 64px; left: 0; right: 0; z-index: 90;
+  position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 90;
   display: flex; gap: 8px; align-items: center; padding: 0 20px; min-height: 0;
   background: rgba(7, 28, 22, 0.72);
 }
