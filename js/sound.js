@@ -12,7 +12,6 @@
   let bodyStage = -1;
   let beatTimer = 0;
   let lastWhoosh = 0;
-  let lastRelease = 0;
   let lastTick = 0;
   let lastTouch = 0;
   const cueFlags = {};
@@ -76,23 +75,6 @@
       bodyBus.connect(master);
     }
     return bodyBus;
-  }
-
-  function softTone(dest, from, to, duration, peak) {
-    if (!ready()) return;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const now = ctx.currentTime;
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(Math.max(80, from), now);
-    if (to && to !== from) osc.frequency.exponentialRampToValueAtTime(Math.max(80, to), now + duration);
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(Math.max(0.001, peak), now + Math.min(0.055, duration * 0.4));
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-    osc.connect(gain);
-    gain.connect(dest);
-    osc.start(now);
-    osc.stop(now + duration + 0.02);
   }
 
   function tone(dest, from, to, duration, peak, type) {
@@ -352,20 +334,25 @@
     grab() {
       if (!ready()) return;
       const now = performance.now();
-      if (now - lastTouch < 110) return;
+      if (now - lastTouch < 70) return;
       lastTouch = now;
-      const dest = vesicleOut();
-      const root = 520 + Math.random() * 18;
-      softTone(dest, root, root * 1.16, 0.28, 0.05);
-      softTone(dest, root * 1.006, root * 1.17, 0.26, 0.022);
-      softTone(dest, root * 1.5, root * 1.58, 0.18, 0.012);
+      const src = ctx.createBufferSource();
+      src.buffer = noiseBuffer();
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.value = 2400;
+      const gain = ctx.createGain();
+      const t = ctx.currentTime;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.018, t + 0.004);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.028);
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(uiOut());
+      src.start(t);
+      src.stop(t + 0.04);
     },
-    release() {
-      const now = performance.now();
-      if (now - lastRelease < 160) return;
-      lastRelease = now;
-      softTone(vesicleOut(), 620, 470, 0.16, 0.016);
-    },
+    release() {},
     whoosh() {
       if (!ready()) return;
       const now = performance.now();
