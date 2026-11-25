@@ -12,6 +12,7 @@ The original learning platform in deep emerald and champagne, with glass cards a
 - Types: SUV, LUV, GUV, MLV, and MVV
 - Preparation lab, drug-loading simulator, and delivery journey
 - Clinic examples, quiz, flashcards, and glossary
+- Added without replacing the above: 12-model 3D gallery, membrane extrusion and lab checks, encapsulation versus loading capacity, search, bookmarks, light mode, downloadable notes, research links, and matching / ordering / labeling practice
 
 ## Tech
 

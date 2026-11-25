@@ -568,7 +568,7 @@
       const q = QUIZ[idx];
       const correct = i === q.a;
       if (correct) score++;
-      answers.push({ q: q.q, chosen: q.opts[i], correctText: q.opts[q.a], ok: correct });
+      answers.push({ q: q.q, chosen: q.opts[i], correctText: q.opts[q.a], ok: correct, ex: q.ex });
       card.querySelectorAll('.quiz-opt').forEach(btn => {
         btn.disabled = true;
         const bi = parseInt(btn.dataset.i, 10);
@@ -592,6 +592,11 @@
         : 'Keep learning — explore the 3D Explorer and try again!';
       if (window.LipoverseProgress) window.LipoverseProgress.setQuizBest(pct);
       const wrong = answers.filter(a => !a.ok);
+      try {
+        localStorage.setItem('lipoverse-wrong', JSON.stringify(wrong.map(a => ({
+          q: a.q, correct: a.correctText, explanation: a.ex || '',
+        }))));
+      } catch (e) { /* ignore */ }
       card.innerHTML = `
         <div class="quiz-result">
           <div class="quiz-score-big">${pct}%</div>

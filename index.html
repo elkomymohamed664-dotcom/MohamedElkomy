@@ -47,13 +47,23 @@
       <a href="#applications" data-nav="applications">Applications</a>
       <a href="#quiz" data-nav="quiz">Quiz</a>
       <a href="#flashcards" data-nav="flashcards">Flashcards</a>
+      <a href="#gallery" data-nav="gallery">3D Gallery</a>
+      <a href="#research" data-nav="research">Research</a>
     </nav>
+    <div class="nav-tools">
+      <div class="search-wrap">
+        <input type="search" id="global-search" placeholder="Search lessons…" aria-label="Search lessons">
+        <div id="search-results" class="search-results" hidden></div>
+      </div>
+      <button type="button" class="ctrl-btn theme-btn" id="theme-toggle" aria-pressed="false">☀️ Light</button>
+    </div>
     <div class="nav-progress" title="Your progress">
       <span id="nav-progress-pct">0%</span>
       <div class="nav-progress-bar"><div id="nav-progress-fill"></div></div>
     </div>
   </div>
 </header>
+<div id="bookmark-strip" class="bookmark-strip"></div>
 
 <main id="app">
 
@@ -234,6 +244,7 @@
     <span class="page-chip">Module 03</span>
     <h1>Types of Liposomes</h1>
     <p>Select a type to see how its structure changes — number of bilayers and internal compartments.</p>
+    <button type="button" class="bookmark-btn" data-bookmark="types">☆ Save</button>
   </div>
 
   <div class="type-selector" id="type-selector"></div>
@@ -256,9 +267,31 @@
   <p class="note">⚠️ Note: size ranges and classifications may vary between references and preparation methods.</p>
 
   <div class="next-bar">
-    <span>Next: how liposomes are prepared</span>
+    <span>Next: twelve distinct 3D models, then the lab</span>
+    <button class="btn btn-ghost" data-goto="gallery">Open 3D Gallery</button>
     <button class="btn btn-primary" data-goto="lab">Enter the Lab →</button>
   </div>
+</section>
+
+<!-- ============ 3D GALLERY (added) ============ -->
+<section class="section" id="section-gallery">
+  <div class="page-head">
+    <span class="page-chip">Added · Gallery</span>
+    <h1>3D Molecular Gallery</h1>
+    <p>Each type is a different model — size, number of shells, inner vesicles, PEG chains, charge, ligands, pores, or a warm rim. This does not replace the structure explorer.</p>
+    <button type="button" class="bookmark-btn" data-bookmark="gallery">☆ Save</button>
+  </div>
+  <div class="gallery-layout">
+    <div class="glass-card gallery-stage">
+      <canvas id="gallery-canvas"></canvas>
+      <div class="gallery-caption">
+        <h2 id="gallery-name">SUV</h2>
+        <p id="gallery-blurb"></p>
+      </div>
+    </div>
+    <div class="gallery-picks" id="gallery-picks"></div>
+  </div>
+  <p class="note">These models are teaching diagrams, not measured structures. Size classes and surface chemistry vary by reference and by how the batch was made.</p>
 </section>
 
 <!-- ============ PREPARATION LAB ============ -->
@@ -266,7 +299,8 @@
   <div class="page-head">
     <span class="page-chip">Module 04</span>
     <h1>Virtual Preparation Lab</h1>
-    <p>Five classic methods for preparing liposomes — principle, steps, advantages and limitations.</p>
+    <p>Five classic methods, plus membrane extrusion as its own sizing method. Each method has a short knowledge check.</p>
+    <button type="button" class="bookmark-btn" data-bookmark="lab">☆ Save</button>
   </div>
 
   <div class="lab-tabs" id="lab-tabs"></div>
@@ -385,6 +419,52 @@
     <p>Test your knowledge — every answer comes with a scientific explanation.</p>
   </div>
   <div class="glass-card quiz-card" id="quiz-card"></div>
+
+  <div class="quiz-extra" id="quiz-extra">
+    <h2 class="section-title">More ways to practice</h2>
+    <div class="quiz-extra-grid">
+      <article class="glass-card">
+        <h3>Match the pairs</h3>
+        <div id="match-board" class="match-board"></div>
+      </article>
+      <article class="glass-card">
+        <h3>Order this teaching pathway</h3>
+        <p class="ee-note">Move each step up until the sequence matches the simulation. Other biological routes exist.</p>
+        <ol id="order-list" class="order-list"></ol>
+        <button type="button" class="ctrl-btn" id="order-check">Check order</button>
+        <p id="order-status" class="ee-note"></p>
+      </article>
+      <article class="glass-card">
+        <h3>Label the four parts</h3>
+        <p class="ee-note">Drag a name onto a part, or select a name and then click the part.</p>
+        <div id="label-board" class="label-board"></div>
+        <div id="label-bank" class="label-bank"></div>
+        <p id="label-status" class="ee-note"></p>
+      </article>
+      <article class="glass-card">
+        <h3>Review missed questions</h3>
+        <button type="button" class="ctrl-btn" id="review-btn">Show review</button>
+        <div id="review-box" hidden></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESEARCH + NOTES (added) ============ -->
+<section class="section" id="section-research">
+  <div class="page-head">
+    <span class="page-chip">Added · Library</span>
+    <h1>Latest research</h1>
+    <p>Four published reviews. Titles and links only — read the paper before citing a number from it.</p>
+    <button type="button" class="bookmark-btn" data-bookmark="research">☆ Save</button>
+  </div>
+  <div class="research-list" id="research-list"></div>
+  <div class="glass-card notes-card">
+    <h2>Your notes</h2>
+    <p class="ee-note">Saved in this browser. Download makes a plain text file.</p>
+    <textarea id="study-notes" rows="8" placeholder="Write a reminder, a question, or a citation…"></textarea>
+    <button type="button" class="btn btn-primary" id="download-notes">Download notes</button>
+  </div>
 </section>
 
 <!-- ============ FLASHCARDS ============ -->
@@ -437,5 +517,9 @@
 
 <script src="js/main.js"></script>
 <script src="js/sim.js"></script>
+<script type="module">
+  import { initUpgrade } from './js/upgrade.js';
+  initUpgrade();
+</script>
 </body>
 </html>
