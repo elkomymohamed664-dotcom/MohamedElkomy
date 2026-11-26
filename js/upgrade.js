@@ -838,6 +838,30 @@ function initInquiry() {
   const form = document.getElementById('inquiry-form');
   const status = document.getElementById('inquiry-status');
   if (!form || !status) return;
+  const INQUIRY_TO = 'elkomymohamed664@gmail.com';
+  const mailLink = document.getElementById('inquiry-mail-link');
+  function buildMailto(payload) {
+    const name = String(payload?.name || '').trim();
+    const email = String(payload?.email || '').trim();
+    const message = String(payload?.message || '').trim();
+    if (!name || !email || !message) return '';
+    const subject = 'LIPOVERSE inquiry from ' + name;
+    const body = 'Name: ' + name + '\nEmail: ' + email + '\n\nInquiry:\n' + message;
+    return 'mailto:' + INQUIRY_TO +
+      '?subject=' + encodeURIComponent(subject) +
+      '&body=' + encodeURIComponent(body);
+  }
+  function showMailDraft(mailto, message) {
+    status.dataset.state = 'ok';
+    status.textContent = message;
+    if (mailLink && mailto) {
+      mailLink.href = mailto;
+      mailLink.hidden = false;
+    }
+  }
+  function clearMailDraft() {
+    if (mailLink) { mailLink.hidden = true; mailLink.removeAttribute('href'); }
+  }
   const submit = form.querySelector('button[type="submit"]');
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -863,16 +887,28 @@ function initInquiry() {
       if (!response.ok || !data.ok) {
         status.dataset.state = 'bad';
         window.LipoverseSound?.bad();
-        status.textContent = data.code === 'EMAIL_NOT_CONFIGURED'
-          ? 'The inquiry API is not finished on this project yet. Email elkomymohamed664@gmail.com directly.'
-          : (data.message || 'The inquiry could not be sent. Try again later.');
+        status.textContent = data.message || 'The inquiry could not be sent. Try again later.';
         return;
       }
       form.reset();
+      if (data.delivery === 'mailto') {
+        // The project has no mail service attached, so the inquiry is handed
+        // back as a ready-to-send draft in the visitor's own mail app.
+        showMailDraft(data.mailto, data.message || 'Your email app is opening with the inquiry filled in — press send there.');
+        return;
+      }
+      clearMailDraft();
       window.LipoverseSound?.ok();
       status.dataset.state = 'ok';
       status.textContent = data.message || 'Your inquiry was sent.';
     } catch (error) {
+      // The API could not be reached at all — fall back to a mail draft so the
+      // inquiry is never lost.
+      const fallback = buildMailto(payload);
+      if (fallback) {
+        showMailDraft(fallback, 'Your email app is opening with the inquiry filled in — press send there.');
+        return;
+      }
       status.dataset.state = 'bad';
       window.LipoverseSound?.bad();
       status.textContent = 'The inquiry could not be sent. Check your connection and try again.';
