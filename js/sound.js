@@ -215,23 +215,48 @@
     dragStarting = true;
     whenRunning(() => {
     if (dragAir || muted) { dragStarting = false; return; }
-    const src = ctx.createBufferSource();
-    src.buffer = noiseBuffer();
-    src.loop = true;
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 980;
-    filter.Q.value = 0.65;
-    const gain = ctx.createGain();
     const t = ctx.currentTime;
-    gain.gain.setValueAtTime(0.07, t);
-    src.connect(filter);
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 460;
+    filter.Q.value = 0.4;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.08, t);
     filter.connect(gain);
     gain.connect(uiOut());
-    src.start(t);
-    dragAir = { src, gain };
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(156, t);
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    lfo.frequency.value = 2.2;
+    lfoGain.gain.value = 5;
+    lfo.connect(lfoGain);
+    lfoGain.connect(osc.frequency);
+    const over = ctx.createOscillator();
+    over.type = 'triangle';
+    over.frequency.setValueAtTime(234, t);
+    const overGain = ctx.createGain();
+    overGain.gain.value = 0.14;
+    over.connect(overGain);
+    osc.connect(filter);
+    overGain.connect(filter);
+    osc.start(t);
+    over.start(t);
+    lfo.start(t);
+    dragAir = { osc, over, lfo, gain };
     dragStarting = false;
     });
+  }
+
+  function nudgeDrag(speed) {
+    if (!dragAir || !ctx) return;
+    const freq = 148 + Math.min(52, Math.max(0, speed) * 1.6);
+    const now = ctx.currentTime;
+    try {
+      dragAir.osc.frequency.setTargetAtTime(freq, now, 0.03);
+      dragAir.over.frequency.setTargetAtTime(freq * 1.5, now, 0.03);
+    } catch (error) { /* context may be closed */ }
   }
 
   function stopDragAir() {
@@ -243,7 +268,11 @@
     try {
       node.gain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.02);
     } catch (error) { /* context may be closed */ }
-    setTimeout(() => { try { node.src.stop(); } catch (error) { /* already stopped */ } }, 80);
+    setTimeout(() => {
+      try { node.osc.stop(); } catch (error) { /* already stopped */ }
+      try { node.over.stop(); } catch (error) { /* already stopped */ }
+      try { node.lfo.stop(); } catch (error) { /* already stopped */ }
+    }, 80);
   }
 
   function injection() {
@@ -482,11 +511,13 @@
       let pressing = false;
       let moved = false;
       let origin = null;
+      let lastSample = null;
       const endPress = (event) => {
         if (origin && event && event.pointerId !== origin.id) return;
         pressing = false;
         moved = false;
         origin = null;
+        lastSample = null;
         stopDragAir();
       };
       // OrbitControls also fires start/change for wheel zoom and for auto-rotate.
@@ -507,7 +538,15 @@
           if (dist < 2) return;
           moved = true;
         }
+        const now = performance.now();
+        let speed = 12;
+        if (lastSample) {
+          const dt = Math.max(8, now - lastSample.t);
+          speed = Math.hypot(event.clientX - lastSample.x, event.clientY - lastSample.y) / dt * 16;
+        }
+        lastSample = { x: event.clientX, y: event.clientY, t: now };
         startDragAir();
+        nudgeDrag(speed);
         clearTimeout(dragIdle);
         dragIdle = setTimeout(() => { if (pressing) stopDragAir(); }, 420);
       });
