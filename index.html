@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=4">
 <script type="importmap">
 {
   "imports": {
@@ -311,24 +311,26 @@
   <div class="page-head">
     <span class="page-chip">Module 03</span>
     <h1>Types of Liposomes</h1>
-    <p>Select a type to see how its structure changes — number of bilayers and internal compartments.</p>
+    <p>Select a type. The model turns, so the bilayers and inner compartments are not a fixed drawing.</p>
+    <p class="ar">اختار النوع. الشكل بيتحرك، والأزرار تحت الموديل مش فوقه.</p>
     <button type="button" class="bookmark-btn" data-bookmark="types">☆ Save</button>
   </div>
 
-  <div class="shape-panel glass-card">
-    <h2>Open this type in 3D</h2>
-    <p class="ar">الأشكال ثلاثية الأبعاد مش الرسم اللي تحت. دوس على الاسم.</p>
-    <div class="gallery-picks" data-shape-row></div>
-  </div>
-
-  <div class="type-selector" id="type-selector"></div>
-
   <div class="type-layout">
     <div class="glass-card type-viz">
-      <div id="type-svg-wrap"></div>
+      <canvas id="type-canvas" aria-label="Turning 3D model of the selected liposome type"></canvas>
+      <div class="explorer-hint">Drag to rotate · Scroll to zoom</div>
       <div class="type-viz-caption" id="type-caption"></div>
+      <div class="type-selector" id="type-selector"></div>
     </div>
     <div class="glass-card type-details" id="type-details"></div>
+  </div>
+
+  <div class="shape-panel below-model glass-card">
+    <h2>More 3D shapes</h2>
+    <p>These buttons sit under the model. Tap a name and that shape turns here — it no longer stays a fixed drawing.</p>
+    <p class="ar">الأزرار تحت الموديل. دوس على الاسم والشكل هيتغير ويدور في نفس الصفحة.</p>
+    <div class="gallery-picks" data-shape-row="types"></div>
   </div>
 
   <h2 class="section-title">Comparison Table</h2>
@@ -617,9 +619,9 @@
 
 <script src="js/sound.js?v=3"></script>
 <script src="js/main.js"></script>
-<script src="js/sim.js"></script>
+<script src="js/sim.js?v=4"></script>
 <script type="module">
-  import { initUpgrade } from './js/upgrade.js';
+  import { initUpgrade } from './js/upgrade.js?v=4';
   initUpgrade();
 </script>
 </body>

@@ -632,7 +632,7 @@ function showGalleryModel(i) {
   if (name) name.textContent = spec.name;
   if (blurb) blurb.textContent = spec.blurb;
   document.querySelectorAll('#gallery-picks button').forEach(b => b.classList.toggle('active', b.dataset.id === spec.id));
-  document.querySelectorAll('[data-shape-row] button').forEach(b => b.classList.toggle('active', b.dataset.model === spec.id));
+  document.querySelectorAll('[data-shape-row]:not([data-shape-row="types"]) button').forEach(b => b.classList.toggle('active', b.dataset.model === spec.id));
 }
 
 function initGallery() {
@@ -647,9 +647,15 @@ function initGallery() {
   }));
   document.querySelectorAll('[data-shape-row]').forEach(row => {
     row.innerHTML = GALLERY.map(g => `<button type="button" class="ctrl-btn" data-model="${g.id}">${g.name}</button>`).join('');
-    row.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
-      openGalleryModel(b.dataset.model);
-    }));
+    const onTypes = row.dataset.shapeRow === 'types';
+    const current = document.querySelector('#type-selector button.active')?.dataset.type;
+    row.querySelectorAll('button').forEach(b => {
+      if (onTypes && b.dataset.model === current) b.classList.add('active');
+      b.addEventListener('click', () => {
+        if (onTypes) showTypeShape(b.dataset.model);
+        else openGalleryModel(b.dataset.model);
+      });
+    });
   });
   document.querySelector('[data-open-method="extrusion"]')?.addEventListener('click', () => {
     window.LipoverseNav?.show('lab');
@@ -720,6 +726,157 @@ function initGallery() {
   });
   if (section?.classList.contains('active')) startGallery();
   if (section) watch.observe(section, { attributes: true, attributeFilter: ['class'] });
+}
+
+function showTypeShape(id) {
+  if (window.LipoverseTypes?.show && document.querySelector(`#type-selector button[data-type="${id}"]`)) {
+    window.LipoverseTypes.show(id);
+    return;
+  }
+  const spec = GALLERY.find(g => g.id === id);
+  if (!spec) return;
+  const caption = document.getElementById('type-caption');
+  const details = document.getElementById('type-details');
+  document.querySelectorAll('#type-selector button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('[data-shape-row="types"] button').forEach(b => b.classList.toggle('active', b.dataset.model === id));
+  if (caption) caption.textContent = spec.name;
+  if (details) {
+    details.innerHTML = `
+      <h3>${spec.name}</h3>
+      <p>${spec.blurb}</p>
+      <p class="note">This is a surface model, not one of the five classical size classes in the table.</p>
+      <p class="ar">ده نموذج للسطح، مش واحد من الأنواع الخمسة اللي ليها مقاسات في الجدول.</p>`;
+  }
+  document.dispatchEvent(new CustomEvent('lipoverse-type', { detail: id }));
+}
+
+function initTypeStage() {
+  const canvas = document.getElementById('type-canvas');
+  const section = document.getElementById('section-types');
+  if (!canvas || !section) return;
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const state = { built: false, running: false, frame: 0 };
+
+  function currentId() {
+    return document.querySelector('[data-shape-row="types"] button.active')?.dataset.model
+      || document.querySelector('#type-selector button.active')?.dataset.type
+      || 'suv';
+  }
+
+  function showType(id) {
+    const spec = GALLERY.find(g => g.id === id) || GALLERY[0];
+    state.id = spec.id;
+    if (!state.scene) return;
+    const prev = state.scene.getObjectByName('vesicle');
+    if (prev) {
+      state.scene.remove(prev);
+      prev.traverse(obj => {
+        if (obj.geometry) obj.geometry.dispose();
+        if (obj.material) obj.material.dispose();
+      });
+    }
+    const mesh = makeVesicle(spec);
+    mesh.name = 'vesicle';
+    state.scene.add(mesh);
+    const radius = Math.max(...spec.shells.map(s => s.r)) + (spec.peg ? 0.4 : 0.05);
+    const dist = Math.max(3.6, radius * 2.85);
+    state.camera.position.set(dist * 0.16, dist * 0.34, dist);
+    state.controls.target.set(0, 0, 0);
+    state.controls.minDistance = Math.max(1.1, radius * 0.85);
+    state.controls.maxDistance = dist * 2.2;
+    state.controls.autoRotate = !motion.matches;
+    state.controls.autoRotateSpeed = 1.15;
+    state.controls.update();
+  }
+
+  function start() {
+    if (state.built) {
+      if (!state.running) {
+        state.running = true;
+        state.loop();
+      }
+      if (state.id !== currentId()) showType(currentId());
+      return;
+    }
+    let renderer;
+    try {
+      const mobile = window.innerWidth < 760;
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.25 : 1.75));
+      renderer.setClearColor(0x000000, 0);
+    } catch (error) {
+      canvas.replaceWith(Object.assign(document.createElement('p'), {
+        className: 'note',
+        textContent: 'The turning model could not start on this device. The cross-section is still in the details.',
+      }));
+      return;
+    }
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.08, 40);
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.autoRotate = !motion.matches;
+    controls.autoRotateSpeed = 1.15;
+    window.LipoverseSound?.bindOrbit(controls);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.62));
+    const key = new THREE.DirectionalLight(0xffffff, 1.75);
+    key.position.set(4, 6, 7);
+    scene.add(key);
+    const rim = new THREE.PointLight(0x7C3AED, 26, 28);
+    rim.position.set(-5, -2, -4);
+    scene.add(rim);
+    const fill = new THREE.PointLight(0xC4B5FD, 10, 18);
+    fill.position.set(3, -2, 4);
+    scene.add(fill);
+    state.built = true;
+    state.renderer = renderer;
+    state.scene = scene;
+    state.camera = camera;
+    state.controls = controls;
+    state.running = true;
+    const resize = () => {
+      const w = canvas.clientWidth || canvas.parentElement?.clientWidth || 640;
+      const h = canvas.clientHeight || 420;
+      if (w < 2 || h < 2) return;
+      const pr = renderer.getPixelRatio();
+      if (canvas.width !== Math.floor(w * pr) || canvas.height !== Math.floor(h * pr)) {
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      }
+    };
+    const loop = () => {
+      if (!state.running) return;
+      state.frame = requestAnimationFrame(loop);
+      resize();
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    state.loop = loop;
+    showType(currentId());
+    loop();
+  }
+
+  function stop() {
+    state.running = false;
+    cancelAnimationFrame(state.frame);
+  }
+
+  document.addEventListener('lipoverse-type', (event) => {
+    if (!state.built) return;
+    showType(event.detail);
+  });
+  const watch = new MutationObserver(() => {
+    if (section.classList.contains('active')) start();
+    else stop();
+  });
+  watch.observe(section, { attributes: true, attributeFilter: ['class'] });
+  if (section.classList.contains('active')) start();
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else if (section.classList.contains('active')) start();
+  });
 }
 
 function initHeroLiposome() {
@@ -893,6 +1050,7 @@ export function initUpgrade() {
   initResearch();
   initQuizExtras();
   initGallery();
+  initTypeStage();
   initHeroLiposome();
   initInquiry();
   rebuildSearch();

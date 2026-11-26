@@ -55,7 +55,6 @@
 
   (function initTypes() {
     const sel = document.getElementById('type-selector');
-    const svgWrap = document.getElementById('type-svg-wrap');
     const caption = document.getElementById('type-caption');
     const details = document.getElementById('type-details');
     const tbody = document.querySelector('#types-table tbody');
@@ -69,9 +68,13 @@
     function show(id) {
       const t = TYPES.find(x => x.id === id);
       sel.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.type === id));
-      svgWrap.innerHTML = `<svg viewBox="0 0 300 300" width="300" height="300" role="img" aria-label="${t.name}">${t.svg()}</svg>`;
+      document.querySelectorAll('[data-shape-row="types"] button').forEach(b => b.classList.toggle('active', b.dataset.model === id));
       caption.textContent = t.short + ' — ' + t.size;
       details.innerHTML = `
+        <div class="type-cross">
+          <svg viewBox="0 0 300 300" width="92" height="92" role="img" aria-label="${t.name} cross-section">${t.svg()}</svg>
+          <span>Cross-section</span>
+        </div>
         <h3>${t.short}</h3>
         <div class="type-full">${t.name}</div>
         <p>${t.desc}</p>
@@ -81,9 +84,11 @@
           <div class="type-fact"><span>Preparation</span><strong>${t.prep}</strong></div>
           <div class="type-fact"><span>Main Uses</span><strong>${t.use}</strong></div>
         </div>`;
+      document.dispatchEvent(new CustomEvent('lipoverse-type', { detail: id }));
     }
     sel.querySelectorAll('button').forEach(b => b.addEventListener('click', () => show(b.dataset.type)));
     show('suv');
+    window.LipoverseTypes = { show };
   })();
 
   /* ================= PREPARATION LAB ================= */
