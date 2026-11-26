@@ -139,6 +139,7 @@ main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; paddin
 }
 
 /* ---------- Buttons ---------- */
+button, a, .ctrl-btn, .module-card { touch-action: manipulation; }
 .btn {
   font-family: var(--font-display); font-weight: 700; font-size: 0.95rem;
   padding: 13px 26px; border-radius: 12px; border: none; cursor: pointer;

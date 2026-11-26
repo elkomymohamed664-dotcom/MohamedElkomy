@@ -21,17 +21,11 @@
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return null;
     if (!ctx) {
-      ctx = new AudioCtx();
+      try { ctx = new AudioCtx({ latencyHint: 'interactive' }); }
+      catch (error) { ctx = new AudioCtx(); }
       master = ctx.createGain();
       master.gain.value = 1;
-      const comp = ctx.createDynamicsCompressor();
-      comp.threshold.value = -8;
-      comp.knee.value = 12;
-      comp.ratio.value = 2.2;
-      comp.attack.value = 0.004;
-      comp.release.value = 0.16;
-      master.connect(comp);
-      comp.connect(ctx.destination);
+      master.connect(ctx.destination);
     }
     if (ctx.state === 'suspended') ctx.resume();
     return ctx;
@@ -58,12 +52,32 @@
     return noise;
   }
 
+  let keeper = null;
+
+  function keepHot() {
+    if (keeper || !ctx || muted) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    gain.gain.value = 0.00001;
+    osc.frequency.value = 180;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    keeper = osc;
+  }
+
+  function stopHot() {
+    if (!keeper) return;
+    try { keeper.stop(); } catch (error) { /* already stopped */ }
+    keeper = null;
+  }
+
   function envTo(dest, duration, peak) {
     const gain = ctx.createGain();
     const now = ctx.currentTime;
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(Math.max(0.001, peak), now + 0.012);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    const level = Math.max(0.001, peak);
+    gain.gain.setValueAtTime(level, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + Math.max(0.03, duration));
     gain.connect(dest);
     return gain;
   }
@@ -388,7 +402,8 @@
       if (muted) {
         stopBody();
         stopDragAir();
-      }
+        stopHot();
+      } else keepHot();
       try { localStorage.setItem(KEY, muted ? 'off' : 'on'); } catch (error) { /* private mode */ }
       paintToggle();
     },
@@ -516,15 +531,43 @@
 
   paintToggle();
   document.getElementById('sound-toggle')?.addEventListener('click', () => window.LipoverseSound.toggle());
-  document.addEventListener('pointerdown', () => { if (!muted) context(); }, { passive: true });
+
+  let pressedCue = null;
+  function pressEl(target) {
+    return target && target.closest ? target.closest('button, a, [role="button"], .module-card, .ctrl-btn') : null;
+  }
+  function waitForClick(target) {
+    return !!(target && target.closest && target.closest('.quiz-opt, .lab-check-opts, .match-def, .label-slot, #order-check'));
+  }
+
+  document.addEventListener('pointerdown', (event) => {
+    if (event.button > 0) return;
+    if (!muted) {
+      context();
+      if (ctx) noiseBuffer();
+      keepHot();
+    }
+    const el = pressEl(event.target);
+    if (!el || el.id === 'sound-toggle' || waitForClick(event.target)) return;
+    const name = cueFor(event.target);
+    if (!name || name === 'result') return;
+    pressedCue = el;
+    playNamed(name);
+  }, { passive: true });
+
   document.addEventListener('click', (event) => {
+    const el = pressEl(event.target);
+    if (pressedCue && el && (pressedCue === el || pressedCue.contains(event.target))) {
+      pressedCue = null;
+      if (!waitForClick(event.target)) return;
+    }
     const name = cueFor(event.target);
     if (!name) return;
     window.LipoverseSound.unlock();
     if (name === 'result') {
       playNamed('click');
       const pct = parseInt(document.querySelector('.quiz-score-big')?.textContent, 10);
-      if (Number.isFinite(pct)) setTimeout(() => result(pct), 140);
+      if (Number.isFinite(pct)) setTimeout(() => result(pct), 80);
       return;
     }
     playNamed(name);
