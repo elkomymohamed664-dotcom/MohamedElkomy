@@ -6,6 +6,7 @@ const MAX_MESSAGE_LENGTH = 3000;
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT = 5;
 const EMAIL_PATTERN = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
+const FALLBACK_TO_EMAIL = 'elkomymohamed664@gmail.com';
 const recentSubmissions = new Map();
 
 function escapeHtml(value) {
@@ -165,10 +166,19 @@ module.exports = async function contactHandler(req, res) {
   const to = String(process.env.CONTACT_TO_EMAIL || '').trim();
   const from = String(process.env.CONTACT_FROM_EMAIL || '').trim();
   if (!apiKey || !validEmail(to) || !configuredSender(from)) {
-    return respond(res, 503, {
-      ok: false,
-      code: 'EMAIL_NOT_CONFIGURED',
-      message: 'The inquiry mail service is not configured on this project yet.'
+    // No mail service is wired up on this project. Do not fail the inquiry —
+    // hand it back to the browser as a ready-to-send mail draft so the message
+    // still reaches the address instead of disappearing.
+    const recipient = validEmail(to) ? to : FALLBACK_TO_EMAIL;
+    const subject = 'LIPOVERSE inquiry from ' + name;
+    const body = 'Name: ' + name + '\nEmail: ' + email + '\n\nInquiry:\n' + message;
+    return respond(res, 200, {
+      ok: true,
+      delivery: 'mailto',
+      mailto: 'mailto:' + recipient +
+        '?subject=' + encodeURIComponent(subject) +
+        '&body=' + encodeURIComponent(body),
+      message: 'Your email app is opening with the inquiry filled in — press send there.'
     });
   }
 
@@ -200,7 +210,7 @@ module.exports = async function contactHandler(req, res) {
       });
     }
 
-    return respond(res, 200, { ok: true, message: 'Your inquiry was sent. Thank you.' });
+    return respond(res, 200, { ok: true, delivery: 'sent', message: 'Your inquiry was sent. Thank you.' });
   } catch (error) {
     return respond(res, 502, { ok: false, message: 'The mail service could not be reached. Try again later.' });
   } finally {
