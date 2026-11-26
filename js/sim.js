@@ -217,7 +217,7 @@
     function draw() {
       if (!running) return;
       const sec = document.getElementById('section-loading');
-      if (!sec || !sec.classList.contains('active')) { requestAnimationFrame(draw); return; }
+      if (!sec || !sec.classList.contains('active')) { running = false; return; } // pause off-screen; start() restarts it
       frame++;
       ctx.clearRect(0, 0, W, H);
 
@@ -295,6 +295,9 @@
       start() { if (!running) { running = true; frame = 0; spawn(); requestAnimationFrame(draw); } },
       stop() { running = false; }
     };
+    // Deep-link fix: if the page was opened directly on this section
+    // (main.js ran showSection() before this script loaded), start now.
+    if (document.getElementById('section-loading').classList.contains('active')) window.LipoverseLoading.start();
   })();
 
   /* ================= DELIVERY SIMULATION ================= */
@@ -435,6 +438,8 @@
 
     function loop() {
       if (!running) return;
+      const sec = document.getElementById('section-simulation');
+      if (!sec || !sec.classList.contains('active')) { running = false; return; } // pause off-screen; start() restarts it
       time += 0.016;
       if (playing) {
         t += 0.016 / STAGE_TIME;
@@ -470,6 +475,9 @@
       start() { if (!running) { running = true; requestAnimationFrame(loop); } },
       stop() { running = false; }
     };
+    // Deep-link fix: if the page was opened directly on this section
+    // (main.js ran showSection() before this script loaded), start now.
+    if (document.getElementById('section-simulation').classList.contains('active')) window.LipoverseSim.start();
   })();
 
   /* ================= APPLICATIONS ================= */

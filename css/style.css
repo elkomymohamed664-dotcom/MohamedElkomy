@@ -88,6 +88,11 @@ body {
 .nav-links a:hover { color: var(--light); background: var(--glass-strong); }
 .nav-links a.active { color: var(--bg); background: linear-gradient(135deg, var(--teal), var(--cyan)); }
 
+.nav-toggle {
+  display: none; background: var(--glass); border: 1px solid var(--border); color: var(--light);
+  width: 42px; height: 42px; border-radius: 10px; font-size: 1.2rem; cursor: pointer; flex-shrink: 0;
+}
+.nav-toggle:hover { border-color: var(--teal); color: var(--cyan); }
 .nav-progress { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .nav-progress span { font-size: 0.8rem; font-weight: 700; color: var(--cyan); }
 .nav-progress-bar { width: 70px; height: 7px; background: rgba(255,255,255,0.1); border-radius: 99px; overflow: hidden; }
@@ -420,6 +425,18 @@ main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; paddin
 .footer-note { color: var(--faint); font-size: 0.78rem !important; }
 
 /* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    position: absolute; top: 64px; left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 2px;
+    background: rgba(10, 23, 43, 0.97); border-bottom: 1px solid var(--border);
+    padding: 10px 16px 14px; display: none; overflow: visible;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: 11px 14px; }
+  .nav-progress { margin-left: auto; }
+}
 @media (max-width: 1024px) {
   .explorer-layout, .type-layout, .loading-layout, .sim-layout, .lab-cols { grid-template-columns: 1fr; }
   #explorer-canvas-wrap { height: 420px; }

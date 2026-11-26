@@ -287,7 +287,7 @@ const clipPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0);
 let cutaway = false;
 function applyClipping() {
   allMats.concat([drugCoreMat, drugBilayerMat]).forEach(m => {
-    m.clippingPlanes = cutaway ? [clipPlane] : null;
+    m.clippingPlanes = cutaway ? [clipPlane] : [];
     m.needsUpdate = true;
   });
 }

@@ -70,6 +70,7 @@
   let explorerLoaded = false;
 
   function showSection(id) {
+    closeMobileNav();
     sections.forEach(s => s.classList.toggle('active', s.id === 'section-' + id));
     navLinks.forEach(a => a.classList.toggle('active', a.dataset.nav === id));
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -78,12 +79,14 @@
     renderModuleCards();
 
     if (id === 'explorer' && !explorerLoaded) {
-      explorerLoaded = true;
-      import('./explorer.js').catch(err => {
-        console.error('3D explorer failed to load:', err);
-        const wrap = document.getElementById('explorer-canvas-wrap');
-        if (wrap) wrap.innerHTML = '<p style="padding:30px;color:var(--muted)">⚠️ Could not load the 3D engine. Please check your internet connection and reload.</p>';
-      });
+      import('./explorer.js')
+        .then(() => { explorerLoaded = true; })
+        .catch(err => {
+          explorerLoaded = false; // allow retry on the next visit
+          console.error('3D explorer failed to load:', err);
+          const wrap = document.getElementById('explorer-canvas-wrap');
+          if (wrap) wrap.innerHTML = '<p style="padding:30px;color:var(--muted)">⚠️ Could not load the 3D engine. Please check your internet connection and reload.</p>';
+        });
     }
     if (id === 'loading' && window.LipoverseLoading) window.LipoverseLoading.start();
     if (id === 'simulation' && window.LipoverseSim) window.LipoverseSim.start();
@@ -95,6 +98,28 @@
   document.querySelectorAll('[data-goto]').forEach(el => {
     el.addEventListener('click', () => showSection(el.dataset.goto));
   });
+
+  /* Browser back / forward buttons (hash changes) */
+  window.addEventListener('hashchange', () => {
+    const id = (location.hash || '#home').replace('#', '');
+    const sec = document.getElementById('section-' + id);
+    if (sec && !sec.classList.contains('active')) showSection(id);
+  });
+
+  /* Mobile nav toggle (hamburger) */
+  const navToggle = document.getElementById('nav-toggle');
+  const navLinksEl = document.getElementById('nav-links');
+  if (navToggle && navLinksEl) {
+    navToggle.addEventListener('click', () => {
+      const open = navLinksEl.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', String(open));
+      navToggle.textContent = open ? '✕' : '☰';
+    });
+  }
+  function closeMobileNav() {
+    if (navLinksEl) navLinksEl.classList.remove('open');
+    if (navToggle) { navToggle.setAttribute('aria-expanded', 'false'); navToggle.textContent = '☰'; }
+  }
 
   /* ---------- Module cards ---------- */
   function renderModuleCards() {
@@ -110,7 +135,7 @@
       </article>`).join('');
     grid.querySelectorAll('.module-card').forEach(card => {
       card.addEventListener('click', () => showSection(card.dataset.goto));
-      card.addEventListener('keydown', e => { if (e.key === 'Enter') showSection(card.dataset.goto); });
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showSection(card.dataset.goto); } });
     });
   }
 
@@ -214,7 +239,8 @@
     const search = document.getElementById('glossary-search');
     if (!grid) return;
     function render(filter) {
-      const items = GLOSSARY.filter(g => !filter || g.term.toLowerCase().includes(filter.toLowerCase()));
+      const f = filter ? filter.toLowerCase() : '';
+      const items = GLOSSARY.filter(g => !f || g.term.toLowerCase().includes(f) || g.def.toLowerCase().includes(f));
       grid.innerHTML = items.length
         ? items.map(g => `<div class="glass-card glossary-item"><h4>${g.term}</h4><p>${g.def}</p><p class="ar">${g.ar}</p></div>`).join('')
         : '<p style="color:var(--muted)">No terms match your search.</p>';
