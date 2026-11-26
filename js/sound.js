@@ -168,6 +168,41 @@
     setTimeout(() => { try { node.src.stop(); } catch (error) { /* already stopped */ } }, 420);
   }
 
+  let dragAir = null;
+  let dragIdle = 0;
+
+  function startDragAir() {
+    if (!ready() || dragAir) return;
+    const src = ctx.createBufferSource();
+    src.buffer = noiseBuffer();
+    src.loop = true;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 1200;
+    filter.Q.value = 0.7;
+    const gain = ctx.createGain();
+    const t = ctx.currentTime;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.011, t + 0.05);
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(vesicleOut());
+    src.start(t);
+    dragAir = { src, gain };
+  }
+
+  function stopDragAir() {
+    clearTimeout(dragIdle);
+    dragIdle = 0;
+    if (!dragAir) return;
+    const node = dragAir;
+    dragAir = null;
+    try {
+      node.gain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.02);
+    } catch (error) { /* context may be closed */ }
+    setTimeout(() => { try { node.src.stop(); } catch (error) { /* already stopped */ } }, 80);
+  }
+
   function injection() {
     noiseBurst(bodyOut(), 0.32, 0.08, 700, 'bandpass');
     tone(bodyOut(), 180, 70, 0.28, 0.08, 'sine');
@@ -317,7 +352,10 @@
     muted() { return muted; },
     setMuted(next) {
       muted = !!next;
-      if (muted) stopBody();
+      if (muted) {
+        stopBody();
+        stopDragAir();
+      }
       try { localStorage.setItem(KEY, muted ? 'off' : 'on'); } catch (error) { /* private mode */ }
       paintToggle();
     },
@@ -401,26 +439,43 @@
       progressCue(state.stage, state.t || 0);
     },
     bindOrbit(controls) {
-      if (!controls || boundOrbits.has(controls)) return;
+      if (!controls || boundOrbits.has(controls) || !controls.domElement) return;
       boundOrbits.add(controls);
-      let active = false;
-      let dragged = false;
-      controls.addEventListener('start', () => {
-        active = true;
-        dragged = false;
+      const el = controls.domElement;
+      let pressing = false;
+      let moved = false;
+      let origin = null;
+      const endPress = (event) => {
+        if (origin && event && event.pointerId !== origin.id) return;
+        pressing = false;
+        moved = false;
+        origin = null;
+        stopDragAir();
+      };
+      // OrbitControls also fires start/change for wheel zoom and for auto-rotate.
+      // Those are not a press or a drag, so the tick and whoosh stay on the pointer.
+      el.addEventListener('pointerdown', (event) => {
+        if (!event.isPrimary) return;
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        pressing = true;
+        moved = false;
+        origin = { x: event.clientX, y: event.clientY, id: event.pointerId };
         this.unlock();
         this.grab();
       });
-      controls.addEventListener('change', () => {
-        if (!active) return;
-        dragged = true;
-        this.whoosh();
+      el.addEventListener('pointermove', (event) => {
+        if (!pressing || !origin || event.pointerId !== origin.id) return;
+        if (!moved) {
+          const dist = Math.hypot(event.clientX - origin.x, event.clientY - origin.y);
+          if (dist < 6) return;
+          moved = true;
+        }
+        startDragAir();
+        clearTimeout(dragIdle);
+        dragIdle = setTimeout(() => { if (pressing) stopDragAir(); }, 160);
       });
-      controls.addEventListener('end', () => {
-        if (!active) return;
-        active = false;
-        if (dragged) this.release();
-      });
+      el.addEventListener('pointerup', endPress);
+      el.addEventListener('pointercancel', endPress);
     }
   };
 
@@ -470,5 +525,9 @@
     if (!el || el.tagName === 'BUTTON' || el.tagName === 'A') return;
     playNamed('nav');
   });
-  document.addEventListener('visibilitychange', () => { if (document.hidden) stopBody(); });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) return;
+    stopBody();
+    stopDragAir();
+  });
 })();
