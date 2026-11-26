@@ -178,13 +178,18 @@
     const panel = document.getElementById('lab-panel');
     if (!tabs) return;
 
+    const art = window.LipoverseLabArt;
     tabs.innerHTML = METHODS.map((m, i) =>
-      `<button class="ctrl-btn ${i === 0 ? 'active' : ''}" data-method="${m.id}">${m.name}</button>`).join('');
+      `<button class="ctrl-btn lab-method ${i === 0 ? 'active' : ''}" data-method="${m.id}"><span class="lab-method-icon" aria-hidden="true">${art ? art.icon(m.id) : ''}</span><span>${m.name}</span></button>`).join('');
 
     function show(id) {
       const m = METHODS.find(x => x.id === id);
       tabs.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.method === id));
       panel.innerHTML = `
+        <figure class="lab-figure">
+          ${art ? art.figure(id) : ''}
+          <figcaption class="ar">${art ? art.caption(id) : ''}</figcaption>
+        </figure>
         <h3>${m.name}</h3>
         <p class="lab-principle"><strong>Principle:</strong> ${m.principle}</p>
         <div class="lab-materials">${m.materials.map(x => `<span class="chip">${x}</span>`).join('')}</div>
