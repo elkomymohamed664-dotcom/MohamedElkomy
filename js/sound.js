@@ -23,8 +23,15 @@
     if (!ctx) {
       ctx = new AudioCtx();
       master = ctx.createGain();
-      master.gain.value = 0.4;
-      master.connect(ctx.destination);
+      master.gain.value = 1;
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -14;
+      comp.knee.value = 16;
+      comp.ratio.value = 2.8;
+      comp.attack.value = 0.004;
+      comp.release.value = 0.16;
+      master.connect(comp);
+      comp.connect(ctx.destination);
     }
     if (ctx.state === 'suspended') ctx.resume();
     return ctx;
@@ -32,6 +39,14 @@
 
   function ready() {
     return !muted && context();
+  }
+
+  function whenRunning(fn) {
+    if (muted) return;
+    const c = context();
+    if (!c) return;
+    if (c.state === 'running') fn();
+    else c.resume().then(() => { if (!muted) fn(); }).catch(() => {});
   }
 
   function noiseBuffer() {
@@ -53,9 +68,10 @@
     return gain;
   }
 
-  function uiOut() { return master; }
+  function uiOut() { context(); return master; }
 
   function vesicleOut() {
+    context();
     if (!vesicleBus) {
       vesicleBus = ctx.createBiquadFilter();
       vesicleBus.type = 'lowpass';
@@ -67,10 +83,11 @@
   }
 
   function bodyOut() {
+    context();
     if (!bodyBus) {
       bodyBus = ctx.createBiquadFilter();
       bodyBus.type = 'lowpass';
-      bodyBus.frequency.value = 380;
+      bodyBus.frequency.value = 520;
       bodyBus.Q.value = 0.65;
       bodyBus.connect(master);
     }
@@ -78,27 +95,29 @@
   }
 
   function tone(dest, from, to, duration, peak, type) {
-    if (!ready()) return;
-    const osc = ctx.createOscillator();
-    osc.type = type || 'sine';
-    osc.frequency.setValueAtTime(Math.max(40, from), ctx.currentTime);
-    if (to) osc.frequency.exponentialRampToValueAtTime(Math.max(36, to), ctx.currentTime + duration);
-    osc.connect(envTo(dest, duration, peak));
-    osc.start();
-    osc.stop(ctx.currentTime + duration + 0.03);
+    whenRunning(() => {
+      const osc = ctx.createOscillator();
+      osc.type = type || 'sine';
+      osc.frequency.setValueAtTime(Math.max(40, from), ctx.currentTime);
+      if (to) osc.frequency.exponentialRampToValueAtTime(Math.max(36, to), ctx.currentTime + duration);
+      osc.connect(envTo(dest, duration, peak));
+      osc.start();
+      osc.stop(ctx.currentTime + duration + 0.03);
+    });
   }
 
   function noiseBurst(dest, duration, peak, freq, type) {
-    if (!ready()) return;
-    const src = ctx.createBufferSource();
-    src.buffer = noiseBuffer();
-    const filter = ctx.createBiquadFilter();
-    filter.type = type || 'lowpass';
-    filter.frequency.value = freq;
-    src.connect(filter);
-    filter.connect(envTo(dest, duration, peak));
-    src.start();
-    src.stop(ctx.currentTime + duration + 0.02);
+    whenRunning(() => {
+      const src = ctx.createBufferSource();
+      src.buffer = noiseBuffer();
+      const filter = ctx.createBiquadFilter();
+      filter.type = type || 'lowpass';
+      filter.frequency.value = freq;
+      src.connect(filter);
+      filter.connect(envTo(dest, duration, peak));
+      src.start();
+      src.stop(ctx.currentTime + duration + 0.02);
+    });
   }
 
   function sweep(from, to, duration, peak) {
@@ -113,8 +132,10 @@
   }
 
   function thump(strong) {
-    tone(bodyOut(), strong ? 70 : 48, 34, strong ? 0.16 : 0.1, strong ? 0.2 : 0.1, 'sine');
-    noiseBurst(bodyOut(), 0.05, strong ? 0.06 : 0.03, 120, 'lowpass');
+    const low = strong ? 110 : 86;
+    tone(bodyOut(), low, 62, strong ? 0.18 : 0.12, strong ? 0.34 : 0.18, 'sine');
+    tone(bodyOut(), low * 2.4, low * 1.5, strong ? 0.12 : 0.08, strong ? 0.16 : 0.08, 'sine');
+    noiseBurst(bodyOut(), 0.06, strong ? 0.08 : 0.04, 320, 'lowpass');
   }
 
   function clearBeat() {
@@ -132,27 +153,30 @@
   }
 
   function startFlow() {
-    if (!ready() || flow) return;
+    if (muted || flow) return;
+    whenRunning(() => {
+    if (flow || muted) return;
     const src = ctx.createBufferSource();
     src.buffer = noiseBuffer();
     src.loop = true;
     const filter = ctx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.value = 240;
+    filter.frequency.value = 380;
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.045, ctx.currentTime + 0.45);
+    gain.gain.exponentialRampToValueAtTime(0.07, ctx.currentTime + 0.45);
     src.connect(filter);
     filter.connect(gain);
     gain.connect(bodyOut());
     src.start();
     flow = { src, gain, filter };
+    });
   }
 
   function setFlow(stage) {
     if (!flow) return;
-    const freq = stage >= 3 ? 160 : stage === 1 ? 320 : 230;
-    const level = stage === 1 ? 0.07 : stage === 4 ? 0.03 : 0.048;
+    const freq = stage >= 3 ? 240 : stage === 1 ? 460 : 340;
+    const level = stage === 1 ? 0.1 : stage === 4 ? 0.05 : 0.075;
     flow.filter.frequency.setTargetAtTime(freq, ctx.currentTime, 0.15);
     flow.gain.gain.setTargetAtTime(level, ctx.currentTime, 0.15);
   }
@@ -170,25 +194,31 @@
 
   let dragAir = null;
   let dragIdle = 0;
+  let dragStarting = false;
 
   function startDragAir() {
-    if (!ready() || dragAir) return;
+    if (muted || dragAir || dragStarting) return;
+    dragStarting = true;
+    whenRunning(() => {
+    if (dragAir || muted) { dragStarting = false; return; }
     const src = ctx.createBufferSource();
     src.buffer = noiseBuffer();
     src.loop = true;
     const filter = ctx.createBiquadFilter();
     filter.type = 'bandpass';
-    filter.frequency.value = 1200;
-    filter.Q.value = 0.7;
+    filter.frequency.value = 980;
+    filter.Q.value = 0.65;
     const gain = ctx.createGain();
     const t = ctx.currentTime;
     gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(0.011, t + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.045, t + 0.05);
     src.connect(filter);
     filter.connect(gain);
     gain.connect(vesicleOut());
     src.start(t);
     dragAir = { src, gain };
+    dragStarting = false;
+    });
   }
 
   function stopDragAir() {
@@ -204,25 +234,25 @@
   }
 
   function injection() {
-    noiseBurst(bodyOut(), 0.32, 0.08, 700, 'bandpass');
-    tone(bodyOut(), 180, 70, 0.28, 0.08, 'sine');
+    noiseBurst(bodyOut(), 0.32, 0.16, 700, 'bandpass');
+    tone(bodyOut(), 220, 110, 0.28, 0.16, 'sine');
   }
 
   function leak() {
-    noiseBurst(bodyOut(), 0.18, 0.05, 260, 'lowpass');
-    tone(bodyOut(), 220, 90, 0.2, 0.05, 'sine');
+    noiseBurst(bodyOut(), 0.18, 0.1, 340, 'lowpass');
+    tone(bodyOut(), 260, 120, 0.2, 0.1, 'sine');
   }
 
   function uptake() {
-    tone(bodyOut(), 260, 58, 0.38, 0.09, 'sine');
-    noiseBurst(bodyOut(), 0.22, 0.05, 180, 'lowpass');
+    tone(bodyOut(), 300, 140, 0.38, 0.16, 'sine');
+    noiseBurst(bodyOut(), 0.22, 0.1, 280, 'lowpass');
   }
 
   function releaseBurst() {
     [0, 90, 170, 260].forEach((delay, i) => {
       setTimeout(() => {
         if (!bodyOn && delay) return;
-        tone(bodyOut(), 520 - i * 40, 180, 0.12, 0.045, 'triangle');
+        tone(bodyOut(), 520 - i * 40, 220, 0.12, 0.1, 'triangle');
       }, delay);
     });
   }
@@ -231,12 +261,12 @@
     if (!ready()) return;
     Object.keys(cueFlags).forEach(key => { delete cueFlags[key]; });
     if (stage === 0) injection();
-    else if (stage === 1) noiseBurst(bodyOut(), 0.24, 0.05, 280, 'lowpass');
-    else if (stage === 2) noiseBurst(bodyOut(), 0.16, 0.04, 200, 'lowpass');
+    else if (stage === 1) noiseBurst(bodyOut(), 0.24, 0.1, 360, 'lowpass');
+    else if (stage === 2) noiseBurst(bodyOut(), 0.16, 0.08, 300, 'lowpass');
     else if (stage === 3) {
-      noiseBurst(bodyOut(), 0.1, 0.06, 200, 'lowpass');
-      tone(bodyOut(), 140, 80, 0.16, 0.07, 'sine');
-    } else if (stage === 4) tone(bodyOut(), 90, 50, 0.2, 0.05, 'sine');
+      noiseBurst(bodyOut(), 0.1, 0.12, 320, 'lowpass');
+      tone(bodyOut(), 180, 110, 0.16, 0.14, 'sine');
+    } else if (stage === 4) tone(bodyOut(), 160, 96, 0.2, 0.12, 'sine');
     setFlow(stage);
   }
 
@@ -272,34 +302,37 @@
 
   function result(pct) {
     if (pct >= 80) {
-      tone(uiOut(), 523, 659, 0.1, 0.05, 'sine');
-      setTimeout(() => tone(uiOut(), 784, 988, 0.14, 0.05, 'sine'), 110);
-    } else if (pct >= 50) sweep(440, 660, 0.12, 0.045);
-    else sweep(240, 140, 0.16, 0.05);
+      tone(uiOut(), 523, 659, 0.1, 0.18, 'sine');
+      setTimeout(() => tone(uiOut(), 784, 988, 0.14, 0.16, 'sine'), 110);
+    } else if (pct >= 50) sweep(440, 660, 0.12, 0.14);
+    else sweep(240, 140, 0.16, 0.14);
   }
 
   function playNamed(name) {
     if (name === 'ok') {
-      tone(uiOut(), 523, 784, 0.1, 0.05, 'sine');
+      tone(uiOut(), 523, 784, 0.1, 0.18, 'sine');
       return;
     }
-    if (name === 'bad' || name === 'deny') return sweep(210, 96, 0.14, 0.05);
-    if (name === 'flip') return sweep(640, 210, 0.11, 0.04);
-    if (name === 'nav') return sweep(300, 540, 0.1, 0.04);
+    if (name === 'bad' || name === 'deny') return sweep(210, 96, 0.14, 0.14);
+    if (name === 'flip') return sweep(640, 210, 0.11, 0.12);
+    if (name === 'nav') return sweep(300, 540, 0.1, 0.12);
     if (name === 'chime') {
-      tone(uiOut(), 520, 340, 0.08, 0.045, 'sine');
-      setTimeout(() => tone(uiOut(), 780, 460, 0.1, 0.04, 'sine'), 70);
+      tone(uiOut(), 523, 523, 0.09, 0.16, 'sine');
+      setTimeout(() => tone(uiOut(), 784, 784, 0.12, 0.14, 'sine'), 70);
       return;
     }
-    if (name === 'slice') return noiseBurst(uiOut(), 0.08, 0.04, 1400, 'highpass');
-    if (name === 'bubble') return sweep(640 + Math.random() * 120, 230, 0.07, 0.045);
-    if (name === 'whoosh') return noiseBurst(uiOut(), 0.1, 0.04, 900, 'bandpass');
-    if (name === 'release') return sweep(280, 110, 0.1, 0.04);
-    if (name === 'pop') return sweep(760, 260, 0.08, 0.07);
-    if (name === 'drop') return sweep(480, 180, 0.08, 0.04);
-    if (name === 'tick') return tone(uiOut(), 980, 760, 0.03, 0.02, 'triangle');
-    if (name === 'send') return sweep(420, 860, 0.12, 0.045);
-    if (name === 'click') return tone(uiOut(), 880, 560, 0.045, 0.035, 'triangle');
+    if (name === 'slice') return noiseBurst(uiOut(), 0.08, 0.1, 1400, 'highpass');
+    if (name === 'bubble') return sweep(640 + Math.random() * 120, 230, 0.07, 0.12);
+    if (name === 'whoosh') return noiseBurst(uiOut(), 0.1, 0.1, 900, 'bandpass');
+    if (name === 'release') return sweep(280, 110, 0.1, 0.12);
+    if (name === 'pop') return sweep(760, 260, 0.08, 0.18);
+    if (name === 'drop') return sweep(480, 180, 0.08, 0.12);
+    if (name === 'tick') return tone(uiOut(), 880, 740, 0.04, 0.12, 'sine');
+    if (name === 'send') return sweep(420, 860, 0.12, 0.14);
+    if (name === 'click') {
+      tone(uiOut(), 523, 659, 0.06, 0.2, 'sine');
+      return;
+    }
   }
 
   function cueFor(target) {
@@ -361,7 +394,7 @@
     },
     toggle() {
       if (!muted) {
-        sweep(420, 120, 0.1, 0.05);
+        sweep(420, 120, 0.1, 0.14);
         this.setMuted(true);
         return;
       }
@@ -370,25 +403,27 @@
       this.pop();
     },
     grab() {
-      if (!ready()) return;
+      if (muted) return;
       const now = performance.now();
       if (now - lastTouch < 70) return;
       lastTouch = now;
-      const src = ctx.createBufferSource();
-      src.buffer = noiseBuffer();
-      const filter = ctx.createBiquadFilter();
-      filter.type = 'highpass';
-      filter.frequency.value = 2400;
-      const gain = ctx.createGain();
-      const t = ctx.currentTime;
-      gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.exponentialRampToValueAtTime(0.018, t + 0.004);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.028);
-      src.connect(filter);
-      filter.connect(gain);
-      gain.connect(uiOut());
-      src.start(t);
-      src.stop(t + 0.04);
+      whenRunning(() => {
+        const src = ctx.createBufferSource();
+        src.buffer = noiseBuffer();
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 1400;
+        const gain = ctx.createGain();
+        const t = ctx.currentTime;
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.11, t + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.04);
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(uiOut());
+        src.start(t);
+        src.stop(t + 0.05);
+      });
     },
     release() {},
     whoosh() {
@@ -405,7 +440,7 @@
       const gain = ctx.createGain();
       const t = ctx.currentTime;
       gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.045);
+      gain.gain.exponentialRampToValueAtTime(0.08, t + 0.045);
       gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.13);
       src.connect(filter);
       filter.connect(gain);
@@ -415,7 +450,7 @@
     },
     pop() { playNamed('pop'); },
     chime() { playNamed('chime'); },
-    pulse() { sweep(190, 95, 0.16, 0.06); },
+    pulse() { sweep(190, 95, 0.16, 0.14); },
     bubble() { playNamed('bubble'); },
     ok() { playNamed('ok'); },
     bad() { playNamed('bad'); },
