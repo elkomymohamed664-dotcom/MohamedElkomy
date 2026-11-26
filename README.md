@@ -1,33 +1,27 @@
 # LIPOVERSE — Explore the Science of Liposomes
 
-An interactive 3D learning platform about **liposomes** and liposomal drug delivery,
-built for pharmacy students. *Beyond the Cell. Beyond the Science.*
+The original learning platform in deep emerald and champagne, with glass cards and a real phospholipid vesicle you can rotate.
 
-## Features
+*Beyond the Cell. Beyond the Science.*
 
-- **Home & Learning Dashboard** — module map with progress tracking (saved locally)
-- **Introduction** — definition, history timeline, and liposomes vs conventional delivery
-- **3D Liposome Explorer** — a real-time Three.js model: rotate, zoom, click each part
-  (phospholipid bilayer, hydrophilic head, hydrophobic tail, aqueous core, cholesterol),
-  cutaway view, drug-location overlay, and layer toggles
-- **Types of Liposomes** — SUV, LUV, GUV, MLV, MVV with visual diagrams and comparison table
-- **Virtual Preparation Lab** — 5 methods (thin film hydration, reverse phase evaporation,
-  ethanol injection, detergent removal, microfluidics) with steps, pros and cons
-- **Drug Loading Simulator** — animated view of hydrophilic vs lipophilic loading,
-  passive vs active loading, and an encapsulation-efficiency calculator
-- **Drug Delivery Simulation** — animated 5-stage journey through the body
-- **Applications** — Doxil®, AmBisome®, Onivyde®, Exparel®
-- **Quiz Center** — 12 explained questions (MCQ + True/False) with score and review
-- **Flashcards & Glossary** — flip cards and a searchable glossary with Arabic explanations
+## What you can do
+
+- Learning dashboard with saved progress
+- Introduction, history, and liposomes versus conventional delivery
+- 3D explorer: drag, zoom, click each part, cutaway, drug locations, and layer toggles
+- Types: SUV, LUV, GUV, MLV, and MVV
+- Preparation lab, drug-loading simulator, and delivery journey
+- Clinic examples, quiz, flashcards, and glossary
+- Molecular gallery, preparation lab, loading calculator, research notes, and extra practice
 
 ## Tech
 
-Static site — no build step. HTML, CSS, vanilla JavaScript, and Three.js (CDN) for the 3D explorer.
-Deploy anywhere static is served (e.g. Vercel, Netlify, GitHub Pages).
+Static site. No build step. Three.js r180 and its examples are stored in `vendor/` (MIT; see `vendor/THREE-LICENSE.txt`). Display fonts load from Google Fonts, as in the original design.
 
 ## Run locally
 
 ```bash
-python3 -m http.server 8080
-# open http://localhost:8080
+python3 -m http.server 8080 --bind 0.0.0.0
 ```
+
+Open the site root. Educational simulation — not medical advice.

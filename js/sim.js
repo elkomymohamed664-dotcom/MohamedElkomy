@@ -48,9 +48,9 @@
 
   function bilayerRing(cx, cy, r) {
     return `
-      <circle cx="${cx}" cy="${cy}" r="${r + 4}" fill="none" stroke="#20BDB0" stroke-width="3.5"/>
-      <circle cx="${cx}" cy="${cy}" r="${r - 4}" fill="none" stroke="#8BE7E0" stroke-width="3.5"/>
-      <circle cx="${cx}" cy="${cy}" r="${r - 4}" fill="rgba(77,163,255,0.10)"/>`;
+      <circle cx="${cx}" cy="${cy}" r="${r + 4}" fill="none" stroke="#C4B5FD" stroke-width="3.5"/>
+      <circle cx="${cx}" cy="${cy}" r="${r - 4}" fill="none" stroke="#EDE4FF" stroke-width="3.5"/>
+      <circle cx="${cx}" cy="${cy}" r="${r - 4}" fill="rgba(109,40,217,0.2)"/>`;
   }
 
   (function initTypes() {
@@ -152,6 +152,19 @@
       ],
       pros: ['Excellent size control & reproducibility', 'Continuous production', 'Low PDI'],
       cons: ['Specialized equipment needed', 'Higher initial cost', 'Chip fouling possible']
+    },
+    {
+      id: 'extrusion', name: 'Membrane Extrusion',
+      principle: 'A coarse suspension is forced through track-etched polycarbonate membranes of a chosen pore size. Repeated passes narrow the size distribution. Extrusion is usually the sizing step after thin-film hydration.',
+      materials: ['Hydrated MLV suspension', 'Polycarbonate membranes', 'Extruder', 'Support filters'],
+      steps: [
+        ['Hydrate first', 'Prepare a polydisperse MLV suspension, often from a thin lipid film.'],
+        ['Choose the pore', 'Fit a membrane of the target pore size, commonly 100 nm or 200 nm.'],
+        ['Pass repeatedly', 'Force the suspension through the membrane, usually 10 or more times, above the lipid transition temperature.'],
+        ['Check the size', 'Collect the suspension and measure diameter and PDI by dynamic light scattering.']
+      ],
+      pros: ['Tight, reproducible size control', 'Scales from syringes to larger extruders', 'Standard route to SUVs and small LUVs'],
+      cons: ['Membranes clog if the sample is concentrated', 'Some lipid is lost on the membrane', 'Does not by itself create a remote-loading gradient']
     }
   ];
 
@@ -224,18 +237,18 @@
       // Core
       ctx.beginPath();
       ctx.arc(C.x, C.y, R_IN, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(77,163,255,0.12)';
+      ctx.fillStyle = 'rgba(109,40,217,0.2)';
       ctx.fill();
 
       // Bilayer ring
       ctx.beginPath();
       ctx.arc(C.x, C.y, R_OUT, 0, Math.PI * 2);
       ctx.arc(C.x, C.y, R_IN, 0, Math.PI * 2, true);
-      ctx.fillStyle = 'rgba(32,189,176,0.20)';
+      ctx.fillStyle = 'rgba(196,181,253,0.28)';
       ctx.fill();
 
       // Heads (outer + inner)
-      ctx.fillStyle = '#20BDB0';
+      ctx.fillStyle = '#C4B5FD';
       for (let i = 0; i < 64; i++) {
         const a = (i / 64) * Math.PI * 2;
         ctx.beginPath(); ctx.arc(C.x + Math.cos(a) * R_OUT, C.y + Math.sin(a) * R_OUT, 5, 0, Math.PI * 2); ctx.fill();
@@ -243,7 +256,7 @@
       }
 
       // Drug particles
-      ctx.fillStyle = '#ffc857';
+      ctx.fillStyle = '#E9D5FF';
       particles.forEach(p => {
         const age = frame - p.delay;
         if (age < 0) return;
@@ -254,10 +267,11 @@
       ctx.globalAlpha = 1;
 
       // Label
-      ctx.fillStyle = 'rgba(242,247,252,0.85)';
+      ctx.fillStyle = 'rgba(247,244,252,0.9)';
       ctx.font = '600 15px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(mode === 'hydrophilic' ? '💧 Drug in the aqueous core' : '🫧 Drug in the lipid bilayer', C.x, H - 14);
+      if (frame > 8 && frame < 170 && frame % 26 === 0) window.LipoverseSound?.bubble();
 
       requestAnimationFrame(draw);
     }
@@ -281,10 +295,22 @@
     const total = document.getElementById('ee-total');
     const enc = document.getElementById('ee-enc');
     const out = document.getElementById('ee-value');
+    const warn = document.getElementById('ee-warn');
     function calcEE() {
-      const t = parseFloat(total.value) || 0;
-      const e = parseFloat(enc.value) || 0;
-      out.textContent = t > 0 ? Math.min(100, Math.max(0, (e / t) * 100)).toFixed(0) + '%' : '—';
+      const t = parseFloat(total.value);
+      const e = parseFloat(enc.value);
+      if (!Number.isFinite(t) || t <= 0 || !Number.isFinite(e) || e < 0) {
+        out.textContent = '—';
+        if (warn) warn.textContent = 'Enter a total above zero and an encapsulated amount that is not negative.';
+        return;
+      }
+      if (e > t) {
+        out.textContent = '—';
+        if (warn) warn.textContent = 'Encapsulated drug cannot be higher than the total drug added.';
+        return;
+      }
+      if (warn) warn.textContent = '';
+      out.textContent = ((e / t) * 100).toFixed(0) + '%';
     }
     total.addEventListener('input', calcEE);
     enc.addEventListener('input', calcEE);
@@ -384,7 +410,7 @@
       ctx.arc(CELL.x, CELL.y, nucR, 0, Math.PI * 2);
       ctx.fillStyle = stage === 4 ? 'rgba(200,80,120,0.5)' : 'rgba(200,80,120,0.35)';
       ctx.fill();
-      ctx.fillStyle = 'rgba(242,247,252,0.8)';
+      ctx.fillStyle = 'rgba(247,244,252,0.88)';
       ctx.font = '600 13px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('Tumor Cell', CELL.x, CELL.y + CELL.r + 22);
@@ -394,18 +420,18 @@
       if (stage === 4 && t > 0.25) return; // dissolved
       const r = 26 * pos.s;
       const glow = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, r * 2.2);
-      glow.addColorStop(0, 'rgba(32,189,176,0.35)');
-      glow.addColorStop(1, 'rgba(32,189,176,0)');
+      glow.addColorStop(0, 'rgba(196,181,253,0.4)');
+      glow.addColorStop(1, 'rgba(196,181,253,0)');
       ctx.fillStyle = glow;
       ctx.beginPath(); ctx.arc(pos.x, pos.y, r * 2.2, 0, Math.PI * 2); ctx.fill();
 
       ctx.beginPath(); ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(77,163,255,0.18)'; ctx.fill();
-      ctx.strokeStyle = '#20BDB0'; ctx.lineWidth = 5; ctx.stroke();
+      ctx.fillStyle = 'rgba(109,40,217,0.28)'; ctx.fill();
+      ctx.strokeStyle = '#C4B5FD'; ctx.lineWidth = 5; ctx.stroke();
       ctx.beginPath(); ctx.arc(pos.x, pos.y, r - 6, 0, Math.PI * 2);
-      ctx.strokeStyle = '#8BE7E0'; ctx.lineWidth = 3; ctx.stroke();
+      ctx.strokeStyle = '#EDE4FF'; ctx.lineWidth = 3; ctx.stroke();
       ctx.beginPath(); ctx.arc(pos.x, pos.y, 5, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffc857'; ctx.fill();
+      ctx.fillStyle = '#A78BFA'; ctx.fill();
     }
 
     function drawDrugs() {
@@ -416,7 +442,7 @@
           drugDots.push({ x: CELL.x, y: CELL.y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, r: 2.5 + Math.random() * 3 });
         }
       }
-      ctx.fillStyle = '#ffc857';
+      ctx.fillStyle = '#E9D5FF';
       drugDots.forEach(d => {
         d.x += d.vx; d.y += d.vy; d.vx *= 0.985; d.vy *= 0.985;
         ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2); ctx.fill();
@@ -454,6 +480,8 @@
       drawCell();
       drawLiposome(liposomePos());
       drawDrugs();
+      const simOn = document.getElementById('section-simulation')?.classList.contains('active');
+      window.LipoverseSound?.syncBody?.({ on: playing && !!simOn, stage, t });
       requestAnimationFrame(loop);
     }
 
@@ -462,12 +490,19 @@
     playBtn.addEventListener('click', () => {
       if (stage === STAGES.length - 1 && t >= 1) { stage = 0; t = 0; drugDots = []; renderInfo(); }
       playing = !playing; updatePlayBtn();
+      if (playing) window.LipoverseSound?.startBody?.(stage);
+      else window.LipoverseSound?.stopBody?.();
     });
     document.getElementById('sim-next').addEventListener('click', () => {
-      if (stage < STAGES.length - 1) { stage++; t = 0; drugDots = []; renderInfo(); }
+      if (stage < STAGES.length - 1) {
+        stage++; t = 0; drugDots = []; renderInfo();
+        if (playing) window.LipoverseSound?.syncBody?.({ on: true, stage, t: 0 });
+        else window.LipoverseSound?.stageCue?.(stage);
+      }
     });
     document.getElementById('sim-reset').addEventListener('click', () => {
       stage = 0; t = 0; playing = false; drugDots = []; updatePlayBtn(); renderInfo();
+      window.LipoverseSound?.stopBody?.();
     });
 
     renderInfo();
@@ -495,8 +530,17 @@
         why: 'Encapsulation prolongs irinotecan exposure at the tumor and improves the therapeutic index.',
         note: 'Used in combination regimens for pancreatic cancer.' },
       { brand: 'Exparel®', generic: 'Liposomal bupivacaine', use: 'Post-surgical pain',
-        why: 'Slow, sustained release of bupivacaine provides pain relief for up to ~72 hours after surgery.',
-        note: 'Reduces the need for opioid painkillers.' }
+        why: 'The liposome holds bupivacaine for slower release than the free injection.',
+        note: 'Duration depends on the product label and the procedure. This card is not a dosing guide.' },
+      { brand: 'Vyxeos®', generic: 'Liposomal daunorubicin and cytarabine', use: 'Some adults with newly diagnosed high-risk AML',
+        why: 'Both drugs are co-encapsulated in one liposome. That is not the same as mixing the two free drugs in a bag.',
+        note: 'The labeled population is limited. No dose or survival figure is given here.' },
+      { brand: 'Myocet®', generic: 'Non-PEGylated liposomal doxorubicin', use: 'Breast cancer in some countries, with other treatment',
+        why: 'It is liposomal doxorubicin without the PEG coat used on Doxil, so the two products are not interchangeable.',
+        note: 'Approval and availability depend on the country.' },
+      { brand: 'Arikayce®', generic: 'Amikacin liposome inhalation suspension', use: 'Refractory MAC lung disease in selected adults',
+        why: 'This liposome is inhaled, so the drug is aimed at the lung rather than given as a typical intravenous cancer product.',
+        note: 'Used only when the product criteria are met, as part of a combination regimen.' }
     ];
     grid.innerHTML = APPS.map(a => `
       <article class="glass-card app-card">
@@ -533,7 +577,23 @@
     { q: 'True or False: PEGylation prolongs liposome circulation time.', opts: ['True', 'False'], a: 0,
       ex: 'True — the PEG "stealth" coating reduces immune clearance, so liposomes circulate longer.' },
     { q: 'True or False: GUVs can be observed under a light microscope.', opts: ['True', 'False'], a: 0,
-      ex: 'True — GUVs are cell-sized (>1 µm), so they are visible under a light microscope.' }
+      ex: 'True — GUVs are cell-sized (>1 µm), so they are visible under a light microscope.' },
+    { q: 'Extrusion through a membrane is mainly used to?', opts: ['Remove every cholesterol molecule', 'Narrow the vesicle size distribution', 'Heat lipids above 200 °C', 'Turn liposomes into proteins'], a: 1,
+      ex: 'Passing the suspension through pores reduces vesicles that have not yet fitted through. Repeated passes narrow the range; they do not guarantee one exact diameter.' },
+    { q: 'In reverse-phase evaporation, the aqueous drug starts?', opts: ['Dissolved only in the organic solvent', 'In water droplets inside a water-in-oil emulsion', 'Bound only to PEG chains', 'In a solid lipid core'], a: 1,
+      ex: 'The emulsion traps aqueous droplets. Removing the solvent can leave those droplets as the internal water volume.' },
+    { q: 'Ethanol injection forms vesicles mainly because?', opts: ['Lipids are heated above 200 °C', 'A lipid solution is diluted into excess water', 'Detergent is added above its CMC only', 'The dry film is frozen'], a: 1,
+      ex: 'Lipids dissolved in a water-miscible solvent self-assemble as that solvent mixes into the aqueous phase.' },
+    { q: 'Closed vesicles appear after detergent removal when?', opts: ['All phospholipid is removed', 'Detergent falls below the level that keeps mixed micelles', 'Only cholesterol remains', 'The core is freeze-dried'], a: 1,
+      ex: 'Detergent holds lipids in micelles. Dialysis, dilution, or beads can drop it below that threshold so bilayers close.' },
+    { q: 'A multivesicular vesicle (MVV) is best described as?', opts: ['One bilayer and no water core', 'Many small non-concentric vesicles inside a larger vesicle', 'A solid lipid nanoparticle', 'A micelle'], a: 1,
+      ex: 'An MVV holds vesicles inside a vesicle. An MLV is different: its bilayers are concentric, like an onion.' },
+    { q: 'Compared with an SUV, an LUV usually has?', opts: ['No bilayer', 'A larger aqueous core for water-soluble drug', 'Only a solid lipid matrix', 'No phospholipids'], a: 1,
+      ex: 'Both can have one bilayer. The larger LUV core can hold more hydrophilic drug than a small SUV core.' },
+    { q: 'True or False: Every liposome follows the tumor pathway in the simulation.', opts: ['True', 'False'], a: 1,
+      ex: 'False. That animation is one teaching pathway. Some liposomes release drug outside the cell, fuse, are cleared by liver and spleen macrophages, or are meant to act locally.' },
+    { q: 'True or False: PEGylation means the liposome is actively targeted to one receptor.', opts: ['True', 'False'], a: 1,
+      ex: 'False. PEG mainly slows protein binding and clearance. Active targeting needs a ligand. A stealth liposome is not automatically a targeted one.' }
   ];
 
   (function initQuiz() {
@@ -576,7 +636,7 @@
       const q = QUIZ[idx];
       const correct = i === q.a;
       if (correct) score++;
-      answers.push({ q: q.q, chosen: q.opts[i], correctText: q.opts[q.a], ok: correct });
+      answers.push({ q: q.q, chosen: q.opts[i], correctText: q.opts[q.a], ok: correct, ex: q.ex });
       card.querySelectorAll('.quiz-opt').forEach(btn => {
         btn.disabled = true;
         const bi = parseInt(btn.dataset.i, 10);
@@ -600,6 +660,11 @@
         : 'Keep learning — explore the 3D Explorer and try again!';
       if (window.LipoverseProgress) window.LipoverseProgress.setQuizBest(pct);
       const wrong = answers.filter(a => !a.ok);
+      try {
+        localStorage.setItem('lipoverse-wrong', JSON.stringify(wrong.map(a => ({
+          q: a.q, correct: a.correctText, explanation: a.ex || '',
+        }))));
+      } catch (e) { /* ignore */ }
       card.innerHTML = `
         <div class="quiz-result">
           <div class="quiz-score-big">${pct}%</div>

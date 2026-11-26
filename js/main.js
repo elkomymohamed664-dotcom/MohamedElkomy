@@ -3,6 +3,44 @@
    Navigation · Progress tracking · Background particles
    Dashboard · Flashcards · Glossary
    ============================================================ */
+const ARABIC_RUN = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+/g;
+let boldingArabic = false;
+
+function boldArabic(root) {
+  if (boldingArabic || !root || root.nodeType !== 1) return;
+  if (root.closest('script, style, textarea, .ar, .ar-inline')) return;
+  const nodes = [];
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement;
+      if (!parent || !node.nodeValue || parent.closest('script, style, textarea, .ar, .ar-inline')) return NodeFilter.FILTER_REJECT;
+      ARABIC_RUN.lastIndex = 0;
+      return ARABIC_RUN.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    }
+  });
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  if (!nodes.length) return;
+  boldingArabic = true;
+  nodes.forEach(node => {
+    const text = node.nodeValue;
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    ARABIC_RUN.lastIndex = 0;
+    text.replace(ARABIC_RUN, (match, offset) => {
+      if (offset > last) frag.append(text.slice(last, offset));
+      const span = document.createElement('span');
+      span.className = 'ar-inline';
+      span.textContent = match;
+      frag.append(span);
+      last = offset + match.length;
+      return match;
+    });
+    if (last < text.length) frag.append(text.slice(last));
+    node.parentNode.replaceChild(frag, node);
+  });
+  boldingArabic = false;
+}
+
 (function () {
   'use strict';
 
@@ -11,11 +49,13 @@
     { id: 'intro',        num: '01', icon: '🧬', title: 'Introduction',       desc: 'Definition, history and why liposomes matter in pharmacy.' },
     { id: 'explorer',     num: '02', icon: '🔭', title: '3D Explorer',        desc: 'Rotate and click through the liposome structure in 3D.' },
     { id: 'types',        num: '03', icon: '⭕', title: 'Types of Liposomes', desc: 'SUV, LUV, GUV, MLV and MVV — sizes, layers and features.' },
-    { id: 'lab',          num: '04', icon: '🧪', title: 'Preparation Lab',    desc: 'Five preparation methods, step by step.' },
-    { id: 'loading',      num: '05', icon: '💊', title: 'Drug Loading',       desc: 'Where hydrophilic and lipophilic drugs are loaded.' },
+    { id: 'lab',          num: '04', icon: '🧪', title: 'Preparation Lab',    desc: 'Thin film, reverse phase, ethanol, detergent, microfluidics, and extrusion.' },
+    { id: 'loading',      num: '05', icon: '💊', title: 'Drug Loading',       desc: 'Where the drug sits, encapsulation efficiency, and loading capacity.' },
     { id: 'simulation',   num: '06', icon: '🩸', title: 'Delivery Simulation',desc: 'Follow the drug journey through the body.' },
-    { id: 'applications', num: '07', icon: '🏥', title: 'Applications',       desc: 'Doxil, AmBisome, Onivyde and Exparel in the clinic.' },
-    { id: 'quiz',         num: '08', icon: '🏆', title: 'Quiz Center',        desc: 'Test yourself with explained questions.' },
+    { id: 'applications', num: '07', icon: '🏥', title: 'Applications',       desc: 'Doxil, AmBisome, Onivyde, Exparel, and other real liposomal medicines.' },
+    { id: 'quiz',         num: '08', icon: '🏆', title: 'Quiz Center',        desc: 'Questions, matching, ordering, labeling, and review.' },
+    { id: 'gallery',      num: '09', icon: '🔮', title: '3D Gallery',         desc: 'A separate vesicle for each type: size, layers, PEG, charge, and ligands.' },
+    { id: 'research',     num: '10', icon: '📚', title: 'Research',           desc: 'Published reviews, plus notes you can download.' },
   ];
 
   const FLASHCARDS = [
@@ -69,11 +109,13 @@
   const navLinks = document.querySelectorAll('.nav-links a');
   let explorerLoaded = false;
 
+  const PAGE = { research: 'applications', capacity: 'loading', notes: 'flashcards', practice: 'quiz' };
+  const FOCUS = { research: 'research-block', capacity: 'capacity-panel', notes: 'notes-block', practice: 'quiz-extra' };
+
   function showSection(id) {
-    closeMobileNav();
-    sections.forEach(s => s.classList.toggle('active', s.id === 'section-' + id));
-    navLinks.forEach(a => a.classList.toggle('active', a.dataset.nav === id));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const page = PAGE[id] || id;
+    sections.forEach(s => s.classList.toggle('active', s.id === 'section-' + page));
+    navLinks.forEach(a => a.classList.toggle('active', a.dataset.nav === id || (id === page && a.dataset.nav === page)));
     if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
     markVisited(id);
     renderModuleCards();
@@ -88,38 +130,40 @@
           if (wrap) wrap.innerHTML = '<p style="padding:30px;color:var(--muted)">⚠️ Could not load the 3D engine. Please check your internet connection and reload.</p>';
         });
     }
-    if (id === 'loading' && window.LipoverseLoading) window.LipoverseLoading.start();
-    if (id === 'simulation' && window.LipoverseSim) window.LipoverseSim.start();
+    if (page === 'loading' && window.LipoverseLoading) window.LipoverseLoading.start();
+    if (page === 'simulation' && window.LipoverseSim) window.LipoverseSim.start();
+    const activeLink = document.querySelector('.nav-links a.active');
+    const linkBar = document.getElementById('nav-links');
+    if (activeLink && linkBar && linkBar.scrollWidth > linkBar.clientWidth) {
+      const left = activeLink.offsetLeft - (linkBar.clientWidth - activeLink.offsetWidth) / 2;
+      linkBar.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+    }
+    const focus = FOCUS[id];
+    if (focus) {
+      setTimeout(() => document.getElementById(focus)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
-  document.querySelectorAll('[data-nav]').forEach(el => {
-    el.addEventListener('click', e => { e.preventDefault(); showSection(el.dataset.nav); });
+  document.addEventListener('click', e => {
+    const nav = e.target.closest('[data-nav]');
+    if (nav) { e.preventDefault(); showSection(nav.dataset.nav); return; }
+    const go = e.target.closest('[data-goto]');
+    if (go) showSection(go.dataset.goto);
   });
-  document.querySelectorAll('[data-goto]').forEach(el => {
-    el.addEventListener('click', () => showSection(el.dataset.goto));
-  });
+  window.LipoverseNav = { show: showSection };
 
-  /* Browser back / forward buttons (hash changes) */
-  window.addEventListener('hashchange', () => {
-    const id = (location.hash || '#home').replace('#', '');
-    const sec = document.getElementById('section-' + id);
-    if (sec && !sec.classList.contains('active')) showSection(id);
+  function fitNav() {
+    const bar = document.querySelector('.navbar');
+    if (bar) document.documentElement.style.setProperty('--nav-h', Math.ceil(bar.getBoundingClientRect().height) + 'px');
+  }
+  fitNav();
+  window.addEventListener('resize', fitNav);
+  window.addEventListener('load', fitNav);
+  document.querySelectorAll('.seal-bar img').forEach(img => {
+    if (!img.complete) img.addEventListener('load', fitNav);
   });
-
-  /* Mobile nav toggle (hamburger) */
-  const navToggle = document.getElementById('nav-toggle');
-  const navLinksEl = document.getElementById('nav-links');
-  if (navToggle && navLinksEl) {
-    navToggle.addEventListener('click', () => {
-      const open = navLinksEl.classList.toggle('open');
-      navToggle.setAttribute('aria-expanded', String(open));
-      navToggle.textContent = open ? '✕' : '☰';
-    });
-  }
-  function closeMobileNav() {
-    if (navLinksEl) navLinksEl.classList.remove('open');
-    if (navToggle) { navToggle.setAttribute('aria-expanded', 'false'); navToggle.textContent = '☰'; }
-  }
 
   /* ---------- Module cards ---------- */
   function renderModuleCards() {
@@ -134,7 +178,6 @@
         <p>${m.desc}</p>
       </article>`).join('');
     grid.querySelectorAll('.module-card').forEach(card => {
-      card.addEventListener('click', () => showSection(card.dataset.goto));
       card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showSection(card.dataset.goto); } });
     });
   }
@@ -194,12 +237,12 @@
         ctx.beginPath();
         if (p.ring) {
           ctx.arc(p.x, p.y, p.r * 2.4, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(139,231,224,' + (p.a * 0.7) + ')';
+          ctx.strokeStyle = 'rgba(196,181,253,' + (p.a * 0.75) + ')';
           ctx.lineWidth = 1;
           ctx.stroke();
         } else {
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(32,189,176,' + p.a + ')';
+          ctx.fillStyle = 'rgba(167,139,250,' + p.a + ')';
           ctx.fill();
         }
       }
@@ -264,5 +307,21 @@
   renderDashboard();
 
   const initial = (location.hash || '#home').replace('#', '');
-  showSection(document.getElementById('section-' + initial) ? initial : 'home');
+  const initialPage = PAGE[initial] || initial;
+  showSection(document.getElementById('section-' + initialPage) ? initial : 'home');
+  window.addEventListener('hashchange', () => {
+    const id = location.hash.replace('#', '');
+    if (id) showSection(id);
+  });
+
+  boldArabic(document.body);
+  const arabicObserver = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      mutation.addedNodes.forEach(node => {
+        if (node.nodeType === 1) boldArabic(node);
+        else if (node.nodeType === 3 && node.parentElement) boldArabic(node.parentElement);
+      });
+    });
+  });
+  arabicObserver.observe(document.body, { childList: true, subtree: true });
 })();
