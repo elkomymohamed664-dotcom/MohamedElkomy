@@ -422,23 +422,10 @@
       const now = performance.now();
       if (now - lastTouch < 70) return;
       lastTouch = now;
-      whenRunning(() => {
-        const src = ctx.createBufferSource();
-        src.buffer = noiseBuffer();
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'highpass';
-        filter.frequency.value = 1400;
-        const gain = ctx.createGain();
-        const t = ctx.currentTime;
-        gain.gain.setValueAtTime(0.0001, t);
-        gain.gain.exponentialRampToValueAtTime(0.11, t + 0.004);
-        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.04);
-        src.connect(filter);
-        filter.connect(gain);
-        gain.connect(uiOut());
-        src.start(t);
-        src.stop(t + 0.05);
-      });
+      const root = 1174 * (0.985 + Math.random() * 0.03);
+      tone(uiOut(), root, root, 0.16, 0.3, 'sine');
+      tone(uiOut(), root * 2, root * 2, 0.09, 0.16, 'sine');
+      tone(uiOut(), root * 2.76, root * 2.4, 0.04, 0.08, 'triangle');
     },
     release() {},
     whoosh() {
