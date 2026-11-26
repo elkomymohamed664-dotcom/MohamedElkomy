@@ -25,9 +25,9 @@
       master = ctx.createGain();
       master.gain.value = 1;
       const comp = ctx.createDynamicsCompressor();
-      comp.threshold.value = -14;
-      comp.knee.value = 16;
-      comp.ratio.value = 2.8;
+      comp.threshold.value = -8;
+      comp.knee.value = 12;
+      comp.ratio.value = 2.2;
       comp.attack.value = 0.004;
       comp.release.value = 0.16;
       master.connect(comp);
@@ -45,8 +45,8 @@
     if (muted) return;
     const c = context();
     if (!c) return;
-    if (c.state === 'running') fn();
-    else c.resume().then(() => { if (!muted) fn(); }).catch(() => {});
+    if (c.state === 'suspended') c.resume().catch(() => {});
+    fn();
   }
 
   function noiseBuffer() {
@@ -210,11 +210,10 @@
     filter.Q.value = 0.65;
     const gain = ctx.createGain();
     const t = ctx.currentTime;
-    gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(0.045, t + 0.05);
+    gain.gain.setValueAtTime(0.07, t);
     src.connect(filter);
     filter.connect(gain);
-    gain.connect(vesicleOut());
+    gain.connect(uiOut());
     src.start(t);
     dragAir = { src, gain };
     dragStarting = false;
@@ -310,27 +309,28 @@
 
   function playNamed(name) {
     if (name === 'ok') {
-      tone(uiOut(), 523, 784, 0.1, 0.18, 'sine');
+      tone(uiOut(), 660, 990, 0.1, 0.36, 'sine');
       return;
     }
-    if (name === 'bad' || name === 'deny') return sweep(210, 96, 0.14, 0.14);
-    if (name === 'flip') return sweep(640, 210, 0.11, 0.12);
-    if (name === 'nav') return sweep(300, 540, 0.1, 0.12);
+    if (name === 'bad' || name === 'deny') return sweep(210, 96, 0.14, 0.22);
+    if (name === 'flip') return sweep(640, 210, 0.11, 0.2);
+    if (name === 'nav') return sweep(420, 760, 0.09, 0.28);
     if (name === 'chime') {
-      tone(uiOut(), 523, 523, 0.09, 0.16, 'sine');
-      setTimeout(() => tone(uiOut(), 784, 784, 0.12, 0.14, 'sine'), 70);
+      tone(uiOut(), 740, 740, 0.07, 0.34, 'sine');
+      tone(uiOut(), 1480, 1180, 0.06, 0.16, 'triangle');
       return;
     }
     if (name === 'slice') return noiseBurst(uiOut(), 0.08, 0.1, 1400, 'highpass');
     if (name === 'bubble') return sweep(640 + Math.random() * 120, 230, 0.07, 0.12);
     if (name === 'whoosh') return noiseBurst(uiOut(), 0.1, 0.1, 900, 'bandpass');
     if (name === 'release') return sweep(280, 110, 0.1, 0.12);
-    if (name === 'pop') return sweep(760, 260, 0.08, 0.18);
-    if (name === 'drop') return sweep(480, 180, 0.08, 0.12);
-    if (name === 'tick') return tone(uiOut(), 880, 740, 0.04, 0.12, 'sine');
-    if (name === 'send') return sweep(420, 860, 0.12, 0.14);
+    if (name === 'pop') return sweep(880, 440, 0.07, 0.32);
+    if (name === 'drop') return sweep(520, 260, 0.08, 0.2);
+    if (name === 'tick') return tone(uiOut(), 980, 760, 0.045, 0.24, 'sine');
+    if (name === 'send') return sweep(480, 920, 0.12, 0.28);
     if (name === 'click') {
-      tone(uiOut(), 523, 659, 0.06, 0.2, 'sine');
+      tone(uiOut(), 820, 1040, 0.055, 0.42, 'sine');
+      tone(uiOut(), 1640, 1320, 0.04, 0.2, 'triangle');
       return;
     }
   }
@@ -502,12 +502,12 @@
         if (!pressing || !origin || event.pointerId !== origin.id) return;
         if (!moved) {
           const dist = Math.hypot(event.clientX - origin.x, event.clientY - origin.y);
-          if (dist < 6) return;
+          if (dist < 2) return;
           moved = true;
         }
         startDragAir();
         clearTimeout(dragIdle);
-        dragIdle = setTimeout(() => { if (pressing) stopDragAir(); }, 160);
+        dragIdle = setTimeout(() => { if (pressing) stopDragAir(); }, 420);
       });
       el.addEventListener('pointerup', endPress);
       el.addEventListener('pointercancel', endPress);
