@@ -55,7 +55,7 @@ function boldArabic(root) {
     { id: 'applications', num: '07', icon: '🏥', title: 'Applications',       desc: 'Doxil, AmBisome, Onivyde, Exparel, and other real liposomal medicines.' },
     { id: 'quiz',         num: '08', icon: '🏆', title: 'Quiz Center',        desc: 'Questions, matching, ordering, labeling, and review.' },
     { id: 'gallery',      num: '09', icon: '🔮', title: '3D Gallery',         desc: 'A separate vesicle for each type: size, layers, PEG, charge, and ligands.' },
-    { id: 'research',     num: '10', icon: '📚', title: 'Research',           desc: 'Published reviews, plus notes you can download.' },
+    { id: 'research',     num: '10', icon: '📚', title: 'Research',           desc: 'Published reviews on composition, approved products, and manufacturing.' },
   ];
 
   const FLASHCARDS = [

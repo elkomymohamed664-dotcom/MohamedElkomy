@@ -512,9 +512,9 @@
     const grid = document.getElementById('apps-grid');
     if (!grid) return;
     const APPS = [
-      { brand: 'Doxil®', generic: 'Liposomal doxorubicin', use: 'Cancer — ovarian, breast, Kaposi sarcoma',
+      { brand: 'Doxil®', generic: 'Liposomal doxorubicin', use: 'Ovarian cancer, AIDS-related Kaposi sarcoma, and multiple myeloma, in the labeled settings',
         why: 'PEGylated ("stealth") liposomes prolong circulation and reduce doxorubicin cardiotoxicity.',
-        note: 'First FDA-approved liposomal drug (1995).' },
+        note: 'First FDA-approved liposomal drug (1995). Breast cancer is not a current US Doxil indication. No dose is given here.' },
       { brand: 'AmBisome®', generic: 'Liposomal amphotericin B', use: 'Systemic fungal infections',
         why: 'The liposomal form delivers amphotericin B to fungi while greatly reducing kidney toxicity (nephrotoxicity).',
         note: 'A life-saving option when conventional amphotericin B is too toxic.' },
