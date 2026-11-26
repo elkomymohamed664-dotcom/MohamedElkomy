@@ -52,7 +52,7 @@ function boldArabic(root) {
     { id: 'lab',          num: '04', icon: '🧪', title: 'Preparation Lab',    desc: 'Thin film, reverse phase, ethanol, detergent, microfluidics, and extrusion.' },
     { id: 'loading',      num: '05', icon: '💊', title: 'Drug Loading',       desc: 'Where the drug sits, encapsulation efficiency, and loading capacity.' },
     { id: 'simulation',   num: '06', icon: '🩸', title: 'Delivery Simulation',desc: 'Follow the drug journey through the body.' },
-    { id: 'applications', num: '07', icon: '🏥', title: 'Applications',       desc: 'Doxil, AmBisome, Onivyde and Exparel in the clinic.' },
+    { id: 'applications', num: '07', icon: '🏥', title: 'Applications',       desc: 'Doxil, AmBisome, Onivyde, Exparel, and other real liposomal medicines.' },
     { id: 'quiz',         num: '08', icon: '🏆', title: 'Quiz Center',        desc: 'Questions, matching, ordering, labeling, and review.' },
     { id: 'gallery',      num: '09', icon: '🔮', title: '3D Gallery',         desc: 'A separate vesicle for each type: size, layers, PEG, charge, and ligands.' },
     { id: 'research',     num: '10', icon: '📚', title: 'Research',           desc: 'Published reviews, plus notes you can download.' },

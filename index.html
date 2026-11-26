@@ -111,8 +111,8 @@
     <div class="hero-stats">
       <div class="stat"><strong>10</strong><span>Learning Modules</span></div>
       <div class="stat"><strong>6</strong><span>Preparation Methods</span></div>
-      <div class="stat"><strong>12</strong><span>Quiz Questions</span></div>
-      <div class="stat"><strong>4</strong><span>Real Products</span></div>
+      <div class="stat"><strong>20</strong><span>Quiz Questions</span></div>
+      <div class="stat"><strong>7</strong><span>Real Products</span></div>
     </div>
     </div>
   </div>
@@ -127,6 +127,7 @@
         <strong id="dash-pct">0%</strong>
         <div class="progress-track"><div class="progress-fill" id="dash-fill"></div></div>
         <span id="dash-count">0 / 10 modules visited</span>
+        <p class="ee-note">The bar moves when you open a module. Staying on this page leaves it at 0. <span class="ar">الشريط بيعد الأقسام اللي بتفتحها.</span></p>
       </div>
     </div>
     <div class="dash-body">
@@ -141,6 +142,17 @@
       <button class="btn btn-primary" id="continue-btn">Continue Learning →</button>
     </div>
   </div>
+
+  <article class="glass-card how-card" id="how-to-use">
+    <h2>How to use the site</h2>
+    <p class="ar">ازاي تستخدم الموقع</p>
+    <ol>
+      <li>Use the top menu. Home is not the whole site. <span class="ar">القائمة فوق بتفتح كل قسم.</span></li>
+      <li>Comparison tables are inside Introduction and Types. Flashcards are their own menu item. Research papers are inside Applications. <span class="ar">الجداول في المقدمة والأنواع. الفلاش كاردز قسم لوحده. الأبحاث جوه التطبيقات.</span></li>
+      <li>Drag a 3D vesicle to turn it. In Explorer, click a part to read about it. <span class="ar">اسحب الشكل عشان تلفه، واضغط الجزء في Explorer.</span></li>
+      <li>Progress counts modules you open, not text you only read. <span class="ar">التقدم بيتحسب لما تفتح القسم.</span></li>
+    </ol>
+  </article>
 
   <h2 class="section-title">Explore Our Modules</h2>
   <div class="modules-grid" id="modules-grid"></div>
@@ -459,12 +471,12 @@
   <div class="page-head">
     <span class="page-chip">Module 07</span>
     <h1>Pharmaceutical Applications</h1>
-    <p>Real medicines that use liposomal technology — theory meets the clinic.</p>
+    <p>Teaching examples of real liposomal medicines. Not a full catalog, and not a dosing guide.</p>
   </div>
   <div class="apps-grid" id="apps-grid"></div>
 
   <h2 class="section-title" id="research-block">Research</h2>
-  <p>Published reviews on liposomal drug delivery. Read the paper before citing a number from it.</p>
+  <p>Published reviews. Each link opens the paper or its PubMed record. Read it before citing a number.</p>
   <div class="research-list" id="research-list"></div>
 
   <div class="next-bar">

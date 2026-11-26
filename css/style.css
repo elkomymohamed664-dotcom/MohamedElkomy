@@ -567,6 +567,11 @@ html[data-theme="light"] .search-results { background: #fff; }
 .inquiry-status { margin: 0; color: var(--muted); }
 .inquiry-status[data-state="ok"] { color: var(--teal); }
 .inquiry-status[data-state="bad"] { color: var(--danger); }
+.how-card { margin: 8px 0 28px; }
+.how-card h2 { font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 4px; }
+.how-card ol { margin: 12px 0 0 1.2rem; display: grid; gap: 10px; }
+.how-card li { color: var(--muted); line-height: 1.55; }
+.dash-progress .ee-note { margin-top: 8px; max-width: 280px; }
 .footer a { color: var(--cyan); }
 .footer { position: relative; z-index: 1; border-top: 1px solid var(--border); margin-top: 60px; background: rgba(20,18,24,0.78); padding-bottom: env(safe-area-inset-bottom); }
 .footer-inner { max-width: 1280px; margin: 0 auto; padding: 28px 20px 36px; text-align: center; }

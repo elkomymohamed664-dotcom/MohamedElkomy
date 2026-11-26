@@ -522,8 +522,17 @@
         why: 'Encapsulation prolongs irinotecan exposure at the tumor and improves the therapeutic index.',
         note: 'Used in combination regimens for pancreatic cancer.' },
       { brand: 'Exparel®', generic: 'Liposomal bupivacaine', use: 'Post-surgical pain',
-        why: 'Slow, sustained release of bupivacaine provides pain relief for up to ~72 hours after surgery.',
-        note: 'Reduces the need for opioid painkillers.' }
+        why: 'The liposome holds bupivacaine for slower release than the free injection.',
+        note: 'Duration depends on the product label and the procedure. This card is not a dosing guide.' },
+      { brand: 'Vyxeos®', generic: 'Liposomal daunorubicin and cytarabine', use: 'Some adults with newly diagnosed high-risk AML',
+        why: 'Both drugs are co-encapsulated in one liposome. That is not the same as mixing the two free drugs in a bag.',
+        note: 'The labeled population is limited. No dose or survival figure is given here.' },
+      { brand: 'Myocet®', generic: 'Non-PEGylated liposomal doxorubicin', use: 'Breast cancer in some countries, with other treatment',
+        why: 'It is liposomal doxorubicin without the PEG coat used on Doxil, so the two products are not interchangeable.',
+        note: 'Approval and availability depend on the country.' },
+      { brand: 'Arikayce®', generic: 'Amikacin liposome inhalation suspension', use: 'Refractory MAC lung disease in selected adults',
+        why: 'This liposome is inhaled, so the drug is aimed at the lung rather than given as a typical intravenous cancer product.',
+        note: 'Used only when the product criteria are met, as part of a combination regimen.' }
     ];
     grid.innerHTML = APPS.map(a => `
       <article class="glass-card app-card">
@@ -560,7 +569,23 @@
     { q: 'True or False: PEGylation prolongs liposome circulation time.', opts: ['True', 'False'], a: 0,
       ex: 'True — the PEG "stealth" coating reduces immune clearance, so liposomes circulate longer.' },
     { q: 'True or False: GUVs can be observed under a light microscope.', opts: ['True', 'False'], a: 0,
-      ex: 'True — GUVs are cell-sized (>1 µm), so they are visible under a light microscope.' }
+      ex: 'True — GUVs are cell-sized (>1 µm), so they are visible under a light microscope.' },
+    { q: 'Extrusion through a membrane is mainly used to?', opts: ['Remove every cholesterol molecule', 'Narrow the vesicle size distribution', 'Heat lipids above 200 °C', 'Turn liposomes into proteins'], a: 1,
+      ex: 'Passing the suspension through pores reduces vesicles that have not yet fitted through. Repeated passes narrow the range; they do not guarantee one exact diameter.' },
+    { q: 'In reverse-phase evaporation, the aqueous drug starts?', opts: ['Dissolved only in the organic solvent', 'In water droplets inside a water-in-oil emulsion', 'Bound only to PEG chains', 'In a solid lipid core'], a: 1,
+      ex: 'The emulsion traps aqueous droplets. Removing the solvent can leave those droplets as the internal water volume.' },
+    { q: 'Ethanol injection forms vesicles mainly because?', opts: ['Lipids are heated above 200 °C', 'A lipid solution is diluted into excess water', 'Detergent is added above its CMC only', 'The dry film is frozen'], a: 1,
+      ex: 'Lipids dissolved in a water-miscible solvent self-assemble as that solvent mixes into the aqueous phase.' },
+    { q: 'Closed vesicles appear after detergent removal when?', opts: ['All phospholipid is removed', 'Detergent falls below the level that keeps mixed micelles', 'Only cholesterol remains', 'The core is freeze-dried'], a: 1,
+      ex: 'Detergent holds lipids in micelles. Dialysis, dilution, or beads can drop it below that threshold so bilayers close.' },
+    { q: 'A multivesicular vesicle (MVV) is best described as?', opts: ['One bilayer and no water core', 'Many small non-concentric vesicles inside a larger vesicle', 'A solid lipid nanoparticle', 'A micelle'], a: 1,
+      ex: 'An MVV holds vesicles inside a vesicle. An MLV is different: its bilayers are concentric, like an onion.' },
+    { q: 'Compared with an SUV, an LUV usually has?', opts: ['No bilayer', 'A larger aqueous core for water-soluble drug', 'Only a solid lipid matrix', 'No phospholipids'], a: 1,
+      ex: 'Both can have one bilayer. The larger LUV core can hold more hydrophilic drug than a small SUV core.' },
+    { q: 'True or False: Every liposome follows the tumor pathway in the simulation.', opts: ['True', 'False'], a: 1,
+      ex: 'False. That animation is one teaching pathway. Some liposomes release drug outside the cell, fuse, are cleared by liver and spleen macrophages, or are meant to act locally.' },
+    { q: 'True or False: PEGylation means the liposome is actively targeted to one receptor.', opts: ['True', 'False'], a: 1,
+      ex: 'False. PEG mainly slows protein binding and clearance. Active targeting needs a ligand. A stealth liposome is not automatically a targeted one.' }
   ];
 
   (function initQuiz() {

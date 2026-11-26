@@ -308,10 +308,10 @@ function initSimExtras() {
 
 /* ================= RESEARCH ================= */
 const PAPERS = [
-  { year: '2024', title: 'Liposomes: the next generation', authors: 'Large, Kros et al.', source: 'Nature Reviews Bioengineering', url: 'https://www.nature.com/articles/s44222-024-00253-7', note: 'Overview of where liposome design is heading after the first clinical generation.' },
-  { year: '2023', title: 'Liposomes for drug delivery: vesicular composition, release, and loading', authors: 'Pande S.', source: 'Artificial Cells, Nanomedicine, and Biotechnology', url: 'https://pubmed.ncbi.nlm.nih.gov/37594208/', note: 'Review of composition and of what actually changes release and loading.' },
-  { year: '2022', title: 'A Review of Liposomes as a Drug Delivery System: Current Status of Approved Products, Regulatory Environments, and Future Perspectives', authors: 'Liu, Chen, Zhang', source: 'Molecules', url: 'https://www.mdpi.com/1420-3049/27/4/1372', note: 'Approved products and the regulatory frame around them.' },
-  { year: '2021', title: 'Liposomes: Advancements and innovation in the manufacturing process', authors: 'Shah et al.', source: 'Advanced Drug Delivery Reviews', url: 'https://pubmed.ncbi.nlm.nih.gov/34273421/', note: 'Why microfluidic and continuous methods matter for scale, not only for the bench.' },
+  { year: '2023', title: 'Liposomes for drug delivery: review of vesicular composition, factors affecting drug release and drug loading', authors: 'Pande S.', source: 'Artificial Cells, Nanomedicine, and Biotechnology', url: 'https://pubmed.ncbi.nlm.nih.gov/37594208/', note: 'Review of composition and of what actually changes release and loading.' },
+  { year: '2022', title: 'A Review of Liposomes as a Drug Delivery System: Current Status of Approved Products, Regulatory Environments, and Future Perspectives', authors: 'Liu, Chen, Zhang', source: 'Molecules', url: 'https://www.mdpi.com/1420-3049/27/4/1372', note: 'Approved products and the regulatory frame around them. Read the paper before quoting a count from its table.' },
+  { year: '2021', title: 'Liposome composition in drug delivery design, synthesis, characterization, and clinical application', authors: 'Large, Abdelmessih, Fink, Auguste', source: 'Advanced Drug Delivery Reviews', url: 'https://pubmed.ncbi.nlm.nih.gov/34224787/', note: 'How lipid composition is chosen, made, checked, and carried into clinical products.' },
+  { year: '2020', title: 'Liposomes: Advancements and innovation in the manufacturing process', authors: 'Shah, Dhawan, Holm, Nagarsenker, Perrie', source: 'Advanced Drug Delivery Reviews', url: 'https://pubmed.ncbi.nlm.nih.gov/32650041/', note: 'Laboratory, scale-up, and continuous methods, including why microfluidics matter beyond the bench.' },
 ];
 
 function initResearch() {
