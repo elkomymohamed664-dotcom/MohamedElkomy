@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=3">
 <script type="importmap">
 {
   "imports": {
@@ -240,13 +240,6 @@
     <p>Rotate, zoom and click on each part of the liposome to discover its function.</p>
   </div>
 
-  <div class="shape-panel glass-card">
-    <h2>Other 3D shapes</h2>
-    <p>This page shows one detailed vesicle. The twelve buttons open a separate orbitable model for each type and surface.</p>
-    <p class="ar">الأشكال التانية هنا. دوس على أي اسم وهيفتح الموديل ثلاثي الأبعاد.</p>
-    <div class="gallery-picks" data-shape-row></div>
-  </div>
-
   <div class="explorer-layout">
     <div class="explorer-view glass-card">
       <div id="explorer-canvas-wrap"></div>
@@ -262,6 +255,12 @@
         <label><input type="checkbox" id="layer-tails" checked> Tails</label>
         <label><input type="checkbox" id="layer-chol" checked> Cholesterol</label>
         <label><input type="checkbox" id="layer-core" checked> Aqueous Core</label>
+      </div>
+      <div class="shape-panel below-model">
+        <h2>Other 3D shapes</h2>
+        <p>This page shows one detailed vesicle. The twelve buttons open a separate orbitable model for each type and surface.</p>
+        <p class="ar">الأشكال التانية تحت النموذج. دوس على أي اسم وهيفتح الموديل ثلاثي الأبعاد.</p>
+        <div class="gallery-picks" data-shape-row></div>
       </div>
     </div>
 
@@ -289,12 +288,12 @@
     <span class="page-chip">12 models</span>
     <h1>3D vesicle models</h1>
     <p>Pick a shape: SUV, LUV, GUV, MLV, OLV, MVV, PEGylated, Cationic, Anionic, Targeted, pH-sensitive, or Thermosensitive. Drag to rotate and scroll to zoom.</p>
-    <p class="ar">اختار الشكل من الأزرار اللي فوق الموديل.</p>
+    <p class="ar">اختار الشكل من الأزرار اللي تحت الموديل.</p>
   </div>
-  <div class="gallery-picks" id="gallery-picks"></div>
   <div class="glass-card gallery-stage">
     <canvas id="gallery-canvas"></canvas>
     <div class="explorer-hint">Drag to rotate · Scroll to zoom</div>
+    <div class="gallery-picks" id="gallery-picks"></div>
     <div class="gallery-caption">
       <h2 id="gallery-name">SUV</h2>
       <p id="gallery-blurb"></p>
