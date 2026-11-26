@@ -161,7 +161,7 @@ module.exports = async function contactHandler(req, res) {
     });
   }
 
-  const apiKey = String(process.env.RESEND_API_KEY || '').trim();
+  const apiKey = String(process.env.RESEND_API_KEY || process.env.Resend_key || '').trim();
   const to = String(process.env.CONTACT_TO_EMAIL || '').trim();
   const from = String(process.env.CONTACT_FROM_EMAIL || '').trim();
   if (!apiKey || !validEmail(to) || !configuredSender(from)) {
