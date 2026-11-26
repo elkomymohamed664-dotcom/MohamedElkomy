@@ -13,31 +13,31 @@ if (!wrap) throw new Error('Explorer container not found');
 /* ---------- Part data ---------- */
 const PARTS = {
   bilayer: {
-    label: 'Phospholipid Bilayer', color: '#20BDB0',
+    label: 'Phospholipid Bilayer', color: '#C4B5FD',
     ar: 'الطبقة الدهنية الفوسفورية',
     desc: 'The vesicle wall, formed by two layers of phospholipid molecules arranged tail-to-tail. It separates the internal aqueous core from the outside world and controls what can enter or leave.',
     points: ['Two leaflets: outer and inner', 'Self-assembles in water — like a cell membrane', 'Lipophilic drugs dissolve inside it']
   },
   head: {
-    label: 'Hydrophilic Head', color: '#20BDB0',
+    label: 'Hydrophilic Head', color: '#C4B5FD',
     ar: 'الرأس المحب للماء',
     desc: 'The polar phosphate head of each phospholipid. It loves water (hydrophilic) and always faces an aqueous environment — either outside the liposome or inside the core.',
     points: ['Made of phosphate + glycerol', 'Faces water on both sides of the bilayer', 'Gives the liposome its water compatibility']
   },
   tail: {
-    label: 'Hydrophobic Tail', color: '#8BE7E0',
+    label: 'Hydrophobic Tail', color: '#EDE4FF',
     ar: 'الذيل الكاره للماء',
     desc: 'The fatty-acid chains of each phospholipid. They repel water (hydrophobic) and point toward each other inside the bilayer, away from water.',
     points: ['Fatty-acid chains (non-polar)', 'Meet in the middle of the bilayer', 'Lipophilic drugs are loaded here']
   },
   core: {
-    label: 'Aqueous Core', color: '#4da3ff',
+    label: 'Aqueous Core', color: '#7C3AED',
     ar: 'القلب المائي',
     desc: 'The water-filled interior of the liposome. Hydrophilic (water-soluble) drugs are encapsulated here, protected from the outside environment.',
     points: ['Filled with aqueous buffer', 'Holds hydrophilic drugs', 'Protected from enzymes and degradation']
   },
   cholesterol: {
-    label: 'Cholesterol', color: '#ffc857',
+    label: 'Cholesterol', color: '#A78BFA',
     ar: 'الكوليسترول',
     desc: 'A sterol molecule inserted between the phospholipid tails. It modulates membrane fluidity, improves stability and reduces drug leakage from the vesicle.',
     points: ['Sits between the fatty tails', 'Buffers fluidity at different temperatures', 'Reduces permeability and leakage']
@@ -67,7 +67,7 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.55));
 const keyLight = new THREE.DirectionalLight(0xffffff, 1.6);
 keyLight.position.set(5, 6, 8);
 scene.add(keyLight);
-const rimLight = new THREE.PointLight(0x20BDB0, 30, 30);
+const rimLight = new THREE.PointLight(0x7C3AED, 30, 30);
 rimLight.position.set(-6, -3, -5);
 scene.add(rimLight);
 
@@ -78,17 +78,17 @@ function makeMat(color, opts) {
     emissive: color, emissiveIntensity: 0.12
   }, opts || {}));
 }
-const headMat = makeMat(0x20BDB0);
-const tailMat = makeMat(0x8BE7E0, { roughness: 0.45 });
-const cholMat = makeMat(0xffc857, { roughness: 0.25 });
+const headMat = makeMat(0xC4B5FD);
+const tailMat = makeMat(0xEDE4FF, { roughness: 0.45 });
+const cholMat = makeMat(0xA78BFA, { roughness: 0.25 });
 const coreMat = new THREE.MeshStandardMaterial({
-  color: 0x4da3ff, transparent: true, opacity: 0.16,
-  roughness: 0.1, metalness: 0, emissive: 0x4da3ff, emissiveIntensity: 0.25,
+  color: 0x6D28D9, transparent: true, opacity: 0.2,
+  roughness: 0.1, metalness: 0, emissive: 0x6D28D9, emissiveIntensity: 0.25,
   side: THREE.DoubleSide, depthWrite: false
 });
-const waterMat = makeMat(0x6db9ff, { roughness: 0.15 });
-const drugCoreMat = makeMat(0xffc857, { roughness: 0.2 });
-const drugBilayerMat = makeMat(0xff8a5c, { roughness: 0.2 });
+const waterMat = makeMat(0xDDD6FE, { roughness: 0.15 });
+const drugCoreMat = makeMat(0xF0ABFC, { roughness: 0.2 });
+const drugBilayerMat = makeMat(0xE879F9, { roughness: 0.2 });
 
 const liposome = new THREE.Group();
 scene.add(liposome);
@@ -204,8 +204,8 @@ const glowCanvas = document.createElement('canvas');
 glowCanvas.width = glowCanvas.height = 256;
 const gctx = glowCanvas.getContext('2d');
 const grad = gctx.createRadialGradient(128, 128, 0, 128, 128, 128);
-grad.addColorStop(0, 'rgba(32,189,176,0.35)');
-grad.addColorStop(1, 'rgba(32,189,176,0)');
+grad.addColorStop(0, 'rgba(167,139,250,0.4)');
+grad.addColorStop(1, 'rgba(167,139,250,0)');
 gctx.fillStyle = grad;
 gctx.fillRect(0, 0, 256, 256);
 const glow = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -279,7 +279,8 @@ renderer.domElement.addEventListener('pointerup', e => {
   pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
   raycaster.setFromCamera(pointer, camera);
   const hits = raycaster.intersectObjects([headsMesh, tailsMesh, cholMesh, coreMesh, waterMesh], false);
-  selectPart(hits.length ? hits[0].object.userData.part : null);
+  const part = hits.length ? hits[0].object.userData.part : null;
+  selectPart(part);
 });
 
 /* ---------- Controls: cutaway / drugs / layers / rotate / reset ---------- */
@@ -287,7 +288,7 @@ const clipPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0);
 let cutaway = false;
 function applyClipping() {
   allMats.concat([drugCoreMat, drugBilayerMat]).forEach(m => {
-    m.clippingPlanes = cutaway ? [clipPlane] : null;
+    m.clippingPlanes = cutaway ? [clipPlane] : [];
     m.needsUpdate = true;
   });
 }
@@ -342,6 +343,7 @@ function resize() {
 }
 new ResizeObserver(resize).observe(wrap);
 resize();
+window.LipoverseSound?.bindOrbit(controls);
 
 const clock = new THREE.Clock();
 function animate() {

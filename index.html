@@ -2,18 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>LIPOVERSE — Explore the Science of Liposomes</title>
 <meta name="description" content="LIPOVERSE is an interactive 3D learning platform about liposomes and liposomal drug delivery for pharmacy students.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script type="importmap">
 {
   "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    "three": "./vendor/three.module.min.js",
+    "three/addons/": "./vendor/addons/"
   }
 }
 </script>
@@ -26,40 +26,65 @@
 <!-- ============ NAVBAR ============ -->
 <header class="navbar">
   <div class="nav-inner">
-    <a class="logo" href="#home" data-nav="home">
-      <span class="logo-mark">
-        <svg viewBox="0 0 40 40" width="30" height="30" aria-hidden="true">
-          <circle cx="20" cy="20" r="15" fill="none" stroke="#20BDB0" stroke-width="2.5"/>
-          <circle cx="20" cy="20" r="9" fill="none" stroke="#8BE7E0" stroke-width="2" stroke-dasharray="3 3"/>
-          <circle cx="20" cy="20" r="3.5" fill="#20BDB0"/>
-        </svg>
-      </span>
-      <span class="logo-text">LIPO<span>VERSE</span></span>
-    </a>
+    <div class="seal-bar" aria-label="Mansoura National University, Faculty of Pharmacy, Pharmaceutics Department">
+      <img src="images/mansoura-national-university.jpg?v=2" alt="Mansoura National University" width="44" height="44">
+      <img src="images/faculty-of-pharmacy.jpg?v=2" alt="Faculty of Pharmacy, Mansoura National University" width="44" height="44">
+      <img src="images/pharmaceutics-department.jpg" alt="Pharmaceutics Department" width="44" height="44">
+    </div>
+    <div class="nav-top">
+      <a class="logo" href="#home" data-nav="home">
+        <span class="logo-mark">
+          <svg viewBox="0 0 40 40" width="30" height="30" aria-hidden="true">
+            <circle cx="20" cy="20" r="15" fill="none" stroke="#C4B5FD" stroke-width="2.5"/>
+            <circle cx="20" cy="20" r="9" fill="none" stroke="#EDE4FF" stroke-width="2" stroke-dasharray="3 3"/>
+            <circle cx="20" cy="20" r="3.5" fill="#C4B5FD"/>
+          </svg>
+        </span>
+        <span class="logo-text">LIPO<span>VERSE</span></span>
+      </a>
+      <div class="nav-tools">
+        <div class="search-wrap">
+          <input type="search" id="global-search" placeholder="Search" aria-label="Search lessons">
+          <div id="search-results" class="search-results" hidden></div>
+        </div>
+        <button type="button" class="ctrl-btn" data-nav="gallery">3D Models</button>
+        <button type="button" class="ctrl-btn theme-btn" id="sound-toggle" aria-pressed="true" title="Liposome sound effects">Sound</button>
+        <button type="button" class="ctrl-btn theme-btn" id="theme-toggle" aria-pressed="false">Light</button>
+        <div class="nav-progress" title="Your progress">
+          <span id="nav-progress-pct">0%</span>
+          <div class="nav-progress-bar"><div id="nav-progress-fill"></div></div>
+        </div>
+      </div>
+    </div>
     <nav class="nav-links" id="nav-links">
       <a href="#home" data-nav="home" class="active">Home</a>
       <a href="#intro" data-nav="intro">Introduction</a>
-      <a href="#explorer" data-nav="explorer">3D Explorer</a>
+      <a href="#explorer" data-nav="explorer">Explorer</a>
       <a href="#types" data-nav="types">Types</a>
-      <a href="#lab" data-nav="lab">Preparation Lab</a>
-      <a href="#loading" data-nav="loading">Drug Loading</a>
+      <a href="#lab" data-nav="lab">Lab</a>
+      <a href="#loading" data-nav="loading">Loading</a>
       <a href="#simulation" data-nav="simulation">Simulation</a>
       <a href="#applications" data-nav="applications">Applications</a>
       <a href="#quiz" data-nav="quiz">Quiz</a>
       <a href="#flashcards" data-nav="flashcards">Flashcards</a>
+      <a href="#gallery" data-nav="gallery">3D Models</a>
+      <a href="#research" data-nav="research">Research</a>
+      <a href="#inquiries" data-nav="inquiries">Inquiries</a>
     </nav>
-    <div class="nav-progress" title="Your progress">
-      <span id="nav-progress-pct">0%</span>
-      <div class="nav-progress-bar"><div id="nav-progress-fill"></div></div>
-    </div>
   </div>
 </header>
 
 <main id="app">
+<div id="bookmark-strip" class="bookmark-strip"></div>
 
 <!-- ============ HOME ============ -->
 <section class="section active" id="section-home">
   <div class="hero">
+    <div class="hero-stage">
+      <canvas id="hero-liposome" role="img" aria-label="Moving three-dimensional liposome"></canvas>
+      <p class="hero-stage-caption">Drag to turn the vesicle · اسحب الليبوسوم</p>
+    </div>
+    <div class="hero-copy">
     <div class="hero-badge">🧬 Pharmacy Learning Platform</div>
     <h1 class="hero-title">LIPO<span>VERSE</span></h1>
     <p class="hero-tagline">Beyond the Cell. Beyond the Science.</p>
@@ -71,13 +96,24 @@
     </p>
     <div class="hero-actions">
       <button class="btn btn-primary" data-goto="explorer">Explore 3D →</button>
+      <button class="btn btn-primary" data-goto="gallery">12 vesicle models</button>
       <button class="btn btn-ghost" data-goto="intro">Start Learning</button>
     </div>
+    <div class="quick-row">
+      <button type="button" class="ctrl-btn" data-goto="gallery">3D shapes</button>
+      <button type="button" class="ctrl-btn" data-open-method="extrusion">Extrusion</button>
+      <button type="button" class="ctrl-btn" data-goto="capacity">Loading capacity</button>
+      <button type="button" class="ctrl-btn" data-goto="research">Research papers</button>
+      <button type="button" class="ctrl-btn" data-goto="practice">Quiz practice</button>
+      <button type="button" class="ctrl-btn" data-goto="notes">Notes</button>
+      <button type="button" class="ctrl-btn" data-goto="inquiries">Inquiries</button>
+    </div>
     <div class="hero-stats">
-      <div class="stat"><strong>8</strong><span>Learning Modules</span></div>
-      <div class="stat"><strong>5</strong><span>Preparation Methods</span></div>
-      <div class="stat"><strong>12</strong><span>Quiz Questions</span></div>
-      <div class="stat"><strong>4</strong><span>Real Products</span></div>
+      <div class="stat"><strong>10</strong><span>Learning Modules</span></div>
+      <div class="stat"><strong>6</strong><span>Preparation Methods</span></div>
+      <div class="stat"><strong>20</strong><span>Quiz Questions</span></div>
+      <div class="stat"><strong>7</strong><span>Real Products</span></div>
+    </div>
     </div>
   </div>
 
@@ -90,7 +126,8 @@
       <div class="dash-progress">
         <strong id="dash-pct">0%</strong>
         <div class="progress-track"><div class="progress-fill" id="dash-fill"></div></div>
-        <span id="dash-count">0 / 8 modules visited</span>
+        <span id="dash-count">0 / 10 modules visited</span>
+        <p class="ee-note">The bar moves when you open a module. Staying on this page leaves it at 0. <span class="ar">الشريط بيعد الأقسام اللي بتفتحها.</span></p>
       </div>
     </div>
     <div class="dash-body">
@@ -105,6 +142,17 @@
       <button class="btn btn-primary" id="continue-btn">Continue Learning →</button>
     </div>
   </div>
+
+  <article class="glass-card how-card" id="how-to-use">
+    <h2>How to use the site</h2>
+    <p class="ar">ازاي تستخدم الموقع</p>
+    <ol>
+      <li>Use the top menu. Home is not the whole site. <span class="ar">القائمة فوق بتفتح كل قسم.</span></li>
+      <li>Comparison tables are inside Introduction and Types. Flashcards are their own menu item. Research papers are inside Applications. <span class="ar">الجداول في المقدمة والأنواع. الفلاش كاردز قسم لوحده. الأبحاث جوه التطبيقات.</span></li>
+      <li>Drag a 3D vesicle to turn it. In Explorer, click a part to read about it. <span class="ar">اسحب الشكل عشان تلفه، واضغط الجزء في Explorer.</span></li>
+      <li>Progress counts modules you open, not text you only read. <span class="ar">التقدم بيتحسب لما تفتح القسم.</span></li>
+    </ol>
+  </article>
 
   <h2 class="section-title">Explore Our Modules</h2>
   <div class="modules-grid" id="modules-grid"></div>
@@ -192,6 +240,13 @@
     <p>Rotate, zoom and click on each part of the liposome to discover its function.</p>
   </div>
 
+  <div class="shape-panel glass-card">
+    <h2>Other 3D shapes</h2>
+    <p>This page shows one detailed vesicle. The twelve buttons open a separate orbitable model for each type and surface.</p>
+    <p class="ar">الأشكال التانية هنا. دوس على أي اسم وهيفتح الموديل ثلاثي الأبعاد.</p>
+    <div class="gallery-picks" data-shape-row></div>
+  </div>
+
   <div class="explorer-layout">
     <div class="explorer-view glass-card">
       <div id="explorer-canvas-wrap"></div>
@@ -228,12 +283,43 @@
   </div>
 </section>
 
+<!-- ============ 3D GALLERY ============ -->
+<section class="section" id="section-gallery">
+  <div class="page-head">
+    <span class="page-chip">12 models</span>
+    <h1>3D vesicle models</h1>
+    <p>Pick a shape: SUV, LUV, GUV, MLV, OLV, MVV, PEGylated, Cationic, Anionic, Targeted, pH-sensitive, or Thermosensitive. Drag to rotate and scroll to zoom.</p>
+    <p class="ar">اختار الشكل من الأزرار اللي فوق الموديل.</p>
+  </div>
+  <div class="gallery-picks" id="gallery-picks"></div>
+  <div class="glass-card gallery-stage">
+    <canvas id="gallery-canvas"></canvas>
+    <div class="explorer-hint">Drag to rotate · Scroll to zoom</div>
+    <div class="gallery-caption">
+      <h2 id="gallery-name">SUV</h2>
+      <p id="gallery-blurb"></p>
+    </div>
+  </div>
+  <p class="note">Sizes and surface details are teaching models. Reported ranges vary by reference and by how the batch was made.</p>
+  <div class="next-bar">
+    <span>Next: compare the types in a table</span>
+    <button class="btn btn-primary" data-goto="types">Types table →</button>
+  </div>
+</section>
+
 <!-- ============ TYPES ============ -->
 <section class="section" id="section-types">
   <div class="page-head">
     <span class="page-chip">Module 03</span>
     <h1>Types of Liposomes</h1>
     <p>Select a type to see how its structure changes — number of bilayers and internal compartments.</p>
+    <button type="button" class="bookmark-btn" data-bookmark="types">☆ Save</button>
+  </div>
+
+  <div class="shape-panel glass-card">
+    <h2>Open this type in 3D</h2>
+    <p class="ar">الأشكال ثلاثية الأبعاد مش الرسم اللي تحت. دوس على الاسم.</p>
+    <div class="gallery-picks" data-shape-row></div>
   </div>
 
   <div class="type-selector" id="type-selector"></div>
@@ -266,7 +352,8 @@
   <div class="page-head">
     <span class="page-chip">Module 04</span>
     <h1>Virtual Preparation Lab</h1>
-    <p>Five classic methods for preparing liposomes — principle, steps, advantages and limitations.</p>
+    <p>Principle, materials, steps, advantages, and limitations for each preparation method.</p>
+    <button type="button" class="bookmark-btn" data-bookmark="lab">☆ Save</button>
   </div>
 
   <div class="lab-tabs" id="lab-tabs"></div>
@@ -325,8 +412,24 @@
         <label>Total drug: <input type="number" id="ee-total" value="100" min="1"> mg</label>
         <label>Encapsulated: <input type="number" id="ee-enc" value="85" min="0"> mg</label>
         <div class="ee-result">EE = <strong id="ee-value">85%</strong></div>
+        <p id="ee-warn" class="ee-note"></p>
       </div>
     </div>
+  </div>
+
+  <div class="capacity-panel glass-card" id="capacity-panel">
+    <h3>Drug-loading capacity</h3>
+    <p class="ee-note">Encapsulation efficiency is the fraction of added drug that ended up inside. Loading capacity is how much drug mass the formulation mass can carry.</p>
+    <div class="cap-grid">
+      <label>Drug added (mg)<input id="cap-added" type="number" min="0" step="0.1" value="10"></label>
+      <label>Drug trapped inside (mg)<input id="cap-trapped" type="number" min="0" step="0.1" value="8"></label>
+      <label>Total formulation mass (mg)<input id="cap-total" type="number" min="0" step="0.1" value="100"></label>
+    </div>
+    <div class="cap-out">
+      <div><span>Encapsulation efficiency</span><strong id="cap-ee">—</strong></div>
+      <div><span>Drug-loading capacity</span><strong id="cap-dlc">—</strong></div>
+    </div>
+    <p id="cap-warn" class="ee-note"></p>
   </div>
 
   <div class="next-bar">
@@ -355,6 +458,7 @@
     </div>
     <aside class="glass-card sim-info" id="sim-info"></aside>
   </div>
+  <p id="sim-caveat" class="sim-caveat">This is one teaching pathway: circulation, leaky-tumor accumulation, cell contact, uptake, and release. Real liposomes do not all follow it. Some release drug outside the cell, some fuse, some are cleared by liver and spleen macrophages, and some products act locally rather than in a tumor.</p>
 
   <div class="next-bar">
     <span>Next: real liposomal medicines</span>
@@ -367,9 +471,13 @@
   <div class="page-head">
     <span class="page-chip">Module 07</span>
     <h1>Pharmaceutical Applications</h1>
-    <p>Real medicines that use liposomal technology — theory meets the clinic.</p>
+    <p>Teaching examples of real liposomal medicines. Not a full catalog, and not a dosing guide.</p>
   </div>
   <div class="apps-grid" id="apps-grid"></div>
+
+  <h2 class="section-title" id="research-block">Research</h2>
+  <p>Published reviews. Each link opens the paper or its PubMed record. Read it before citing a number.</p>
+  <div class="research-list" id="research-list"></div>
 
   <div class="next-bar">
     <span>Next: test yourself</span>
@@ -385,6 +493,35 @@
     <p>Test your knowledge — every answer comes with a scientific explanation.</p>
   </div>
   <div class="glass-card quiz-card" id="quiz-card"></div>
+
+  <div class="quiz-extra" id="quiz-extra">
+    <h2 class="section-title">Practice</h2>
+    <div class="quiz-extra-grid">
+      <article class="glass-card">
+        <h3>Match the pairs</h3>
+        <div id="match-board" class="match-board"></div>
+      </article>
+      <article class="glass-card">
+        <h3>Order the pathway</h3>
+        <p class="ee-note">Move each step up until the sequence matches the simulation. Other biological routes exist.</p>
+        <ol id="order-list" class="order-list"></ol>
+        <button type="button" class="ctrl-btn" id="order-check">Check order</button>
+        <p id="order-status" class="ee-note"></p>
+      </article>
+      <article class="glass-card">
+        <h3>Label the four parts</h3>
+        <p class="ee-note">Drag a name onto a part, or select a name and then click the part.</p>
+        <div id="label-board" class="label-board"></div>
+        <div id="label-bank" class="label-bank"></div>
+        <p id="label-status" class="ee-note"></p>
+      </article>
+      <article class="glass-card">
+        <h3>Review missed questions</h3>
+        <button type="button" class="ctrl-btn" id="review-btn">Show review</button>
+        <div id="review-box" hidden></div>
+      </article>
+    </div>
+  </div>
 </section>
 
 <!-- ============ FLASHCARDS ============ -->
@@ -423,19 +560,68 @@
     <input type="search" id="glossary-search" placeholder="🔍 Search a term…">
   </div>
   <div class="glossary-grid" id="glossary-grid"></div>
+
+  <h2 class="section-title" id="notes-block">Notes</h2>
+  <div class="glass-card notes-card">
+    <p class="ee-note">Saved in this browser. Download makes a plain text file.</p>
+    <textarea id="study-notes" rows="8" placeholder="Write a reminder, a question, or a citation…"></textarea>
+    <button type="button" class="btn btn-primary" id="download-notes">Download notes</button>
+  </div>
+</section>
+
+<!-- ============ INQUIRIES ============ -->
+<section class="section" id="section-inquiries">
+  <div class="page-head">
+    <span class="page-chip">Contact</span>
+    <h1>Inquiries</h1>
+    <p>Ask about a lesson, a figure, or the platform. The reply goes to the email you enter.</p>
+    <p class="ar">أرسل استفسارك هنا. الرد هيوصل على البريد اللي هتكتبه.</p>
+  </div>
+  <form class="glass-card inquiry-form" id="inquiry-form" action="/api/contact" method="post">
+    <div class="inquiry-grid">
+      <label>Name · الاسم
+        <input id="inquiry-name" name="name" type="text" autocomplete="name" maxlength="80" required>
+      </label>
+      <label>Email · البريد
+        <input id="inquiry-email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" required>
+      </label>
+    </div>
+    <label>Inquiry · الاستفسار
+      <textarea id="inquiry-message" name="message" rows="6" maxlength="3000" required placeholder="Write your question…"></textarea>
+    </label>
+    <div class="inquiry-honeypot" aria-hidden="true">
+      <label for="inquiry-website">Leave this empty</label>
+      <input id="inquiry-website" name="website" type="text" tabindex="-1" autocomplete="off">
+    </div>
+    <p class="ee-note">Do not send private medical details or passwords through this form.</p>
+    <div class="inquiry-actions">
+      <button class="btn btn-primary" type="submit">Send inquiry</button>
+      <p id="inquiry-status" class="inquiry-status" role="status" aria-live="polite"></p>
+    </div>
+  </form>
 </section>
 
 </main>
 
 <footer class="footer">
   <div class="footer-inner">
+    <p class="credit-kicker">Supervised by · تحت إشراف</p>
+    <p class="supervisor-name">Prof. Dr. Irhan I. Abu Hashim</p>
+    <p class="supervisor-name">Prof. Dr. Marwa S. El-Dahhan</p>
     <span class="logo-text">LIPO<span>VERSE</span></span>
     <p>An interactive learning platform about liposomes &amp; liposomal drug delivery — built for pharmacy students.</p>
+    <p><a href="#inquiries" data-nav="inquiries">Send an inquiry · أرسل استفسارًا</a></p>
+    <p><a href="print/">Print QR cards · اطبع بطاقات QR</a></p>
     <p class="footer-note">Content based on standard references in advanced drug delivery systems. Educational simulation — not medical advice.</p>
   </div>
 </footer>
 
+<script src="js/sound.js"></script>
 <script src="js/main.js"></script>
 <script src="js/sim.js"></script>
+<script type="module">
+  import { initUpgrade } from './js/upgrade.js';
+  initUpgrade();
+</script>
 </body>
 </html>
